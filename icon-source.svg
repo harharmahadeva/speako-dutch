@@ -1,0 +1,53 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <clipPath id="rr"><rect x="0" y="0" width="512" height="512" rx="112"/></clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="112" fill="#0f1117"/>
+
+  <!-- Dutch flag stripes clipped to rounded square -->
+  <rect x="0" y="0" width="512" height="171" fill="#AE1C28" clip-path="url(#rr)"/>
+  <rect x="0" y="171" width="512" height="170" fill="#FFFFFF" clip-path="url(#rr)"/>
+  <rect x="0" y="341" width="512" height="171" fill="#21468B" clip-path="url(#rr)"/>
+
+  <!-- Dark overlay -->
+  <rect width="512" height="512" rx="112" fill="rgba(8,10,18,0.80)"/>
+
+  <!-- Speech bubble -->
+  <rect x="38" y="42" width="436" height="310" rx="52" fill="#f0700a"/>
+  <!-- Bubble tail -->
+  <polygon points="80,352 148,352 92,420" fill="#f0700a"/>
+
+  <!-- Tulip: left petal -->
+  <ellipse cx="218" cy="196" rx="34" ry="58" fill="#fff" opacity="0.90" transform="rotate(-22,218,196)"/>
+  <!-- Tulip: right petal -->
+  <ellipse cx="294" cy="196" rx="34" ry="58" fill="#fff" opacity="0.90" transform="rotate(22,294,196)"/>
+  <!-- Tulip: center petal -->
+  <ellipse cx="256" cy="178" rx="40" ry="68" fill="#fff"/>
+  <!-- Petal inner glow -->
+  <ellipse cx="256" cy="186" rx="20" ry="46" fill="#f0700a" opacity="0.26"/>
+
+  <!-- Stem -->
+  <rect x="242" y="242" width="28" height="82" rx="14" fill="#fff" opacity="0.88"/>
+  <!-- Leaf left -->
+  <path d="M242 300 Q196 274 190 234 Q226 242 242 300Z" fill="#fff" opacity="0.70"/>
+  <!-- Leaf right -->
+  <path d="M270 280 Q316 254 322 214 Q286 222 270 280Z" fill="#fff" opacity="0.70"/>
+
+  <!-- SPEAKO text -->
+  <text x="256" y="358"
+    text-anchor="middle"
+    font-family="-apple-system,BlinkMacSystemFont,system-ui,sans-serif"
+    font-size="72" font-weight="800"
+    fill="#fff" letter-spacing="8">SPEAKO</text>
+
+  <!-- NL badge -->
+  <circle cx="432" cy="88" r="44" fill="#21468B"/>
+  <circle cx="432" cy="88" r="40" fill="#21468B" stroke="#fff" stroke-width="3"/>
+  <text x="432" y="100"
+    text-anchor="middle"
+    font-family="-apple-system,BlinkMacSystemFont,system-ui,sans-serif"
+    font-size="30" font-weight="800"
+    fill="#fff" letter-spacing="2">NL</text>
+</svg>

@@ -7,6 +7,18 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.3.0] — 2026-06-23
+
+### Added
+- **App icon** — eye-catching tulip + Dutch flag + speech bubble design with SPEAKO text and NL badge
+- `icon-512.png` and `icon-192.png` — proper PNG icons for Android home screen install and PWA manifest
+- `apple-touch-icon.png` (180x180) — replaces SVG for iOS home screen, renders correctly on all iPhones
+- `icon-source.svg` — master source file for future icon edits
+- manifest.json updated with full icon set (192px any, 512px maskable, SVG fallback)
+- `<link rel="apple-touch-icon">` in index.html now points to PNG (iOS Safari requires PNG, not SVG)
+
+---
+
 ## [1.2.0] — 2026-06-23
 
 ### Added
