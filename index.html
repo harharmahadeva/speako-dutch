@@ -291,14 +291,14 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
       <ul>
         <li>This is a <strong>proof-of-concept prototype</strong> built for testing and evaluation purposes only.</li>
         <li>It is <strong>not a finished product</strong> and is not intended for commercial use or public distribution.</li>
-        <li>AI-generated lesson content may contain <strong>errors, inaccuracies, or mistranslations</strong>. Always verify with a qualified German teacher.</li>
+        <li>AI-generated lesson content may contain <strong>errors, inaccuracies, or mistranslations</strong>. Always verify with a qualified Dutch teacher.</li>
         <li>This app is <strong>not affiliated with</strong> Anthropic, Google, or any language learning platform.</li>
         <li>Progress is stored <strong>locally in your browser only</strong>. No data is sent to any server other than the AI API for lesson generation.</li>
         <li>Use of this demo is entirely <strong>at your own risk</strong>. The creator accepts no liability for any issues arising from use.</li>
         <li>This app uses the <strong>Google Gemini API</strong> for content generation. Usage is subject to <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer" style="color:#c4b5fd">Google AI Terms of Service</a>.</li>
       </ul>
     </div>
-    <button class="demo-modal-accept" onclick="acceptDemo()">I understand — this is a demo. Let me in! 🇩🇪</button>
+    <button class="demo-modal-accept" onclick="acceptDemo()">I understand — this is a demo. Let me in! 🇳🇱</button>
   </div>
 </div>
 
@@ -433,7 +433,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
       <div class="hero-greeting" id="heroGreeting">Good morning</div>
       <div class="hero-name" id="heroName">Welcome back!</div>
       <div class="hero-chips">
-        <div class="hero-chip" id="heroLangChip">🗣️ German</div>
+        <div class="hero-chip" id="heroLangChip">🗣️ Dutch</div>
         <div class="hero-chip" id="heroDayChip">Day 1</div>
         <div class="hero-chip">🔥 <span id="heroStreak">0</span> streak</div>
       </div>
@@ -456,7 +456,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <div class="day-progress">
       <div class="dp-header">
-        <div class="dp-title" id="journeyTitle">Your German Journey 🗺️</div>
+        <div class="dp-title" id="journeyTitle">Your Dutch Journey 🗺️</div>
         <div class="dp-day" id="currentDayLabel">Day 1</div>
       </div>
       <div class="dp-dots" id="dayDots"></div>
@@ -504,80 +504,7 @@ let sessionMinutes=0, sessionTarget=60, sessionTimer=null;
 let chatHistory=[], currentLesson=null;
 let testQuestions=[], currentTestQ=0, testScore=0, testCompleted=false;
 
-const TOTAL_DAYS=()=>(currentUser?.lang==='nl'?45:60);
-// A2-structured curriculum — Goethe A2 / TELC A2 aligned
-// Grammar point per day drives 60% of lesson; vocabulary 40%
-const DAY_TOPICS=[
-  // WEEK 1 — Foundation: Pronunciation, Articles, Present Tense
-  "Day 1 | Greetings & Introductions — ich bin, du/Sie, formal vs informal",
-  "Day 2 | Numbers, Dates & Time — Zahlen 1-100, Uhrzeit, Datum",
-  "Day 3 | Grammar: der/die/das — noun genders, definite & indefinite articles",
-  "Day 4 | Grammar: Verb Conjugation Present — sein, haben, regular -en verbs",
-  "Day 5 | Family & Relationships — Familie, Beziehungen, possessive pronouns mein/dein",
-  "Day 6 | Daily Routine — Tagesablauf, separable verbs (aufstehen, anrufen, einkaufen)",
-  "Day 7 | Week 1 Review + A2 Checkpoint — revision of articles, verbs, greetings",
-  // WEEK 2 — Daily Life: Cases, Shopping, Transport
-  "Day 8 | Food & Ordering — Essen und Trinken, im Restaurant, im Café",
-  "Day 9 | Shopping & Prices — Supermarkt, Preise, im Geschäft",
-  "Day 10 | Clothes & Colors — Kleidung, Farben, im Kaufhaus",
-  "Day 11 | Grammar: Accusative Case — den/einen, direct object, masculine change",
-  "Day 12 | Home & Living — Wohnung, Zimmer, Miete, WG suchen",
-  "Day 13 | Directions & Public Transport — U-Bahn, S-Bahn, links/rechts, BVG",
-  "Day 14 | Week 2 Review — shopping scenarios, accusative practice",
-  // WEEK 3 — Communication: Modal Verbs, Dative, Appointments
-  "Day 15 | Grammar: Modal Verbs — können, müssen, wollen, dürfen, sollen, mögen",
-  "Day 16 | At the Doctor — beim Arzt, Körper, Beschwerden, Krankenversicherung",
-  "Day 17 | Weather & Seasons — Wetter, Jahreszeiten, es ist/es gibt",
-  "Day 18 | Grammar: Dative Case — dem/einem, indirect object, Präpositionen mit Dativ",
-  "Day 19 | Making Plans & Appointments — Verabredungen, Kalender, Termine",
-  "Day 20 | Telephone & Formal Language — am Telefon, per E-Mail, Sie-Form",
-  "Day 21 | Week 3 Review — modal verbs, dative, formal communication",
-  // WEEK 4 — Integration: Perfekt Tense, German System
-  "Day 22 | Grammar: Perfekt with haben — ich habe gemacht, regular & irregular",
-  "Day 23 | Grammar: Perfekt with sein — ich bin gegangen, movement & change verbs",
-  "Day 24 | German Bureaucracy — Anmeldung, Amt, Formulare, Ausweis",
-  "Day 25 | Banking & Finance — Konto, Überweisung, Girokonto, Sparkasse",
-  "Day 26 | Healthcare System — Krankenversicherung, Apotheke, Rezept",
-  "Day 27 | Housing & Renting — Mietvertrag, Nebenkosten, Kaution, Vermieter",
-  "Day 28 | Week 4 Review — Perfekt tense practice, bureaucracy vocab",
-  // WEEK 5 — Professional Life: Prepositions, Writing, IT Vocab
-  "Day 29 | Job Interview — Vorstellungsgespräch, Stärken/Schwächen, Bewerbung",
-  "Day 30 | Workplace Vocabulary — Büro, Kollegen, Besprechung, Feierabend",
-  "Day 31 | IT & Cybersecurity German — DSGVO, Firewall, Datenschutz, SOC, SIEM",
-  "Day 32 | Grammar: Two-Way Prepositions — an, auf, in, vor, über, unter, zwischen (Dativ/Akkusativ)",
-  "Day 33 | Professional Writing — E-Mail, Sehr geehrte/r, Mit freundlichen Grüßen",
-  "Day 34 | Grammar: Negation — nicht vs kein, niemand, nichts, niemals",
-  "Day 35 | Week 5 Review — IT vocab, prepositions, professional writing",
-  // WEEK 6 — Advanced Grammar: Adjectives, Subordinate Clauses
-  "Day 36 | Grammar: Adjective Endings — after der/die/das, after ein/eine, predicative",
-  "Day 37 | Grammar: Subordinate Clauses — weil, dass, wenn, ob, obwohl (verb-final)",
-  "Day 38 | Grammar: Comparative & Superlative — größer als, am größten, genauso wie",
-  "Day 39 | Grammar: Reflexive Verbs — sich vorstellen, sich freuen, sich erinnern",
-  "Day 40 | Grammar: Konjunktiv II — würde, hätte, wäre (polite requests, wishes)",
-  "Day 41 | German Culture & Work Values — Pünktlichkeit, Direktheit, Feierabend-Kultur",
-  "Day 42 | Week 6 Review — adjective endings, subordinate clauses, Konjunktiv II",
-  // WEEK 7 — A2 Exam Preparation: All 4 Skills
-  "Day 43 | Exam Skill: Lesen — reading comprehension strategies, skimming, scanning",
-  "Day 44 | Exam Skill: Hören — listening vocabulary, announcement types, instructions",
-  "Day 45 | Exam Skill: Schreiben — letter/email writing structure, formal vs informal",
-  "Day 46 | Exam Skill: Sprechen Teil 1 — sich vorstellen, über Alltag sprechen",
-  "Day 47 | Exam Skill: Sprechen Teil 2 — Bildbeschreibung, gemeinsam planen",
-  "Day 48 | Mock Lesen (A2 Reading Test) — practice texts, multiple choice, true/false",
-  "Day 49 | Mock Hören (A2 Listening Test) — practice dialogues, form-filling",
-  // WEEK 8 — Mock Exams & Consolidation
-  "Day 50 | Mock Schreiben (A2 Writing Test) — guided writing, 80-word email",
-  "Day 51 | Mock Sprechen (A2 Speaking Test) — role-play at the Amt, doctor, shop",
-  "Day 52 | Vocabulary Consolidation: Daily Life — all A2 topic groups reviewed",
-  "Day 53 | Vocabulary Consolidation: Professional — IT, office, job interview vocab",
-  "Day 54 | Grammar Consolidation: Cases — Nominativ, Akkusativ, Dativ review",
-  "Day 55 | Grammar Consolidation: Tenses — Präsens, Perfekt, Futur I (werden)",
-  "Day 56 | Full A2 Practice Test — Lesen + Hören + Schreiben + Sprechen",
-  // WEEK 9 — Final Push
-  "Day 57 | Common Errors & Corrections — false friends, case mistakes, word order",
-  "Day 58 | German Idioms & Fixed Expressions — Das ist mir Wurst, Daumen drücken",
-  "Day 59 | Berlin German & Culture — Berlinerisch, Kiez, Späti, Integration vocabulary",
-  "Day 60 | Graduation Day — full revision, A2 readiness check, Du bist bereit!"
-];
+const TOTAL_DAYS=()=>45;
 
 // ─────────────────────────────────────────────
 // DUTCH COURSE — 45 days, Inburgering A2 / KNM aligned
@@ -845,8 +772,6 @@ window.onload=async()=>{
 // Credentials shared privately by admin
 // ═══════════════════════════════════
 const ACCOUNTS=[
-  {name:'manra',   pin:'7860', displayName:'Manisha', lang:'de'},
-  {name:'nikra',   pin:'5511', displayName:'Nikhil',  lang:'de'},
   {name:'sharmsa', pin:'1990', displayName:'Sakshi',  lang:'nl'}
 ];
 
@@ -925,15 +850,12 @@ function showApp(){
   safeText(document.getElementById('currentDayLabel'),'Day '+day);
   // hero section
   const hr=new Date().getHours();
-  const isNL2=(currentUser?.lang==='nl');
-  safeText(document.getElementById('heroLangChip'), isNL2?'🗣️ Dutch':'🗣️ German');
-  safeText(document.getElementById('journeyTitle'), isNL2?'Your Dutch Journey 🗺️':'Your German Journey 🗺️');
-  const greet=isNL2
-    ?(hr<5?'Goedenacht':hr<12?'Goedemorgen':hr<17?'Goedemiddag':'Goedenavond')
-    :(hr<5?'Gute Nacht':hr<12?'Guten Morgen':hr<17?'Guten Tag':'Guten Abend');
+  safeText(document.getElementById('heroLangChip'), '🗣️ Dutch');
+  safeText(document.getElementById('journeyTitle'), 'Your Dutch Journey 🗺️');
+  const greet=hr<5?'Goedenacht':hr<12?'Goedemorgen':hr<17?'Goedemiddag':'Goedenavond';
   safeText(document.getElementById('heroGreeting'),greet);
   safeText(document.getElementById('heroName'),dname+'!');
-  safeText(document.getElementById('heroDayChip'),(isNL2?'Dag':'Day')+' '+day+' of '+TOTAL_DAYS());
+  safeText(document.getElementById('heroDayChip'),'Dag '+day+' of '+TOTAL_DAYS());
   safeText(document.getElementById('heroStreak'),userProgress.streak||1);
   renderDayDots();
   updateMotBanner();
@@ -946,17 +868,10 @@ function updateMotBanner(){
   const done=(userProgress.completedDays||[]).length;
   const streak=userProgress.streak||1;
   const msgs=[
-    ...(currentUser?.lang==='nl'?[
-      `🗣️ <strong>Welkom!</strong> Every word you learn today brings you one step closer to passing your inburgeringsexamen. Let's begin!`,
-      `🔥 <strong>Dag ${day} — ${streak} dag streak!</strong> You're building a real habit. Consistency is everything. Ga zo door!`,
-      `🚀 <strong>${done} dagen klaar!</strong> Dutch is clicking. Each lesson makes the next one easier. Blijf zo doorgaan!`,
-      `🎯 <strong>${streak} dagen sterk!</strong> You started. You showed up. That already puts you ahead of most. Goed bezig! 💪`,
-    ]:[
-      `🗣️ <strong>Willkommen!</strong> Every word you learn today brings you one step closer to speaking German with confidence. Let's begin!`,
-      `🔥 <strong>Day ${day} — ${streak} day streak!</strong> You're building a real habit. Consistency is everything. Keep going!`,
-      `🚀 <strong>${done} days complete!</strong> German is clicking. Each lesson makes the next one easier. Stay with it!`,
-      `🎯 <strong>${streak} days strong!</strong> You started. You showed up. That already puts you ahead of most. Weiter so! 💪`,
-    ]),
+    `🗣️ <strong>Welkom!</strong> Every word you learn today brings you one step closer to passing your inburgeringsexamen. Let's begin!`,
+    `🔥 <strong>Dag ${day} — ${streak} dag streak!</strong> You're building a real habit. Consistency is everything. Ga zo door!`,
+    `🚀 <strong>${done} dagen klaar!</strong> Dutch is clicking. Each lesson makes the next one easier. Blijf zo doorgaan!`,
+    `🎯 <strong>${streak} dagen sterk!</strong> You started. You showed up. That already puts you ahead of most. Goed bezig! 💪`,
   ];
   document.getElementById('motBanner').innerHTML=msgs[Math.min(Math.floor(done/5),msgs.length-1)];
 }
@@ -972,7 +887,7 @@ function renderDayDots(){
     if(done.includes(i)){cls+=' done';label='✓';}
     else if(i===cur&&failed.includes(i)){cls+=' failed';}
     else if(i===cur){cls+=' current';}
-    html+=`<div class="${cls}" title="Day ${i}: ${DAY_TOPICS[i-1]||'Advanced'}">${label}</div>`;
+    html+=`<div class="${cls}" title="Dag ${i}: ${DAY_TOPICS_NL[i-1]||'Advanced'}">${label}</div>`;
   }
   if(show<TOTAL_DAYS())html+=`<div style="font-size:12px;color:var(--muted);display:flex;align-items:center;padding:0 6px">...${TOTAL_DAYS()-show} more</div>`;
   document.getElementById('dayDots').innerHTML=html;
@@ -1001,10 +916,7 @@ function unlockTest(){
 
 async function loadLesson(day){
   currentLesson=null;
-  const isNL=(currentUser?.lang==='nl');
-  const topics=isNL?DAY_TOPICS_NL:DAY_TOPICS;
-  const totalDays=isNL?45:60;
-  const topic=topics[(day-1)%topics.length]||( isNL?'Advanced Dutch':'Advanced German');
+  const topic=DAY_TOPICS_NL[(day-1)%DAY_TOPICS_NL.length]||'Advanced Dutch';
   document.getElementById('lessonContent').innerHTML=`<div class="lesson-loading"><div class="spinner"></div><div>Generating ${isNL?'Dag':'Day'} ${day} lesson... hang tight! 🍛</div></div>`;
 
   const prompt=isNL?
@@ -1045,44 +957,7 @@ STRICT RULES:
 - grammar field REQUIRED — no exceptions
 - All example sentences grammatically correct Dutch
 - Inburgering/KNM angle where relevant (rechten, plichten, Nederlandse waarden, participatie)
-- Pure JSON only`
-:
-`You are a structured A2 German tutor for two IT security professionals from New Delhi living in Berlin. Your goal: get them to Goethe/TELC A2 standard. Warm, memorable humor — but grammar and vocabulary precision come first.
-
-Generate a Day ${day} A2-aligned German lesson on: "${topic}"
-
-LEVEL RULES (strictly enforced):
-- Days 1-14: A1 foundation — articles, basic verbs, present tense only
-- Days 15-28: A1→A2 bridge — modal verbs, accusative/dative, Perfekt
-- Days 29-42: A2 core — two-way prepositions, adjective endings, subordinate clauses, Konjunktiv II
-- Days 43-56: A2 exam prep — all four skills (Lesen/Hören/Schreiben/Sprechen), mock test vocabulary
-- Days 57-60: Consolidation — common errors, idioms, exam readiness
-
-GRAMMAR POINT (mandatory for this day):
-- The "grammar" field must explain the specific grammatical concept for day ${day} in simple English
-- Give a clear rule, 2-3 short example sentences, and a common mistake to avoid
-- This is the heart of the lesson — make it crystal clear
-
-VOCABULARY RULES:
-- Words must be from A1-A2 CEFR word lists relevant to the day's topic
-- Include gender (der/die/das) for all nouns
-- Pronunciation guide in square brackets using approximate English sounds
-- Example sentences must be realistic Berlin daily-life situations
-
-TONE: Like a brilliant desi bhaiya who aced his Goethe A2. Humor through Delhi+Berlin comparisons, never at expense of clarity.
-Delhi: CP, DTC bus, auto-wala, chai, biryani, Chandni Chowk, jugaad, "bhai"
-Berlin: U-Bahn, BVG, REWE, Lidl, Jobcenter, Alexanderplatz, Kreuzberg, Döner, Späti
-
-Return ONLY valid JSON (no markdown, no backticks):
-{"day":${day},"topic":"${topic}","funnyIntro":"2 sentences — hook them with Delhi+Berlin humor, set up why today's grammar matters","grammar":{"rule":"Clear one-sentence grammar rule","explanation":"2-3 sentences explaining when and how to use it, with the logic behind it","examples":["German example sentence 1 — English translation","German example sentence 2 — English translation","German example sentence 3 — English translation"],"mistake":"The most common error learners make with this rule and how to avoid it"},"words":[{"de":"word with article if noun","pron":"[sounds-like-english]","en":"meaning","example_de":"Berlin-context sentence","example_en":"translation","funny":"Delhi/Berlin memory hook"}],"phrases":[{"de":"phrase","en":"meaning","funny":"when to use — real situation"}],"berlinTip":"Practical A2-level Berlin survival tip linked to today's grammar","jobTip":"IT security job hunting tip using today's grammar or vocabulary"}
-
-STRICT RULES:
-- Exactly 8 words (A1-A2 CEFR level)
-- Exactly 6 phrases
-- grammar field is REQUIRED — no exceptions
-- Every example sentence must be a complete, grammatically correct German sentence
-- IT/cybersecurity vocabulary angle where natural (DSGVO, Firewall, Datenschutz, SOC, Penetrationstest)
-- Pure JSON only — no text before or after`;
+- Pure JSON only`;
 
   try{
     checkRateLimit();
@@ -1224,11 +1099,11 @@ function renderLesson(lesson){
         <div id="voiceResult_${sid}"></div>
 
         <div class="exercise-box" style="margin-top:12px">
-          <div class="exercise-label">🎭 Berlin Scenario</div>
+          <div class="exercise-label">🎭 Amsterdam Scenario</div>
           <div id="scenarioPrompt_${sid}">
             <button class="btn btn-outline btn-sm" onclick="loadScenario('${sid}','${p.de.replace(/'/g,"\\'")}','${p.en.replace(/'/g,"\\'")}')">Get a scenario →</button>
           </div>
-          <input class="exercise-input hidden" id="exInput_${sid}" placeholder="Respond in German..." onkeydown="if(event.key==='Enter')checkScenario('${sid}','${p.de.replace(/'/g,"\\'")}')"/>
+          <input class="exercise-input hidden" id="exInput_${sid}" placeholder="Respond in Dutch..." onkeydown="if(event.key==='Enter')checkScenario('${sid}','${p.de.replace(/'/g,"\\'")}')"/>
           <button class="btn btn-outline btn-sm hidden" id="exBtn_${sid}" onclick="checkScenario('${sid}','${p.de.replace(/'/g,"\\'")}')">Check ✓</button>
           <div class="exercise-feedback" id="exFeedback_${sid}"></div>
         </div>
@@ -1238,7 +1113,7 @@ function renderLesson(lesson){
   // Tips page
   lessonPages.push({type:'tips', html:`
     <div class="card" style="border-color:var(--primary)">
-      <div class="section-label">🏙️ Berlin Survival Tip</div>
+      <div class="section-label">🇳🇱 Netherlands Survival Tip</div>
       <div style="font-size:14px;line-height:1.8">${lesson.berlinTip}</div>
     </div>
     <div class="card" style="border-color:var(--green)">
@@ -1246,15 +1121,15 @@ function renderLesson(lesson){
       <div style="font-size:14px;line-height:1.8">${lesson.jobTip}</div>
     </div>
     <div class="card" style="border-color:var(--orange)">
-      <div class="section-label" style="color:var(--orange)">🧠 Good to Know</div>
+      <div class="section-label" style="color:var(--orange)">🧠 Dutch Pronunciation Tips</div>
       <div style="font-size:13px;line-height:1.9;color:var(--muted)">
-        🔤 <strong style="color:var(--text)">W</strong> sounds like <strong style="color:var(--primary)">V</strong> — "Wasser" = "Vasser"<br>
-        🔤 <strong style="color:var(--text)">Z</strong> sounds like <strong style="color:var(--primary)">TS</strong> — "Zeit" = "TSait"<br>
-        🔤 <strong style="color:var(--text)">CH</strong> after i/e = soft "kh" — like ख but softer<br>
-        🔤 <strong style="color:var(--text)">Ü</strong> = say "ee" with rounded lips<br>
-        🔤 <strong style="color:var(--text)">Ö</strong> = say "e" with rounded lips<br>
-        🔤 <strong style="color:var(--text)">SCH</strong> = "sh" as in "shoe"<br>
-        <span style="color:var(--primary);margin-top:6px;display:block">✅ German is phonetic — what you see is what you say!</span>
+        🔤 <strong style="color:var(--text)">G</strong> = guttural "KH" — like clearing your throat — "goed" = "KHoot"<br>
+        🔤 <strong style="color:var(--text)">IJ / EI</strong> = "AY" — "mijn" = "mayn", "trein" = "trayn"<br>
+        🔤 <strong style="color:var(--text)">OE</strong> = "OO" — "hoe" = "hoo", "boek" = "book"<br>
+        🔤 <strong style="color:var(--text)">UI</strong> = unique Dutch sound — lips like "oo" but say "ay" — "huis" = approx "hows"<br>
+        🔤 <strong style="color:var(--text)">W</strong> = softer than English W, almost a V — "water" = "vah-ter"<br>
+        🔤 <strong style="color:var(--text)">V</strong> = often sounds like F — "van" = "fan"<br>
+        <span style="color:var(--primary);margin-top:6px;display:block">✅ Dutch is more phonetic than English — once you learn the rules, it clicks!</span>
       </div>
     </div>`});
 
@@ -1262,7 +1137,7 @@ function renderLesson(lesson){
   lessonPages.push({type:'drill', html:`
     <div class="drill-box">
       <div class="drill-title">⚡ Quick Drill — Final Challenge</div>
-      <div class="drill-sub">3 Berlin scenarios. Answer in German. You've got this!</div>
+      <div class="drill-sub">3 Amsterdam scenarios. Answer in Dutch. You've got this!</div>
       <div id="drillContent">
         <button class="btn btn-gold" onclick="loadDrill()">Start Drill →</button>
       </div>
@@ -1338,7 +1213,7 @@ function startVoiceValidation(sid, targetText, type){
 
   setTimeout(()=>{
     const r = new SR();
-    r.lang=currentUser?.lang==='nl'?'nl-NL':'de-DE';
+    r.lang='nl-NL';
     r.continuous=false;
     r.interimResults=false;
     r.maxAlternatives=3;
@@ -1372,7 +1247,7 @@ async function validatePronunciationWithAI(sid, target, heard, score, resultEl){
     ${quickIcon} You said: "<em>${esc(heard)}</em>" — checking...
   </div>`;
 
-  const prompt=`German pronunciation feedback for a Delhi IT professional learning German in Berlin.
+  const prompt=`Dutch pronunciation feedback for a Delhi IT professional learning Dutch in the Netherlands.
 
 Target: "${target}"
 What they said: "${heard}"
@@ -1381,7 +1256,7 @@ Similarity score: ${Math.round(score*100)}%
 Give SHORT feedback (3 lines max):
 1. Overall verdict (great/close/needs work)
 2. Specific pronunciation tip if needed (which letter/sound to fix)
-3. One fun tip or trick to remember (Delhi or Berlin reference welcome)
+3. One fun tip or trick to remember (Delhi or Amsterdam/NL reference welcome)
 
 Return JSON only: {"rating":"great|close|wrong","verdict":"one line verdict","tip":"pronunciation tip","trick":"memory trick"}`;
 
@@ -1430,14 +1305,14 @@ async function checkExercise(id, word, meaning){
   feedback.className='exercise-feedback loading';
   feedback.textContent='Checking your answer... ⏳';
 
-  const prompt=`You are a German language teacher. A student learning German (from Delhi, living in Berlin, IT security professional) wrote this sentence using the word "${word}" (meaning: ${meaning}):
+  const prompt=`You are a Dutch language teacher. A student learning Dutch (from Delhi, living in the Netherlands, IT professional) wrote this sentence using the word "${word}" (meaning: ${meaning}):
 
 Student's answer: "${answer}"
 
 Give brief feedback (2-3 lines max):
 1. Is the word used correctly? (yes/close/no)
 2. One specific correction if needed
-3. One encouraging line with a Delhi or Berlin reference
+3. One encouraging line with a Delhi or Amsterdam/NL reference
 
 Return JSON only: {"rating":"good|close|wrong","feedback":"your feedback here","corrected":"corrected sentence if needed, else empty string"}`;
 
@@ -1461,7 +1336,7 @@ async function loadScenario(id, phrase, meaning){
   promptEl.innerHTML='<span style="color:var(--muted);font-size:13px">Loading scenario... ⏳</span>';
 
   const day=userProgress.day||1;
-  const prompt=`Give ONE very short Berlin daily-life scenario (1 sentence) where someone would use the German phrase "${phrase}" (${meaning}). Make it realistic and slightly funny — reference a Berlin place (REWE, U-Bahn, Jobcenter, Alexanderplatz, etc.) or compare to Delhi (CP, DTC bus, auto-wala). Return JSON only: {"scenario":"scenario text here"}`;
+  const prompt=`Give ONE very short Dutch daily-life scenario (1 sentence) where someone would use the Dutch phrase "${phrase}" (${meaning}). Make it realistic and slightly funny — reference a Dutch place (Albert Heijn, NS trein, gemeente, huisarts, OV-chipkaart, etc.) or compare to Delhi (CP, DTC bus, auto-wala). Return JSON only: {"scenario":"scenario text here"}`;
 
   try{
     checkRateLimit();
@@ -1473,7 +1348,7 @@ async function loadScenario(id, phrase, meaning){
     document.getElementById('exInput_'+id).classList.remove('hidden');
     document.getElementById('exBtn_'+id).classList.remove('hidden');
   }catch(e){
-    promptEl.innerHTML=`<strong style="color:var(--orange)">📍 Scenario:</strong> You're at the Jobcenter in Berlin and need to use this phrase. How do you say it?`;
+    promptEl.innerHTML=`<strong style="color:var(--orange)">📍 Scenario:</strong> You're at the gemeente in Amsterdam and need to use this phrase. How do you say it?`;
     document.getElementById('exInput_'+id).classList.remove('hidden');
     document.getElementById('exBtn_'+id).classList.remove('hidden');
   }
@@ -1489,7 +1364,7 @@ async function checkScenario(id, phrase){
   feedback.className='exercise-feedback loading';
   feedback.textContent='Checking... ⏳';
 
-  const prompt=`German language teacher feedback. Student tried to use "${phrase}" in a response. Their answer: "${answer}". Was the phrase used correctly? Give 2-line feedback. Return JSON: {"rating":"good|close|wrong","feedback":"short feedback with encouragement"}`;
+  const prompt=`Dutch language teacher feedback. Student tried to use "${phrase}" in a response. Their answer: "${answer}". Was the phrase used correctly? Give 2-line feedback. Return JSON: {"rating":"good|close|wrong","feedback":"short feedback with encouragement"}`;
 
   try{
     checkRateLimit();
@@ -1517,11 +1392,11 @@ async function loadDrill(){
   document.getElementById('drillContent').innerHTML='<div style="color:var(--muted);font-size:13px">Generating scenarios... ⏳</div>';
 
   const words=currentLesson.words.slice(0,5).map(w=>`${w.de}=${w.en}`).join(', ');
-  const prompt=`Create exactly 3 short Berlin real-life drill scenarios for an IT security professional from Delhi learning German. Each scenario requires using one of these words: ${words}.
+  const prompt=`Create exactly 3 short Dutch real-life drill scenarios for an IT professional from Delhi learning Dutch in the Netherlands. Each scenario requires using one of these words: ${words}.
 
 Return JSON only:
 {"drills":[
-  {"situation":"You are at [Berlin place]. [What happens]. What do you say/write in German?","targetWord":"the German word they should use","hint":"English hint"},
+  {"situation":"You are at [Dutch place: Albert Heijn, NS station, gemeente, huisarts, etc.]. [What happens]. What do you say/write in Dutch?","targetWord":"the Dutch word they should use","hint":"English hint"},
   {"situation":"...","targetWord":"...","hint":"..."},
   {"situation":"...","targetWord":"...","hint":"..."}
 ]}`;
@@ -1544,7 +1419,7 @@ function renderDrill(){
     document.getElementById('drillContent').innerHTML=`
       <div class="drill-score">
       ${drillScore===3?'🏆':drillScore>=2?'⭐':'💪'} Drill complete! Score: ${drillScore}/3
-        ${drillScore===3?"— Perfect! You're ready for Berlin! 🇩🇪":drillScore>=2?'— Great effort! Almost there!':'— Keep practicing — you\'ll nail it!'}
+        ${drillScore===3?"— Perfect! You're ready for inburgering! 🇳🇱":drillScore>=2?'— Great effort! Almost there!':'— Keep practicing — you\'ll nail it!'}
       </div>
       <button class="btn btn-outline" style="display:block;margin:10px auto 0" onclick="loadDrill()">Try Again</button>`;
     return;
@@ -1557,7 +1432,7 @@ function renderDrill(){
         ${esc(d.situation)}<br>
         <span style="color:var(--muted);font-size:12px;margin-top:4px;display:block">💡 Hint: ${esc(d.hint)}</span>
       </div>
-      <input class="drill-input" id="drillInput" placeholder="Type your answer in German..." onkeydown="if(event.key==='Enter')checkDrill('${d.targetWord.replace(/'/g,"\\'")}')"/>
+      <input class="drill-input" id="drillInput" placeholder="Type your answer in Dutch..." onkeydown="if(event.key==='Enter')checkDrill('${d.targetWord.replace(/'/g,"\\'")}')"/>
       <button class="btn btn-gold btn-sm" onclick="checkDrill('${d.targetWord.replace(/'/g,"\\'")}')">Submit →</button>
       <div class="drill-result" id="drillResult"></div>
     </div>`;
@@ -1575,7 +1450,7 @@ async function checkDrill(targetWord){
   result.textContent='Checking... ⏳';
   input.disabled=true;
 
-  const prompt=`Student answered a German drill. Target word: "${targetWord}". Their answer: "${answer}". Did they correctly use the word? Return JSON: {"correct":true/false,"feedback":"one encouraging line"}`;
+  const prompt=`Student answered a Dutch drill. Target word: "${targetWord}". Their answer: "${answer}". Did they correctly use the word? Return JSON: {"correct":true/false,"feedback":"one encouraging line"}`;
 
   try{
     checkRateLimit();
@@ -1596,7 +1471,7 @@ async function checkDrill(targetWord){
 
 function openTest(){
   if(document.getElementById('tabBtnTest').classList.contains('locked')){
-    alert('Bhai! Pehle 60 minute padho. Timer chal raha hai upar. ⏱️\n\nKoi shortcut nahi — jaise Jobcenter mein queue nahi skip hoti! 😄');return;
+    alert('Bhai! Pehle 60 minute padho. Timer chal raha hai upar. ⏱️\n\nKoi shortcut nahi — jaise gemeente mein queue nahi skip hoti! 😄');return;
   }
   const day=userProgress.day||1;
   const tr=userProgress.testResults||{};
@@ -1616,25 +1491,25 @@ async function startTest(){
     </div>
     <div class="card" style="text-align:center"><div class="spinner"></div><div style="color:var(--muted);font-size:14px;margin-top:12px">Generating questions... 🤔</div></div>`;
 
-  const prompt=`Generate exactly 10 MCQ test questions for this German lesson.
+  const prompt=`Generate exactly 10 MCQ test questions for this Dutch lesson.
 
 Lesson topic: "${currentLesson.topic}"
 Words: ${currentLesson.words.map(w=>w.de+'='+w.en).join(', ')}
 Phrases: ${currentLesson.phrases.map(p=>p.de).join(', ')}
 
 Question mix:
-- Q1-4: "What does [German] mean?" → choose English
-- Q5-7: "How do you say [English] in German?" → choose German
-- Q8-9: Fill in the blank in a German sentence
-- Q10: Scenario — "Which phrase would you use when [situation in Berlin]?"
+- Q1-4: "What does [Dutch] mean?" → choose English
+- Q5-7: "How do you say [English] in Dutch?" → choose Dutch
+- Q8-9: Fill in the blank in a Dutch sentence
+- Q10: Scenario — "Which phrase would you use when [situation in the Netherlands]?"
 
 Return ONLY pure JSON:
-{"questions":[{"q":"question text","options":["A","B","C","D"],"answer":0,"explanation":"short funny explanation — Berlin or Delhi reference"}]}
+{"questions":[{"q":"question text","options":["A","B","C","D"],"answer":0,"explanation":"short funny explanation — Amsterdam/NL or Delhi reference"}]}
 
 Rules:
 - answer is 0-indexed
-- Wrong options must be plausible (other words from the lesson)  
-- Explanations: warm, funny, use Berlin/Delhi context
+- Wrong options must be plausible (other words from the lesson)
+- Explanations: warm, funny, use Amsterdam/NL and Delhi context
 - Pure JSON only, no markdown`;
 
   try{
@@ -1714,14 +1589,14 @@ async function showTestResult(score,total,fromSaved){
 
   const nextDay=(userProgress.day||1);
   const passMsgs=[
-    `🎉 <strong>FIRST CLASS!</strong> ${score}/${total} — absolutely nailed it! Day ${nextDay} unlocked. Berlin's IT jobs are calling! 💪 💪`,
-    `🚀 <strong>Outstanding!</strong> ${pct}% — Berlin's IT companies will want to meet you. Keep this energy!`,
-    `🌟 <strong>Shabash!</strong> ${score}/${total} correct. Delhi's finest, crushing German in Berlin! 😎 😎`
+    `🎉 <strong>FIRST CLASS!</strong> ${score}/${total} — absolutely nailed it! Dag ${nextDay} unlocked. Dutch companies will want to meet you! 💪 💪`,
+    `🚀 <strong>Outstanding!</strong> ${pct}% — You're one step closer to passing your inburgeringsexamen. Keep this energy!`,
+    `🌟 <strong>Shabash!</strong> ${score}/${total} correct. Delhi's finest, crushing Dutch in the Netherlands! 😎 😎`
   ];
   const failMsgs=[
-    `😅 <strong>Arre yaar...</strong> ${score}/${total} — A little more practice needed. Even CP Metro confuses everyone at first! Same day again — you've got this! 💪`,
-    `🤔 <strong>${pct}% — Almost!</strong> 70% chahiye tha. Review the lesson and listen to the phrases again. Like a DTC driver — keep going! 🇩🇪 🇩🇪`,
-    `😄 <strong>Not quite!</strong> ${score}/${total} — Berlin needs patience (even the trains are late). Try again! 🚇 🚇`
+    `😅 <strong>Arre yaar...</strong> ${score}/${total} — A little more practice needed. Even the OV-chipkaart confused everyone at first! Same dag again — you've got this! 💪`,
+    `🤔 <strong>${pct}% — Almost!</strong> 70% chahiye tha. Review the lesson and listen to the phrases again. Like a DTC driver — keep going! 🇳🇱 🇳🇱`,
+    `😄 <strong>Not quite!</strong> ${score}/${total} — The Netherlands needs patience (even the NS trains are late). Try again! 🚂 🚂`
   ];
 
   const msg=passed?passMsgs[Math.floor(Math.random()*passMsgs.length)]:failMsgs[Math.floor(Math.random()*failMsgs.length)];
@@ -1767,7 +1642,7 @@ function loadNextDay(){
   clearInterval(sessionTimer);startTimer();
   loadLesson(day);
   chatHistory=[];
-  document.getElementById('chatBox').innerHTML=`<div class="msg ai">🎉 New day! Day ${day} — ${DAY_TOPICS[(day-1)%DAY_TOPICS.length]}. What shall we learn? Ask me anything! 😄</div>`;
+  document.getElementById('chatBox').innerHTML=`<div class="msg ai">🎉 New day! Dag ${day} — ${DAY_TOPICS_NL[(day-1)%DAY_TOPICS_NL.length]}. What shall we learn? Ask me anything! 😄</div>`;
   switchTab('lesson',document.getElementById('tabBtnLesson'));
 }
 
@@ -1784,22 +1659,22 @@ async function sendChat(){
   if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
   const loading=appendMsg('Soch raha hoon...','ai');
   const day=userProgress.day||1;
-  const topic=DAY_TOPICS[(day-1)%DAY_TOPICS.length];
-  const sys=`You are a funny, warm German tutor for two IT security professionals from New Delhi now living in Berlin. They lost their jobs and urgently need German. 10+ years IT security experience each.
+  const topic=DAY_TOPICS_NL[(day-1)%DAY_TOPICS_NL.length];
+  const sys=`You are a funny, warm Dutch tutor for an IT professional from New Delhi now living in the Netherlands. She is preparing for her inburgeringsexamen and learning Dutch for daily life and work.
 
-Current lesson: Day ${day} — ${topic}
+Current lesson: Dag ${day} — ${topic}
 ${currentLesson?`Words covered: ${currentLesson.words.map(w=>w.de+'='+w.en).join(', ')}`:''}
 
 Style rules:
-- Warm, funny, like a desi colleague who's been in Berlin 5 years
+- Warm, funny, like a desi didi who passed her inburgering exam
 - Mix English naturally with occasional Hinglish (bhai, yaar, ek dum, arre)
-- Use Berlin references (U-Bahn, REWE, Jobcenter, Kreuzberg, BVG delays)
+- Use Dutch/NL references (Albert Heijn, NS trein, OV-chipkaart, gemeente, huisarts, stroopwafel, gezellig)
 - Use Delhi comparisons (CP, DTC bus, auto-wala, chai break, Noida traffic)
 - Keep responses SHORT — 4-5 lines max
-- Always teach: German word [pronunciation] = English meaning, then example
-- Gently correct any German mistakes with humor
-- IT security context whenever relevant (DSGVO, SOC, Firewall, NIS2)
-- They're stressed about jobs — make German feel achievable, not scary`;
+- Always teach: Dutch word [pronunciation] = English meaning, then example
+- Gently correct any Dutch mistakes with humor
+- IT context whenever relevant (AVG/GDPR, cybersecurity, Dutch tech sector)
+- Make Dutch feel achievable — inburgering exam is the goal!`;
 
   try{
     checkRateLimit();
@@ -1850,7 +1725,7 @@ function initSpeech(){
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){document.getElementById('noSpeechWarn').style.display='block';return null;}
   const r=new SR();
-  r.lang='de-DE';
+  r.lang='nl-NL';
   r.continuous=false;
   r.interimResults=false;
   r.maxAlternatives=3;
@@ -1947,7 +1822,7 @@ function processSpeechResult(alternatives, target, resultElId){
   } else if(bestScore>=0.3){
     html=`<div class="mic-result wrong">❌ You said: "<em>${bestHeard}</em>"<br>Target: <strong>${target}</strong><br>💡 Tip: Listen again 🔊 then say it slowly. Jaise CP mein directions poochhe — ek ek word!</div>`;
   } else {
-    html=`<div class="mic-result wrong">😅 Heard: "<em>${bestHeard||'nothing clear'}</em>"<br>Target: <strong>${target}</strong><br>🔊 Listen first, then try again. German pronunciation alag hoti hai — especially ch, ü, ö!</div>`;
+    html=`<div class="mic-result wrong">😅 Heard: "<em>${bestHeard||'nothing clear'}</em>"<br>Target: <strong>${target}</strong><br>🔊 Listen first, then try again. Dutch pronunciation alag hoti hai — especially G, UI, IJ!</div>`;
   }
 
   // Score pips
@@ -1978,7 +1853,7 @@ function renderSpeakTab(){
     <div class="card" style="border-color:var(--blue)">
       <div class="card-title">🎤 How it works</div>
       <div style="font-size:13px;line-height:1.8;color:var(--muted)">
-        1. Click <strong style="color:var(--gold)">🔊 Listen</strong> — hear the correct German pronunciation<br>
+        1. Click <strong style="color:var(--gold)">🔊 Listen</strong> — hear the correct Dutch pronunciation<br>
         2. Click <strong style="color:var(--blue)">🎤 Say it</strong> — app listens (mic opens automatically after audio)<br>
         3. See instant feedback — ✅ Perfect / 🟡 Almost / ❌ Try again<br>
         <span style="color:var(--orange)">⚠️ Works best on Chrome or Edge. Allow mic when browser asks!</span>
@@ -2018,15 +1893,16 @@ function renderSpeakTab(){
     </div>
 
     <div class="card" style="border-color:var(--green)">
-      <div class="card-title" style="color:var(--green)">💡 Pronunciation Tips for Hindi Speakers</div>
+      <div class="card-title" style="color:var(--green)">💡 Dutch Pronunciation Tips for Hindi Speakers</div>
       <div style="font-size:13px;line-height:1.9;color:var(--muted)">
-        🔤 <strong style="color:var(--text)">W</strong> sounds like <strong style="color:var(--gold)">V</strong> — "Wasser" = "Vasser" (not like English W)<br>
-        🔤 <strong style="color:var(--text)">Z</strong> sounds like <strong style="color:var(--gold)">TS</strong> — "Zeit" = "TSait"<br>
-        🔤 <strong style="color:var(--text)">CH</strong> after i/e = soft "sh/kh" — "ich" = "ikh" (like खा but softer)<br>
-        🔤 <strong style="color:var(--text)">Ü</strong> = say "ee" but round lips like "oo" — no Hindi equivalent, practice!<br>
-        🔤 <strong style="color:var(--text)">Ö</strong> = say "e" but round lips — like a surprised "eh?"<br>
-        🔤 <strong style="color:var(--text)">R</strong> = slightly guttural, throat — not the rolled Hindi R<br>
-        <span style="color:var(--orange)">Good news: German is more phonetic than English — jo dikhta hai, wahi bolta hai! 😄</span>
+        🔤 <strong style="color:var(--text)">G</strong> = guttural "KH" — like clearing your throat — "goed" = "KHoot"<br>
+        🔤 <strong style="color:var(--text)">IJ / EI</strong> = "AY" sound — "mijn" = "mayn", "trein" = "trayn"<br>
+        🔤 <strong style="color:var(--text)">OE</strong> = "OO" — "hoe" = "hoo", "boek" = "book"<br>
+        🔤 <strong style="color:var(--text)">UI</strong> = unique Dutch sound — round lips like "oo" but say "ay" — "huis" ≈ "hows"<br>
+        🔤 <strong style="color:var(--text)">W</strong> = softer than English W, almost a V — "water" = "vah-ter"<br>
+        🔤 <strong style="color:var(--text)">V</strong> = often sounds like F — "van" = "fan"<br>
+        🔤 <strong style="color:var(--text)">R</strong> = can be rolled or guttural — either is fine for inburgering!<br>
+        <span style="color:var(--orange)">Good news: Dutch is more phonetic than English — once the sounds click, it flows! 😄</span>
       </div>
     </div>`;
 
@@ -2036,11 +1912,10 @@ function renderSpeakTab(){
 function speakGerman(text){
   if(!window.speechSynthesis)return;
   window.speechSynthesis.cancel();
-  const isNL=currentUser?.lang==='nl';
   const u=new SpeechSynthesisUtterance(text);
-  u.lang=isNL?'nl-NL':'de-DE';u.rate=0.85;
+  u.lang='nl-NL';u.rate=0.85;
   const v=window.speechSynthesis.getVoices();
-  const dv=v.find(x=>x.lang.startsWith(isNL?'nl':'de'));if(dv)u.voice=dv;
+  const dv=v.find(x=>x.lang.startsWith('nl'));if(dv)u.voice=dv;
   window.speechSynthesis.speak(u);
 }
 function speakWord(text){speakGerman(text);}
