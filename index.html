@@ -595,7 +595,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <!-- FOOTER -->
     <div class="disclaimer-footer">
-      🗣️ <strong>Speako</strong> — Personal language learning app.<br>
+      🗣️ <strong>Speako</strong> — Dutch Inburgering Prep &nbsp;·&nbsp; <span id="appVersionDisplay"></span><br>
       AI-generated content may occasionally contain errors. Progress stored locally in your browser only.<br>
       No user data is collected or shared.
     </div>
@@ -840,6 +840,8 @@ function acceptDisclaimer(){
 }
 
 window.onload=async()=>{
+  const vEl=document.getElementById('appVersionDisplay');
+  if(vEl)vEl.textContent='v'+APP_VERSION;
   // Show disclaimer modal on every first visit (or if not yet accepted)
   if(!localStorage.getItem('dj2_disclaimer')){
     document.getElementById('demoModal').style.display='flex';
@@ -877,6 +879,8 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
+const APP_VERSION='1.2.0';
+
 // Credentials shared privately by admin
 // ═══════════════════════════════════
 const ACCOUNTS=[

@@ -1,12 +1,12 @@
 {
-  "name": "Speako — Learn German",
+  "name": "Speako — Dutch Inburgering",
   "short_name": "Speako",
-  "description": "Personal German learning app — A2 level in 60 days",
+  "description": "Dutch inburgering A2 prep — 45-day plan with AI practice",
   "start_url": "/",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0F0C29",
-  "theme_color": "#0F0C29",
+  "background_color": "#0f1117",
+  "theme_color": "#0f1117",
   "icons": [
     {
       "src": "/icon.svg",
