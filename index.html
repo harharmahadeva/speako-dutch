@@ -277,6 +277,83 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 ::-webkit-scrollbar{width:5px;}
 ::-webkit-scrollbar-track{background:var(--surface);}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+
+/* ── EXAM PREP ── */
+.exam-hero{background:linear-gradient(135deg,#1a1060 0%,#0d3b6e 50%,#0a5c3a 100%);border-radius:20px;padding:24px 20px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden;}
+.exam-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 300px 200px at 80% 20%,rgba(255,200,0,0.12),transparent);}
+.exam-hero-title{font-family:"Outfit",sans-serif;font-size:22px;font-weight:900;color:#fff;margin-bottom:4px;position:relative;}
+.exam-hero-sub{font-size:13px;color:rgba(255,255,255,0.65);position:relative;margin-bottom:16px;}
+.readiness-ring-wrap{display:flex;justify-content:center;margin-bottom:16px;position:relative;}
+.readiness-ring{position:relative;width:110px;height:110px;}
+.readiness-ring svg{transform:rotate(-90deg);}
+.readiness-pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.readiness-pct-num{font-family:"Outfit",sans-serif;font-size:28px;font-weight:900;color:#fff;line-height:1;}
+.readiness-pct-lbl{font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;}
+.exam-modules{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.exam-module{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all 0.2s;text-align:center;}
+.exam-module:hover{background:rgba(255,255,255,0.14);transform:translateY(-2px);}
+.exam-module-icon{font-size:28px;margin-bottom:6px;}
+.exam-module-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
+.exam-module-sub{font-size:11px;color:rgba(255,255,255,0.55);}
+.exam-module-badge{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
+.badge-free{background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.3);}
+.badge-ai{background:rgba(139,92,246,0.2);color:#c084fc;border:1px solid rgba(139,92,246,0.3);}
+.xp-bar-wrap{background:rgba(255,255,255,0.08);border-radius:12px;padding:10px 14px;display:flex;align-items:center;gap:12px;position:relative;}
+.xp-icon{font-size:20px;}
+.xp-info{flex:1;}
+.xp-label{font-size:11px;color:rgba(255,255,255,0.55);margin-bottom:4px;}
+.xp-track{background:rgba(255,255,255,0.1);border-radius:99px;height:6px;}
+.xp-fill{height:6px;border-radius:99px;background:linear-gradient(90deg,#fbbf24,#f97316);transition:width 0.6s;}
+.xp-count{font-size:13px;font-weight:800;color:var(--gold);}
+
+.exam-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.exam-section-title{font-family:"Outfit",sans-serif;font-size:20px;font-weight:900;color:#fff;}
+.exam-section-sub{font-size:12px;color:var(--text3);margin-top:2px;}
+.exam-back-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:var(--text2);border-radius:99px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:"Space Grotesk",sans-serif;}
+.exam-back-btn:hover{background:rgba(255,255,255,0.14);}
+
+.knm-q{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:18px;margin-bottom:12px;}
+.knm-q-cat{font-size:10px;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
+.knm-q-text{font-size:15px;font-weight:600;color:var(--text);margin-bottom:14px;line-height:1.5;}
+.knm-opts{display:flex;flex-direction:column;gap:8px;}
+.knm-opt{background:rgba(255,255,255,0.03);border:1px solid var(--border2);color:var(--text2);border-radius:10px;padding:12px 14px;font-size:14px;cursor:pointer;transition:all 0.2s;text-align:left;font-family:"Space Grotesk",sans-serif;}
+.knm-opt:hover:not(:disabled){border-color:var(--blue);color:var(--blue-b);background:var(--blue-g2);}
+.knm-opt.correct{background:rgba(34,197,94,0.1);border-color:rgba(34,197,94,0.4);color:#6ee7b7;font-weight:600;}
+.knm-opt.wrong{background:var(--red-g);border-color:rgba(239,68,68,0.4);color:#fca5a5;}
+.knm-explain{background:rgba(59,130,246,0.07);border:1px solid rgba(59,130,246,0.2);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--text2);line-height:1.7;margin-top:8px;}
+.knm-explain strong{color:var(--blue-b);}
+.knm-timer{display:flex;align-items:center;gap:8px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:8px 14px;margin-bottom:14px;font-size:13px;font-weight:700;color:var(--orange);}
+
+.lezen-passage{background:rgba(255,255,255,0.03);border:1px solid rgba(59,130,246,0.2);border-left:4px solid var(--blue);border-radius:12px;padding:18px;margin-bottom:16px;font-size:14px;line-height:1.9;color:var(--text2);}
+.lezen-passage strong{color:var(--text);}
+.lezen-passage-label{font-size:10px;font-weight:700;color:var(--cyan);text-transform:uppercase;letter-spacing:.8px;margin-bottom:10px;}
+
+.ogo-scenario{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(6,182,212,0.06));border:1px solid rgba(139,92,246,0.25);border-radius:16px;padding:20px;margin-bottom:14px;}
+.ogo-role{font-size:11px;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+.ogo-situation{font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px;line-height:1.5;}
+.ogo-prompt{font-size:13px;color:var(--text2);margin-bottom:14px;padding:10px 12px;background:rgba(255,255,255,0.04);border-radius:8px;line-height:1.6;}
+.ogo-input{width:100%;background:rgba(255,255,255,0.06);border:1px solid rgba(139,92,246,0.3);color:var(--text);border-radius:10px;padding:13px 16px;font-size:15px;outline:none;font-family:"Space Grotesk",sans-serif;margin-bottom:10px;}
+.ogo-input:focus{border-color:var(--violet);background:rgba(139,92,246,0.06);}
+.ogo-feedback{padding:12px 14px;border-radius:10px;font-size:13px;line-height:1.7;margin-top:8px;display:none;}
+.ogo-feedback.pass{background:rgba(34,197,94,0.1);border:1px solid rgba(34,197,94,0.25);color:#6ee7b7;}
+.ogo-feedback.partial{background:rgba(59,130,246,0.08);border:1px solid rgba(59,130,246,0.2);color:var(--blue-b);}
+.ogo-feedback.fail{background:var(--red-g);border:1px solid rgba(239,68,68,0.25);color:#fca5a5;}
+.ogo-feedback.checking{background:var(--card2);color:var(--text3);border:1px solid var(--border2);}
+
+.exam-result-screen{text-align:center;padding:30px 20px;}
+.exam-result-ring-wrap{display:flex;justify-content:center;margin-bottom:20px;}
+.exam-result-ring{position:relative;width:140px;height:140px;}
+.exam-result-ring svg{transform:rotate(-90deg);}
+.exam-result-pct{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.exam-result-num{font-family:"Outfit",sans-serif;font-size:38px;font-weight:900;line-height:1;}
+.exam-result-lbl{font-size:12px;margin-top:3px;}
+.exam-result-title{font-family:"Outfit",sans-serif;font-size:26px;font-weight:900;margin-bottom:8px;}
+.exam-result-msg{font-size:14px;color:var(--text2);line-height:1.8;margin-bottom:24px;}
+.achievement-toast{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(251,191,36,0.12),rgba(249,115,22,0.08));border:1px solid rgba(251,191,36,0.3);border-radius:14px;padding:14px 16px;margin:0 auto 16px;max-width:340px;}
+.achievement-icon{font-size:32px;flex-shrink:0;}
+.achievement-text{text-align:left;}
+.achievement-title{font-size:13px;font-weight:700;color:var(--gold);}
+.achievement-sub{font-size:12px;color:var(--text2);}
 </style>
 </head>
 <body>
@@ -463,9 +540,10 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
 
     <div class="tabs">
-      <div class="tab active" id="tabBtnLesson" onclick="switchTab('lesson',this)">📚 Today's Lesson</div>
+      <div class="tab active" id="tabBtnLesson" onclick="switchTab('lesson',this)">📚 Lesson</div>
       <div class="tab" id="tabBtnSpeak" onclick="switchTab('speak',this)">🎤 Speaking</div>
-      <div class="tab locked" id="tabBtnTest" onclick="openTest()">🎯 Take Test</div>
+      <div class="tab locked" id="tabBtnTest" onclick="openTest()">🎯 Test</div>
+      <div class="tab" id="tabBtnExam" onclick="switchTab('exam',this);renderExamHome()">🎓 Examen</div>
     </div>
 
     <div id="tab-lesson">
@@ -486,6 +564,10 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 
     <div id="tab-test" class="hidden">
       <div id="testContent"></div>
+    </div>
+
+    <div id="tab-exam" class="hidden">
+      <div id="examContent"></div>
     </div>
 
     <!-- FOOTER -->
@@ -1969,6 +2051,632 @@ window.addEventListener('DOMContentLoaded',()=>{
   const btn=document.getElementById('muteBtn');
   if(btn)btn.textContent=_muted?'🔕':'🔔';
 });
+
+// ═══════════════════════════════════
+// EXAM PREP — KNM + LEZEN + OGO
+// Always unlocked — no timer required
+// ═══════════════════════════════════
+
+const KNM_QUESTIONS=[
+  // OVERHEID & DEMOCRATIE
+  {cat:'Overheid & Democratie',q:'Wie is het staatshoofd van Nederland?',opts:['Minister-President','Koning Willem-Alexander','De burgemeester van Amsterdam','De voorzitter van de Tweede Kamer'],ans:1,explain:'Nederland is een constitutionele monarchie. <strong>Koning Willem-Alexander</strong> is het staatshoofd. De minister-president leidt de regering maar is geen staatshoofd.'},
+  {cat:'Overheid & Democratie',q:'Hoe heet het parlement van Nederland?',opts:['De Senaat','De Volksraad','Staten-Generaal','Het Kabinet'],ans:2,explain:'Het Nederlandse parlement heet de <strong>Staten-Generaal</strong> en bestaat uit de Eerste Kamer en de Tweede Kamer. De Tweede Kamer maakt de wetten.'},
+  {cat:'Overheid & Democratie',q:'Hoeveel provincies heeft Nederland?',opts:['10','12','15','8'],ans:1,explain:'Nederland heeft <strong>12 provincies</strong>. De provincies liggen tussen de rijksoverheid en de gemeenten in. Noord-Holland, Zuid-Holland en Utrecht zijn de bekendste.'},
+  {cat:'Overheid & Democratie',q:'Wat is de minimumleeftijd om te mogen stemmen in Nederland?',opts:['16 jaar','17 jaar','18 jaar','21 jaar'],ans:2,explain:'In Nederland mag je stemmen vanaf <strong>18 jaar</strong>. Stemmen is een recht, geen plicht — maar het is wel belangrijk voor de democratie.'},
+  {cat:'Overheid & Democratie',q:'Welke drie bestuurslagen kent Nederland?',opts:['Rijk, provincie en gemeente','Koning, minister en burgemeester','Eerste Kamer, Tweede Kamer en kabinet','Politie, rechtbank en gevangenis'],ans:0,explain:'Nederland heeft drie bestuurslagen: <strong>Rijk</strong> (nationale overheid), <strong>provincie</strong> (regionaal) en <strong>gemeente</strong> (lokaal). De gemeente regelt veel dagelijkse zaken zoals paspoorten en vergunningen.'},
+  {cat:'Overheid & Democratie',q:'Wat is de Grondwet?',opts:['Het wetboek voor strafrecht','De belangrijkste wet van Nederland met grondrechten','Een wet over belastingen','De regels voor het koningshuis'],ans:1,explain:'De <strong>Grondwet</strong> is de hoogste wet van Nederland. Hierin staan de grondrechten van burgers, zoals vrijheid van meningsuiting en het recht op gelijke behandeling.'},
+
+  // RECHTEN & PLICHTEN
+  {cat:'Rechten & Plichten',q:'Wat is een BSN?',opts:['Een bankpas','Een Burgerservicenummer — persoonlijk ID-nummer','Een bewijs van inburgering','Een belastingaangifte'],ans:1,explain:'Het <strong>BSN (Burgerservicenummer)</strong> is een uniek persoonsnummer dat je nodig hebt voor bijna alles in Nederland: bij de dokter, bank, belastingdienst en werkgever.'},
+  {cat:'Rechten & Plichten',q:'Wat moet je doen als je in een nieuwe gemeente gaat wonen?',opts:['Een brief sturen naar de koning','Je inschrijven bij de gemeente (BRP)','Naar het politiebureau gaan','Een nieuw paspoort aanvragen'],ans:1,explain:'Je moet je <strong>inschrijven in de Basisregistratie Personen (BRP)</strong> bij de gemeente. Dit heet ook wel "inschrijven in de gemeente". Je adres wordt dan officieel geregistreerd.'},
+  {cat:'Rechten & Plichten',q:'Wat is DigiD?',opts:['Een digitale identiteitskaart','Een app voor openbaar vervoer','Een digitaal inlogmiddel voor overheidsdiensten','Een belastingformulier'],ans:2,explain:'<strong>DigiD</strong> is jouw digitale identiteit waarmee je kunt inloggen bij overheidswebsites zoals Mijn Overheid, de Belastingdienst en zorgverzekeraars. Vraag het aan via digid.nl.'},
+  {cat:'Rechten & Plichten',q:'Welk recht staat in de Nederlandse Grondwet?',opts:['Het recht op gratis woning','Vrijheid van meningsuiting','Het recht op een auto','Gratis openbaar vervoer'],ans:1,explain:'<strong>Vrijheid van meningsuiting</strong> is een grondrecht in Nederland (artikel 7 Grondwet). Je mag zeggen wat je denkt, ook kritiek op de overheid — zolang je geen mensen bedreigt of beledigt.'},
+  {cat:'Rechten & Plichten',q:'Wat is de Belastingdienst?',opts:['De politie voor financiële misdrijven','De organisatie die belastingen int voor de overheid','Een bank van de overheid','Een organisatie voor uitkeringen'],ans:1,explain:'De <strong>Belastingdienst</strong> int belastingen voor de Nederlandse overheid. Je doet elk jaar belastingaangifte. Soms krijg je geld terug (teruggave), soms moet je bijbetalen.'},
+
+  // NEDERLANDSE SAMENLEVING & WAARDEN
+  {cat:'Nederlandse Waarden',q:'Welke waarden zijn typisch Nederlands?',opts:['Hiërarchie en gezag','Tolerantie, gelijkwaardigheid en directheid','Bescheidenheid en zwijgzaamheid','Traditie en religie boven alles'],ans:1,explain:'Nederland staat bekend om <strong>tolerantie, gelijkwaardigheid en directheid</strong>. Nederlanders zeggen wat ze denken (ook al klinkt dat soms bot). Iedereen wordt gelijk behandeld, ongeacht afkomst.'},
+  {cat:'Nederlandse Waarden',q:'Wat betekent "doe maar gewoon, dan doe je al gek genoeg"?',opts:['Wees zo gek als je wilt','Gedraag je normaal en val niet op','Werk hard en verdien geld','Respecteer de wet'],ans:1,explain:'Dit bekende Nederlandse gezegde betekent: <strong>gedraag je normaal, val niet op, wees niet arrogant</strong>. Nederlanders waarderen bescheidenheid. Opscheppen wordt niet gewaardeerd.'},
+  {cat:'Nederlandse Waarden',q:'Wat is "polderen" in de Nederlandse politiek?',opts:['Grond droogleggen voor landbouw','Samen overleggen en compromissen sluiten','Belasting heffen op polderbedrijven','Verkiezingen houden in kleine dorpen'],ans:1,explain:'<strong>Polderen</strong> betekent overleggen en compromissen sluiten. Nederland staat bekend om het "poldermodel": werkgevers, werknemers en overheid overleggen samen. Samenwerking is typisch Nederlands.'},
+  {cat:'Nederlandse Waarden',q:'Wat is het noodnummer in Nederland?',opts:['999','911','112','0800-0123'],ans:2,explain:'Het noodnummer in Nederland is <strong>112</strong> voor politie, brandweer en ambulance. Voor niet-spoedeisende politiezaken bel je 0900-8844.'},
+
+  // WERK & INKOMEN
+  {cat:'Werk & Inkomen',q:'Wat is het UWV?',opts:['Een vakbond voor ambtenaren','De uitvoeringsorganisatie voor werknemersverzekeringen (WW, WIA)','Een bank voor werklozen','Een opleiding voor werkzoekenden'],ans:1,explain:'Het <strong>UWV (Uitvoeringsinstituut Werknemersverzekeringen)</strong> betaalt uitkeringen zoals de WW (werkloosheid) en WIA (arbeidsongeschiktheid). Als je werkloos wordt, meld je je aan bij het UWV.'},
+  {cat:'Werk & Inkomen',q:'Wat is een proeftijd bij een nieuwe baan?',opts:['Een vakantieperiode aan het begin','Een periode waarin zowel werkgever als werknemer het contract makkelijk kunnen beëindigen','Een periode van extra loon','Een verplichte opleiding'],ans:1,explain:'Een <strong>proeftijd</strong> is meestal 1 of 2 maanden. In die periode kunnen zowel jij als je werkgever het contract zonder reden beëindigen. Daarna heb je meer bescherming.'},
+  {cat:'Werk & Inkomen',q:'Wat is het minimumloon in Nederland (globaal)?',opts:['€ 8 per uur','€ 10 per uur','Rond € 13 per uur (2024)','€ 20 per uur'],ans:2,explain:'Het wettelijk <strong>minimumloon</strong> in Nederland is circa <strong>€ 13 per uur</strong> (2024, exacte bedrag stijgt jaarlijks). Kijk op rijksoverheid.nl voor het actuele bedrag.'},
+
+  // GEZONDHEID & ZORG
+  {cat:'Gezondheid & Zorg',q:'Wat is een huisarts?',opts:['Een specialist in het ziekenhuis','De eerste dokter die je bezoekt bij gezondheidsklachten','Een arts die aan huis komt voor spoedeisende zorg','Een apotheker'],ans:1,explain:'De <strong>huisarts</strong> is jouw vaste dokter voor alle gewone gezondheidsklachten. Je hebt een verwijzing van de huisarts nodig om naar een specialist te gaan. Elke inwoner in Nederland moet een huisarts hebben.'},
+  {cat:'Gezondheid & Zorg',q:'Is zorgverzekering verplicht in Nederland?',opts:['Nee, het is optioneel','Ja, voor iedereen die in Nederland woont of werkt','Alleen voor mensen ouder dan 18','Alleen voor mensen zonder werk'],ans:1,explain:'<strong>Zorgverzekering is verplicht</strong> voor iedereen die in Nederland woont of werkt. Je sluit dit af bij een zorgverzekeraar (zoals Zilveren Kruis, VGZ, CZ). Als je te weinig verdient, krijg je zorgtoeslag.'},
+  {cat:'Gezondheid & Zorg',q:'Wat is het eigen risico bij de zorgverzekering?',opts:['Het bedrag dat je zelf betaalt voor zorg voordat de verzekering bijspringt','De maandelijkse premie','Het bedrag dat je terugkrijgt','De eigen bijdrage voor tandarts'],ans:0,explain:'Het <strong>eigen risico</strong> is het bedrag dat je zelf betaalt (€ 385 in 2024) voordat je zorgverzekeraar de kosten vergoedt. Huisartsbezoek valt hier niet onder — dat is gratis.'},
+
+  // WONEN
+  {cat:'Wonen',q:'Wat is een woningcorporatie?',opts:['Een bedrijf dat luxe villa\'s bouwt','Een organisatie die sociale huurwoningen aanbiedt','Een gemeente-afdeling voor bouwvergunningen','Een bank voor hypotheken'],ans:1,explain:'Een <strong>woningcorporatie</strong> biedt <strong>sociale huurwoningen</strong> aan mensen met een lager inkomen. Je schrijft je in op een wachtlijst. In grote steden is de wachttijd helaas vaak jaren.'},
+  {cat:'Wonen',q:'Wat is huurtoeslag?',opts:['Geld dat je aan de verhuurder betaalt','Een financiële bijdrage van de overheid als je huur te hoog is voor je inkomen','Een boete als je te laat huur betaalt','Een lening voor een nieuwe woning'],ans:1,explain:'<strong>Huurtoeslag</strong> is een bijdrage van de overheid als je huur hoog is ten opzichte van je inkomen. Je vraagt het aan via de Belastingdienst. Controleer of je er recht op hebt!'},
+];
+
+const LEZEN_PASSAGES=[
+  {
+    id:'lezen1',
+    label:'Tekst 1 — Gemeente brief',
+    difficulty:'A2',
+    text:`<strong>Gemeente Amsterdam</strong><br>Afdeling Burgerzaken<br><br>
+Geachte mevrouw / meneer,<br><br>
+Wij hebben uw aanvraag voor een uittreksel uit de Basisregistratie Personen (BRP) ontvangen.<br><br>
+Het uittreksel is klaar. U kunt het ophalen aan de balie van het Stadsloket. Neem uw identiteitsbewijs mee.<br><br>
+Het Stadsloket is open op maandag t/m vrijdag van 09.00 tot 17.00 uur. Op donderdag ook van 17.00 tot 20.00 uur.<br><br>
+Let op: het uittreksel is 30 dagen geldig. Na 30 dagen moet u een nieuw uittreksel aanvragen.<br><br>
+Met vriendelijke groet,<br>
+Gemeente Amsterdam`,
+    questions:[
+      {q:'Wat moet je meenemen naar het Stadsloket?',opts:['Je bankpas','Je identiteitsbewijs','Je huurcontract','Je BSN-nummer op papier'],ans:1,explain:'De brief zegt: "Neem uw <strong>identiteitsbewijs</strong> mee." Dit kan een paspoort, ID-kaart of rijbewijs zijn.'},
+      {q:'Hoe lang is het uittreksel geldig?',opts:['7 dagen','14 dagen','30 dagen','1 jaar'],ans:2,explain:'De brief zegt duidelijk: "het uittreksel is <strong>30 dagen geldig</strong>." Daarna moet je een nieuw uittreksel aanvragen.'},
+      {q:'Op welke avond is het Stadsloket ook open na 17.00 uur?',opts:['Maandag','Woensdag','Donderdag','Vrijdag'],ans:2,explain:'De brief zegt: "Op <strong>donderdag</strong> ook van 17.00 tot 20.00 uur." Handig als je overdag werkt!'},
+    ]
+  },
+  {
+    id:'lezen2',
+    label:'Tekst 2 — Vacature',
+    difficulty:'A2',
+    text:`<strong>VACATURE: Medewerker Klantenservice</strong><br>
+Bedrijf: TechHelp Nederland BV<br>
+Locatie: Utrecht (hybride mogelijk)<br>
+Uren: 32–40 uur per week<br><br>
+<strong>Wat ga je doen?</strong><br>
+Je helpt klanten via telefoon, e-mail en chat. Je beantwoordt vragen over onze producten en lost problemen op.<br><br>
+<strong>Wat vragen wij?</strong><br>
+• MBO-diploma of gelijkwaardig<br>
+• Goede beheersing van het Nederlands (minimaal B1)<br>
+• Ervaring met klantenservice is een pré<br>
+• Je bent vriendelijk, geduldig en stressbestendig<br><br>
+<strong>Wat bieden wij?</strong><br>
+• Salaris: € 2.400 – € 2.800 per maand (fulltime)<br>
+• 25 vakantiedagen per jaar<br>
+• Reiskostenvergoeding<br>
+• Opleidingsmogelijkheden<br><br>
+Reageren? Stuur je CV en motivatiebrief naar: sollicitaties@techhelp.nl`,
+    questions:[
+      {q:'Hoeveel vakantiedagen krijg je bij dit bedrijf?',opts:['20 dagen','22 dagen','25 dagen','30 dagen'],ans:2,explain:'De vacature noemt duidelijk <strong>25 vakantiedagen</strong> per jaar. Dit is het wettelijk minimum in Nederland voor fulltime werk.'},
+      {q:'Welk taalniveau Nederlands is minimaal vereist?',opts:['A1','A2','B1','C1'],ans:2,explain:'De vacature vraagt om "goede beheersing van het Nederlands (<strong>minimaal B1</strong>)". Jij bent nu A2 — hou vol, B1 is haalbaar!'},
+      {q:'Hoe solliciteer je op deze vacature?',opts:['Via de website','Door te bellen','Door een e-mail te sturen met CV en motivatiebrief','Door langs te gaan op kantoor'],ans:2,explain:'De vacature zegt: "Stuur je <strong>CV en motivatiebrief</strong> naar sollicitaties@techhelp.nl." Een motivatiebrief legt uit waarom jij geschikt bent.'},
+    ]
+  },
+  {
+    id:'lezen3',
+    label:'Tekst 3 — Zorgverzekering brief',
+    difficulty:'A2+',
+    text:`<strong>Zilveren Kruis Zorgverzekering</strong><br><br>
+Geachte mevrouw Sharma,<br><br>
+Uw zorgverzekering is per 1 januari verlengd. Hieronder vindt u een overzicht van uw polis.<br><br>
+<strong>Uw basispolis:</strong><br>
+• Maandpremie: € 149,50<br>
+• Eigen risico: € 385 per jaar<br>
+• Dekking: alle verplichte basisvergoedingen<br><br>
+<strong>Uw aanvullende verzekering (Basis Plus):</strong><br>
+• Fysiotherapie: 9 behandelingen vergoed<br>
+• Tandarts: tot € 250 per jaar vergoed<br><br>
+<strong>Let op:</strong> De huisarts valt niet onder het eigen risico. Een bezoek aan de huisarts is altijd gratis.<br><br>
+Heeft u vragen? Bel ons op 0800-9999 (gratis, ma–vr 08.00–20.00 uur) of log in via MijnZilveren Kruis.<br><br>
+Met vriendelijke groet,<br>
+Zilveren Kruis`,
+    questions:[
+      {q:'Wat kost de zorgverzekering per maand?',opts:['€ 149,50','€ 385','€ 250','€ 9'],ans:0,explain:'De brief zegt: "Maandpremie: <strong>€ 149,50</strong>." Het eigen risico van € 385 is per jaar, niet per maand.'},
+      {q:'Is een bezoek aan de huisarts gratis?',opts:['Nee, dat kost € 10','Nee, dat gaat van het eigen risico af','Ja, de huisarts valt niet onder het eigen risico','Alleen de eerste keer is gratis'],ans:2,explain:'De brief zegt expliciet: "<strong>Een bezoek aan de huisarts is altijd gratis</strong>." Dit geldt voor alle Nederlanders met een basisverzekering.'},
+      {q:'Hoeveel fysiotherapiebehandelingen worden vergoed?',opts:['5','6','9','12'],ans:2,explain:'De aanvullende verzekering vergoedt <strong>9 behandelingen</strong> fysiotherapie. Voor meer behandelingen betaal je zelf.'},
+    ]
+  }
+];
+
+const OGO_SCENARIOS=[
+  {id:'ogo1',role:'Bij de huisarts',situation:'U belt de huisartsenpraktijk. U heeft al 3 dagen hoofdpijn en koorts (38,5°C). U wilt een afspraak maken.',prompt:'De receptionist vraagt: "Wat zijn uw klachten en hoe lang heeft u dit al?"',targetLang:'nl',hint:'Describe your symptoms: hoofdpijn (headache), koorts (fever), and how long: 3 dagen'},
+  {id:'ogo2',role:'Bij de gemeente',situation:'U bent bij het gemeenteloket. U wilt een uittreksel BRP aanvragen voor uw nieuwe werkgever.',prompt:'De medewerker vraagt: "Waarvoor heeft u het uittreksel nodig en op welk adres bent u ingeschreven?"',targetLang:'nl',hint:'Explain: voor mijn werkgever (for my employer) + give your address'},
+  {id:'ogo3',role:'In de supermarkt',situation:'U staat bij de kassa van Albert Heijn. De kassamedewerker vraagt of u een bonuskaart heeft.',prompt:'De kassamedewerker zegt: "Heeft u een Bonus-kaart? En wilt u een tas?"',targetLang:'nl',hint:'Answer yes/no to bonuskaart, and whether you want een tas (a bag)'},
+  {id:'ogo4',role:'Op het werk',situation:'U bent nieuw op uw werk. Een collega stelt zich voor en vraagt wat u doet in uw vrije tijd.',prompt:'Collega zegt: "Hallo! Ik ben Pieter. Wat doe jij graag in je vrije tijd?"',targetLang:'nl',hint:'Introduce yourself and mention a hobby: ik vind het leuk om... (I like to...)'},
+  {id:'ogo5',role:'Bij de apotheek',situation:'U gaat naar de apotheek met een recept van uw huisarts voor pijnstillers.',prompt:'De apotheker vraagt: "Heeft u dit medicijn eerder gebruikt? Bent u ergens allergisch voor?"',targetLang:'nl',hint:'Say whether you have used it before and mention any allergies (or geen allergieën = no allergies)'},
+];
+
+let examState={mode:null,knmCurrent:0,knmScore:0,knmAnswered:false,lezenPassage:null,lezenQCurrent:0,lezenScore:0,ogoIndex:0};
+
+function getExamXP(){return parseInt(localStorage.getItem('speako_xp')||'0');}
+function addExamXP(n){
+  const xp=getExamXP()+n;
+  localStorage.setItem('speako_xp',xp);
+  return xp;
+}
+function getExamScores(){return JSON.parse(localStorage.getItem('speako_exam_scores')||'{}');}
+function saveExamScore(key,score,total){
+  const s=getExamScores();
+  if(!s[key]||score>s[key].score)s[key]={score,total,pct:Math.round(score/total*100),date:new Date().toISOString()};
+  localStorage.setItem('speako_exam_scores',JSON.stringify(s));
+}
+
+function calcReadiness(){
+  const scores=getExamScores();
+  const keys=['knm','lezen1','lezen2','lezen3','ogo'];
+  const done=keys.filter(k=>scores[k]);
+  if(!done.length)return 0;
+  const avg=done.reduce((a,k)=>a+(scores[k]?.pct||0),0)/keys.length;
+  const lessonBonus=Math.min((userProgress?.completedDays||[]).length*2,30);
+  return Math.min(Math.round(avg*0.7+lessonBonus),99);
+}
+
+function readinessBand(pct){
+  if(pct<25)return{lbl:'Just Starting',col:'#94a3b8'};
+  if(pct<50)return{lbl:'Building Up',col:'#f97316'};
+  if(pct<70)return{lbl:'Getting There',col:'#fbbf24'};
+  if(pct<85)return{lbl:'Almost Ready',col:'#22c55e'};
+  return{lbl:'Exam Ready! 🎉',col:'#06b6d4'};
+}
+
+function svgRing(pct,size,stroke,color,bg='rgba(255,255,255,0.08)'){
+  const r=(size-stroke)/2, c=size/2, circ=2*Math.PI*r;
+  const dash=circ*pct/100;
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${bg}" stroke-width="${stroke}"/>
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${color}" stroke-width="${stroke}"
+      stroke-dasharray="${dash} ${circ}" stroke-linecap="round"/>
+  </svg>`;
+}
+
+function renderExamHome(){
+  const pct=calcReadiness();
+  const band=readinessBand(pct);
+  const xp=getExamXP();
+  const xpLevel=Math.floor(xp/100)+1;
+  const xpInLevel=xp%100;
+  const scores=getExamScores();
+
+  function modBadge(key,label){
+    const s=scores[key];
+    return s?`<span style="color:#6ee7b7;font-size:11px">✅ Best: ${s.pct}%</span>`:`<span class="exam-module-badge badge-free">${label}</span>`;
+  }
+
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-hero">
+      <div class="exam-hero-title">🎓 Inburgeringsexamen Prep</div>
+      <div class="exam-hero-sub">Practice the real exam — anytime, no timer needed</div>
+
+      <div class="readiness-ring-wrap">
+        <div class="readiness-ring">
+          ${svgRing(pct,110,10,band.col)}
+          <div class="readiness-pct">
+            <div class="readiness-pct-num" style="color:${band.col}">${pct}%</div>
+            <div class="readiness-pct-lbl">Readiness</div>
+          </div>
+        </div>
+      </div>
+      <div style="font-size:14px;font-weight:700;color:${band.col};margin-bottom:16px;position:relative">${band.lbl}</div>
+
+      <div class="xp-bar-wrap" style="position:relative">
+        <div class="xp-icon">⚡</div>
+        <div class="xp-info">
+          <div class="xp-label">Level ${xpLevel} — ${xp} XP total</div>
+          <div class="xp-track"><div class="xp-fill" style="width:${xpInLevel}%"></div></div>
+        </div>
+        <div class="xp-count">+XP</div>
+      </div>
+    </div>
+
+    <div style="font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Choose a Module</div>
+
+    <div class="exam-modules">
+      <div class="exam-module" onclick="startKNMTest()">
+        <div class="exam-module-icon">🏛️</div>
+        <div class="exam-module-name">KNM</div>
+        <div class="exam-module-sub">Kennis van de Nederlandse Maatschappij</div>
+        ${modBadge('knm','20 vragen')}
+      </div>
+      <div class="exam-module" onclick="startLezenMenu()">
+        <div class="exam-module-icon">📖</div>
+        <div class="exam-module-name">Lezen</div>
+        <div class="exam-module-sub">3 reading passages with questions</div>
+        ${modBadge('lezen1','3 teksten')}
+      </div>
+      <div class="exam-module" onclick="startOGO()">
+        <div class="exam-module-icon">🎭</div>
+        <div class="exam-module-name">Spreken (OGO)</div>
+        <div class="exam-module-sub">AI role-play scenarios</div>
+        <span class="exam-module-badge badge-ai">AI-powered</span>
+      </div>
+      <div class="exam-module" onclick="showKNMStudyCards()">
+        <div class="exam-module-icon">📋</div>
+        <div class="exam-module-name">Study Cards</div>
+        <div class="exam-module-sub">KNM facts to memorise</div>
+        <span class="exam-module-badge badge-free">Flashcards</span>
+      </div>
+    </div>
+
+    ${Object.keys(scores).length?`
+    <div class="card" style="margin-top:4px">
+      <div class="card-title">📊 Your Best Scores</div>
+      ${Object.entries(scores).map(([k,v])=>`
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
+          <span style="font-size:13px;color:var(--text2)">${k==='knm'?'🏛️ KNM':k==='ogo'?'🎭 OGO Spreken':k.startsWith('lezen')?'📖 Lezen '+k.slice(5):k}</span>
+          <span style="font-size:13px;font-weight:700;color:${v.pct>=70?'var(--green)':'var(--orange)'}">${v.pct}% ${v.pct>=70?'✅':'⚡'}</span>
+        </div>`).join('')}
+    </div>`:''}
+
+    <div class="card" style="background:linear-gradient(135deg,rgba(59,130,246,0.07),rgba(139,92,246,0.04));border-color:rgba(59,130,246,0.2)">
+      <div class="card-title">💡 About the Inburgeringsexamen</div>
+      <div style="font-size:13px;line-height:1.9;color:var(--text2)">
+        The exam has <strong style="color:var(--text)">5 parts</strong>: Lezen, Luisteren, Schrijven, Spreken, and KNM.<br>
+        Each part requires a minimum score to pass.<br>
+        <strong style="color:var(--orange)">Target: 70%+ in every module.</strong><br>
+        <span style="color:var(--text3);font-size:12px">Practice here daily — each session builds your readiness score!</span>
+      </div>
+    </div>`;
+}
+
+// ── KNM TEST ──
+let knmTimer=null, knmSeconds=0;
+
+function startKNMTest(){
+  examState={...examState,mode:'knm',knmCurrent:0,knmScore:0,knmAnswered:false};
+  knmSeconds=0;
+  renderKNMQuestion();
+  knmTimer=setInterval(()=>{
+    knmSeconds++;
+    const el=document.getElementById('knmTimerVal');
+    if(el){const m=Math.floor(knmSeconds/60),s=knmSeconds%60;el.textContent=m+':'+(s<10?'0':'')+s;}
+  },1000);
+}
+
+function renderKNMQuestion(){
+  const total=KNM_QUESTIONS.length;
+  const i=examState.knmCurrent;
+  if(i>=total){showKNMResult();return;}
+  const q=KNM_QUESTIONS[i];
+  const pct=Math.round(i/total*100);
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div>
+        <div class="exam-section-title">🏛️ KNM Test</div>
+        <div class="exam-section-sub">${i+1} / ${total} vragen · Score: ${examState.knmScore}</div>
+      </div>
+      <button class="exam-back-btn" onclick="stopKNMTimer();renderExamHome()">← Terug</button>
+    </div>
+    <div class="bar-track" style="margin-bottom:12px"><div class="bar-fill" style="width:${pct}%"></div></div>
+    <div class="knm-timer">⏱️ Tijd: <span id="knmTimerVal">0:00</span> &nbsp;·&nbsp; Categorie: ${esc(q.cat)}</div>
+    <div class="knm-q">
+      <div class="knm-q-cat">${esc(q.cat)}</div>
+      <div class="knm-q-text">${esc(q.q)}</div>
+      <div class="knm-opts">
+        ${q.opts.map((o,oi)=>`<button class="knm-opt" id="knmOpt${oi}" onclick="answerKNM(${oi})">${esc(o)}</button>`).join('')}
+      </div>
+      <div class="knm-explain hidden" id="knmExplain">${q.explain}</div>
+    </div>
+    <div id="knmNext" class="hidden" style="text-align:center;margin-top:14px">
+      <button class="btn btn-gold" onclick="nextKNMQuestion()">${i+1<total?'Volgende vraag →':'Zie resultaten 🎯'}</button>
+    </div>`;
+}
+
+function answerKNM(chosen){
+  if(examState.knmAnswered)return;
+  examState.knmAnswered=true;
+  const q=KNM_QUESTIONS[examState.knmCurrent];
+  const right=chosen===q.ans;
+  if(right){examState.knmScore++;sfxCorrect();}else{sfxWrong();}
+  document.querySelectorAll('.knm-opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.ans)b.classList.add('correct');
+    if(i===chosen&&!right)b.classList.add('wrong');
+  });
+  document.getElementById('knmExplain').classList.remove('hidden');
+  document.getElementById('knmNext').classList.remove('hidden');
+}
+
+function nextKNMQuestion(){
+  examState.knmCurrent++;
+  examState.knmAnswered=false;
+  renderKNMQuestion();
+}
+
+function stopKNMTimer(){if(knmTimer){clearInterval(knmTimer);knmTimer=null;}}
+
+function showKNMResult(){
+  stopKNMTimer();
+  const total=KNM_QUESTIONS.length;
+  const score=examState.knmScore;
+  const pct=Math.round(score/total*100);
+  const passed=pct>=70;
+  saveExamScore('knm',score,total);
+  const xpEarned=passed?50:20;
+  addExamXP(xpEarned);
+  if(passed)sfxCongrats();else sfxWrong();
+  const col=passed?'var(--green)':'var(--orange)';
+
+  const mins=Math.floor(knmSeconds/60), secs=knmSeconds%60;
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-result-screen">
+      <div class="exam-result-ring-wrap">
+        <div class="exam-result-ring">
+          ${svgRing(pct,140,12,passed?'#22c55e':'#f97316')}
+          <div class="exam-result-pct">
+            <div class="exam-result-num" style="color:${col}">${pct}%</div>
+            <div class="exam-result-lbl" style="color:${col}">${score}/${total}</div>
+          </div>
+        </div>
+      </div>
+      <div class="exam-result-title" style="color:${col}">${passed?'🎉 Geslaagd!':'💪 Blijf oefenen!'}</div>
+      <div class="exam-result-msg">
+        ${passed
+          ?`Je haalt <strong>${pct}%</strong> — boven de 70% grens! KNM zit goed. Tijd: ${mins}m ${secs}s. +${xpEarned} XP verdiend! 🌟`
+          :`Je haalt <strong>${pct}%</strong> — je hebt ${70-pct}% meer nodig. Lees de uitleg goed bij elke vraag. Je krijgt dit! 💪 +${xpEarned} XP verdiend.`
+        }
+      </div>
+      ${passed?`<div class="achievement-toast"><div class="achievement-icon">🏛️</div><div class="achievement-text"><div class="achievement-title">KNM Champion!</div><div class="achievement-sub">You passed the civic knowledge test</div></div></div>`:''}
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="startKNMTest()">Opnieuw proberen 🔄</button>
+        <button class="btn btn-outline" onclick="renderExamHome()">← Terug naar overzicht</button>
+      </div>
+    </div>`;
+}
+
+// ── LEZEN TEST ──
+function startLezenMenu(){
+  const scores=getExamScores();
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">📖 Lezen</div><div class="exam-section-sub">Reading comprehension — 3 passages</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;padding:10px 14px;background:rgba(59,130,246,0.06);border-radius:10px;border-left:3px solid var(--blue)">
+      📌 Read each text carefully. Answer questions without looking at the text if you can. This is exactly how the real exam works!
+    </div>
+    ${LEZEN_PASSAGES.map((p,i)=>{
+      const s=scores[p.id];
+      return `<div class="card" style="cursor:pointer" onclick="startLezenPassage(${i})">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div>
+            <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px">${esc(p.label)}</div>
+            <div style="font-size:12px;color:var(--text3)">${p.questions.length} vragen · Niveau ${esc(p.difficulty)}</div>
+          </div>
+          <div style="text-align:right">
+            ${s?`<div style="font-size:16px;font-weight:900;color:${s.pct>=70?'var(--green)':'var(--orange)'}">${s.pct}%</div><div style="font-size:11px;color:var(--text3)">Beste score</div>`:'<div style="font-size:12px;color:var(--text3)">Nog niet gedaan</div>'}
+          </div>
+        </div>
+        <div class="btn btn-outline btn-sm" style="margin-top:12px;pointer-events:none">${s?'Opnieuw proberen →':'Start →'}</div>
+      </div>`;
+    }).join('')}`;
+}
+
+function startLezenPassage(idx){
+  examState={...examState,mode:'lezen',lezenPassage:idx,lezenQCurrent:0,lezenScore:0};
+  renderLezenPassage();
+}
+
+function renderLezenPassage(){
+  const p=LEZEN_PASSAGES[examState.lezenPassage];
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">📖 ${esc(p.label)}</div><div class="exam-section-sub">Lees de tekst zorgvuldig</div></div>
+      <button class="exam-back-btn" onclick="startLezenMenu()">← Terug</button>
+    </div>
+    <div class="lezen-passage">
+      <div class="lezen-passage-label">📄 Tekst — lees goed!</div>
+      ${p.text}
+    </div>
+    <div class="btn btn-gold" style="display:block;text-align:center;cursor:pointer;margin-bottom:8px" onclick="renderLezenQuestion()">Start vragen →</div>`;
+}
+
+function renderLezenQuestion(){
+  const p=LEZEN_PASSAGES[examState.lezenPassage];
+  const qi=examState.lezenQCurrent;
+  if(qi>=p.questions.length){showLezenResult();return;}
+  const q=p.questions[qi];
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">📖 Lezen</div><div class="exam-section-sub">Vraag ${qi+1}/${p.questions.length}</div></div>
+      <button class="exam-back-btn" onclick="startLezenMenu()">← Terug</button>
+    </div>
+    <div class="knm-q">
+      <div class="knm-q-cat">${esc(p.label)}</div>
+      <div class="knm-q-text">${esc(q.q)}</div>
+      <div class="knm-opts">
+        ${q.opts.map((o,oi)=>`<button class="knm-opt" id="lzOpt${oi}" onclick="answerLezen(${oi})">${esc(o)}</button>`).join('')}
+      </div>
+      <div class="knm-explain hidden" id="lzExplain">${q.explain}</div>
+    </div>
+    <div id="lzNext" class="hidden" style="text-align:center;margin-top:14px">
+      <button class="btn btn-gold" onclick="nextLezenQuestion()">${qi+1<p.questions.length?'Volgende vraag →':'Zie resultaat 🎯'}</button>
+    </div>`;
+}
+
+function answerLezen(chosen){
+  const p=LEZEN_PASSAGES[examState.lezenPassage];
+  const q=p.questions[examState.lezenQCurrent];
+  const right=chosen===q.ans;
+  if(right){examState.lezenScore++;sfxCorrect();}else{sfxWrong();}
+  document.querySelectorAll('.knm-opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.ans)b.classList.add('correct');
+    if(i===chosen&&!right)b.classList.add('wrong');
+  });
+  document.getElementById('lzExplain').classList.remove('hidden');
+  document.getElementById('lzNext').classList.remove('hidden');
+}
+
+function nextLezenQuestion(){examState.lezenQCurrent++;renderLezenQuestion();}
+
+function showLezenResult(){
+  const p=LEZEN_PASSAGES[examState.lezenPassage];
+  const total=p.questions.length;
+  const score=examState.lezenScore;
+  const pct=Math.round(score/total*100);
+  const passed=pct>=70;
+  saveExamScore(p.id,score,total);
+  addExamXP(passed?30:10);
+  if(passed)sfxCongrats();else sfxWrong();
+  const col=passed?'var(--green)':'var(--orange)';
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-result-screen">
+      <div class="exam-result-ring-wrap">
+        <div class="exam-result-ring">
+          ${svgRing(pct,140,12,passed?'#22c55e':'#f97316')}
+          <div class="exam-result-pct">
+            <div class="exam-result-num" style="color:${col}">${pct}%</div>
+            <div class="exam-result-lbl" style="color:${col}">${score}/${total}</div>
+          </div>
+        </div>
+      </div>
+      <div class="exam-result-title" style="color:${col}">${passed?'✅ Lezen: Geslaagd!':'📖 Bijna!'}</div>
+      <div class="exam-result-msg">${passed?`Geweldig! ${score} van ${total} correct. Je begrijpt Nederlandse teksten goed!`:`${score} van ${total} correct. Lees de tekst nog een keer langzaam — let op details!`}</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="startLezenPassage(${examState.lezenPassage})">Opnieuw 🔄</button>
+        <button class="btn btn-outline" onclick="startLezenMenu()">← Andere tekst</button>
+        <button class="btn btn-outline" onclick="renderExamHome()">🏠 Home</button>
+      </div>
+    </div>`;
+}
+
+// ── OGO SPREKEN ──
+function startOGO(){
+  examState={...examState,mode:'ogo',ogoIndex:0};
+  renderOGOHome();
+}
+
+function renderOGOHome(){
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">🎭 Spreken — OGO</div><div class="exam-section-sub">Oplossingsgerichte Gesprekken — AI beoordeelt jouw antwoord</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;padding:10px 14px;background:rgba(139,92,246,0.07);border-radius:10px;border-left:3px solid var(--violet)">
+      🎯 In the real exam you must handle everyday situations in Dutch. Write your response as you would say it. AI will check if your Dutch is appropriate and correct.
+    </div>
+    ${OGO_SCENARIOS.map((s,i)=>`
+      <div class="ogo-scenario" style="cursor:pointer" onclick="renderOGOScenario(${i})">
+        <div class="ogo-role">${esc(s.role)}</div>
+        <div class="ogo-situation">${esc(s.situation)}</div>
+        <div class="btn btn-outline btn-sm" style="pointer-events:none">Start scenario →</div>
+      </div>`).join('')}`;
+}
+
+function renderOGOScenario(idx){
+  const s=OGO_SCENARIOS[idx];
+  examState.ogoIndex=idx;
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">🎭 ${esc(s.role)}</div></div>
+      <button class="exam-back-btn" onclick="renderOGOHome()">← Terug</button>
+    </div>
+    <div class="ogo-scenario">
+      <div class="ogo-role">📍 Situatie</div>
+      <div class="ogo-situation">${esc(s.situation)}</div>
+      <div class="ogo-prompt">💬 ${esc(s.prompt)}</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:10px">💡 Hint: ${esc(s.hint)}</div>
+      <textarea class="ogo-input" id="ogoInput" rows="3" placeholder="Schrijf jouw antwoord in het Nederlands..."></textarea>
+      <button class="btn btn-gold" onclick="checkOGO(${idx})">Controleer mijn antwoord ✓</button>
+      <div class="ogo-feedback" id="ogoFeedback"></div>
+    </div>
+    <div id="ogoNext" class="hidden" style="text-align:center;margin-top:14px">
+      ${idx+1<OGO_SCENARIOS.length
+        ?`<button class="btn btn-outline" onclick="renderOGOScenario(${idx+1})">Volgende scenario →</button>`
+        :`<button class="btn btn-green" onclick="renderOGOHome()">✅ Alle scenarios klaar!</button>`}
+    </div>`;
+  document.getElementById('ogoInput').focus();
+}
+
+async function checkOGO(idx){
+  const s=OGO_SCENARIOS[idx];
+  const ans=document.getElementById('ogoInput').value.trim();
+  const fb=document.getElementById('ogoFeedback');
+  if(!ans){document.getElementById('ogoInput').focus();return;}
+  fb.style.display='block';
+  fb.className='ogo-feedback checking';
+  fb.textContent='AI beoordeelt jouw antwoord... ⏳';
+  const prompt=`You are a Dutch language examiner for the inburgeringsexamen (OGO — Oplossingsgerichte Gesprekken).
+
+Situation: ${s.situation}
+Prompt given to student: ${s.prompt}
+Student's Dutch response: "${ans}"
+
+Evaluate whether the student:
+1. Responded appropriately to the situation
+2. Used correct Dutch (grammar, vocabulary)
+3. Would pass this part in the real inburgeringsexamen
+
+Give feedback in English (3-4 lines). Be encouraging but honest. Include one specific Dutch correction if needed.
+
+Return JSON only: {"rating":"pass|partial|fail","verdict":"one-line verdict in English","feedback":"detailed feedback","correction":"corrected Dutch sentence if needed, else empty","example":"example of a good Dutch answer for this situation"}`;
+
+  try{
+    checkRateLimit();
+    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:400,messages:[{role:'user',content:prompt}]})});
+    const data=await res.json();
+    const r=extractJSON(data.content?.[0]?.text||'');
+    const cls=r.rating==='pass'?'pass':r.rating==='partial'?'partial':'fail';
+    const icon=r.rating==='pass'?'✅':r.rating==='partial'?'🟡':'❌';
+    if(r.rating==='pass'){sfxCorrect();addExamXP(20);}
+    else if(r.rating==='partial'){sfxTap();addExamXP(10);}
+    else sfxWrong();
+    saveExamScore('ogo',r.rating==='pass'?1:0,1);
+    fb.className='ogo-feedback '+cls;
+    fb.innerHTML=`${icon} <strong>${esc(r.verdict)}</strong><br>
+      ${esc(r.feedback)}<br>
+      ${r.correction?`<span style="color:var(--orange)">✏️ Correction: <em>${esc(r.correction)}</em></span><br>`:''}
+      ${r.example?`<span style="color:var(--cyan);font-size:12px">💬 Example answer: <em>${esc(r.example)}</em></span>`:''}`;
+    document.getElementById('ogoNext').classList.remove('hidden');
+  }catch(e){
+    fb.className='ogo-feedback partial';
+    fb.textContent='Could not check right now. Good attempt — keep practicing! 💪';
+    document.getElementById('ogoNext').classList.remove('hidden');
+  }
+}
+
+// ── KNM STUDY CARDS ──
+const KNM_FACTS=[
+  {q:'Wat is het BSN?',a:'Burgerservicenummer — jouw unieke persoonsnummer voor alle overheidszaken'},
+  {q:'Wat is DigiD?',a:'Jouw digitale identiteit om in te loggen bij overheidswebsites'},
+  {q:'Wie is het staatshoofd?',a:'Koning Willem-Alexander — Nederland is een constitutionele monarchie'},
+  {q:'Wat is het noodnummer?',a:'112 — voor politie, brandweer en ambulance'},
+  {q:'Wat is de Grondwet?',a:'De hoogste wet van Nederland met grondrechten van alle burgers'},
+  {q:'Wat zijn de 3 bestuurslagen?',a:'Rijk (nationaal), provincie (regionaal) en gemeente (lokaal)'},
+  {q:'Is zorgverzekering verplicht?',a:'Ja, voor iedereen die in Nederland woont of werkt'},
+  {q:'Wat is het UWV?',a:'Uitvoeringsinstituut Werknemersverzekeringen — betaalt WW en WIA uitkeringen'},
+  {q:'Wat is een huisarts?',a:'Jouw vaste dokter — eerste aanspreekpunt voor alle gezondheidsklachten'},
+  {q:'Wat zijn typisch Nederlandse waarden?',a:'Tolerantie, gelijkwaardigheid, directheid en nuchterheid'},
+  {q:'Hoeveel provincies heeft Nederland?',a:'12 provincies'},
+  {q:'Wat is de Belastingdienst?',a:'De overheidsorganisatie die belastingen int — je doet elk jaar aangifte'},
+  {q:'Wat is huurtoeslag?',a:'Financiële bijdrage van de overheid als je huur hoog is ten opzichte van inkomen'},
+  {q:'Wat is een proeftijd?',a:'Eerste 1-2 maanden van een baan: beide partijen kunnen contract makkelijk beëindigen'},
+  {q:'Wat is polderen?',a:'Typisch Nederlandse aanpak: overleggen en compromissen sluiten'},
+];
+let studyCardIndex=0, studyCardFlipped=false;
+
+function showKNMStudyCards(){
+  studyCardIndex=0; studyCardFlipped=false;
+  renderStudyCard();
+}
+
+function renderStudyCard(){
+  const total=KNM_FACTS.length;
+  const card=KNM_FACTS[studyCardIndex];
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">📋 KNM Flashcards</div><div class="exam-section-sub">${studyCardIndex+1} / ${total}</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div class="bar-track" style="margin-bottom:16px"><div class="bar-fill" style="width:${Math.round(studyCardIndex/total*100)}%"></div></div>
+    <div onclick="flipStudyCard()" style="cursor:pointer;min-height:200px;background:linear-gradient(135deg,rgba(59,130,246,0.12),rgba(139,92,246,0.08));border:1px solid rgba(59,130,246,0.25);border-radius:20px;padding:32px 24px;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;margin-bottom:16px;transition:all 0.3s">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px">${studyCardFlipped?'ANTWOORD':'VRAAG — tik om te onthullen'}</div>
+      <div style="font-size:${studyCardFlipped?'15':'17'}px;font-weight:${studyCardFlipped?'400':'700'};color:${studyCardFlipped?'var(--cyan)':'var(--text)'};line-height:1.5">
+        ${studyCardFlipped?esc(card.a):esc(card.q)}
+      </div>
+      ${!studyCardFlipped?'<div style="font-size:28px">🤔</div>':'<div style="font-size:28px">💡</div>'}
+    </div>
+    <div style="display:flex;gap:10px;justify-content:center">
+      <button class="btn btn-outline" onclick="prevStudyCard()" ${studyCardIndex===0?'disabled style="opacity:0.3"':''}>← Vorige</button>
+      <button class="btn btn-gold" onclick="nextStudyCard()">${studyCardIndex+1<total?'Volgende →':'🎉 Klaar!'}</button>
+    </div>
+    <div style="text-align:center;margin-top:12px;font-size:12px;color:var(--text3)">Tip: probeer het antwoord eerst te bedenken voordat je tikt!</div>`;
+}
+
+function flipStudyCard(){studyCardFlipped=!studyCardFlipped;renderStudyCard();}
+function nextStudyCard(){
+  if(studyCardIndex<KNM_FACTS.length-1){studyCardIndex++;studyCardFlipped=false;renderStudyCard();}
+  else{addExamXP(15);renderExamHome();}
+}
+function prevStudyCard(){if(studyCardIndex>0){studyCardIndex--;studyCardFlipped=false;renderStudyCard();}}
 </script>
 <script>
 if('serviceWorker' in navigator){
