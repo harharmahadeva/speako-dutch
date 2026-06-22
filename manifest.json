@@ -1,0 +1,20 @@
+{
+  "name": "Speako — Learn German",
+  "short_name": "Speako",
+  "description": "Personal German learning app — A2 level in 60 days",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0F0C29",
+  "theme_color": "#0F0C29",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["education", "lifestyle"],
+  "lang": "en"
+}
