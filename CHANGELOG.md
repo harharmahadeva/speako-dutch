@@ -7,6 +7,15 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.6.1] — 2026-06-24
+
+### Fixed
+- **API timeout** — all AI fetch calls now use `apiFetch()` helper with 25-second AbortController timeout; spinner no longer hangs forever if Groq is slow or unreachable
+- Shows Dutch error message ("Verzoek verlopen") instead of infinite spinner on timeout
+- Replaced 9 raw `fetch('/api/claude')` calls across lesson, exercises, drill, test, chat, Schrijven, OGO modules — all now go through single `apiFetch()` wrapper
+
+---
+
 ## [1.6.0] — 2026-06-24
 
 ### Added

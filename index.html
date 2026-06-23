@@ -1007,6 +1007,23 @@ function checkRateLimit(){
   apiCalls.count++;
 }
 
+async function apiFetch(body,timeoutMs=25000){
+  checkRateLimit();
+  const ctrl=new AbortController();
+  const t=setTimeout(()=>ctrl.abort(),timeoutMs);
+  try{
+    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctrl.signal});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(data.error||'API fout '+res.status);
+    const text=data.content?.[0]?.text||'';
+    if(!text)throw new Error('Lege reactie van AI — probeer het opnieuw');
+    return text;
+  }catch(e){
+    if(e.name==='AbortError')throw new Error('Verzoek verlopen (25s) — controleer internetverbinding');
+    throw e;
+  }finally{clearTimeout(t);}
+}
+
 // ═══════════════════════════════════
 // OWASP A08 – Safe JSON parse with schema validation
 // ═══════════════════════════════════
@@ -1173,7 +1190,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.6.0';
+const APP_VERSION='1.6.1';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1469,15 +1486,7 @@ STRICT RULES:
 - Pure JSON only`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:2000,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    if(!res.ok){
-      console.error('API error:',res.status, data);
-      throw new Error(data.error || 'API error '+res.status);
-    }
-    let raw=data.content?.[0]?.text||'';
-    if(!raw)throw new Error('Empty response');
+    const raw=await apiFetch({json_mode:true,max_tokens:2000,messages:[{role:'user',content:prompt}]});
     currentLesson=safeParseLesson(raw);
     renderLesson(currentLesson);
   }catch(e){
@@ -1770,9 +1779,7 @@ Give SHORT feedback (3 lines max):
 Return JSON only: {"rating":"great|close|wrong","verdict":"one line verdict","tip":"pronunciation tip","trick":"memory trick"}`;
 
   try{
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,messages:[{role:'user',content:prompt}],max_tokens:300})});
-    const data=await res.json();
-    const raw=data.content?.[0]?.text||'';
+    const raw=await apiFetch({json_mode:true,max_tokens:300,messages:[{role:'user',content:prompt}]});
     const r=extractJSON(raw);
     const cls=r.rating==='great'?'great':r.rating==='close'?'close':'wrong';
     const icon=r.rating==='great'?'✅':r.rating==='close'?'🟡':'❌';
@@ -1826,10 +1833,7 @@ Give brief feedback (2-3 lines max):
 Return JSON only: {"rating":"good|close|wrong","feedback":"your feedback here","corrected":"corrected sentence if needed, else empty string"}`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:300,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    let raw=(data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
+    const raw=(await apiFetch({json_mode:true,max_tokens:300,messages:[{role:'user',content:prompt}]})).replace(/```json|```/g,'').trim();
     const result=extractJSON(raw);
     feedback.className='exercise-feedback '+(result.rating==='good'?'good':result.rating==='close'?'ok':'retry');
     feedback.innerHTML=`${result.rating==='good'?'✅':result.rating==='close'?'🟡':'❌'} ${esc(result.feedback)}${result.corrected?`<br><strong>Corrected:</strong> ${esc(result.corrected)}`:''}`;
@@ -1848,10 +1852,7 @@ async function loadScenario(id, phrase, meaning){
   const prompt=`Give ONE very short Dutch daily-life scenario (1 sentence) where someone would use the Dutch phrase "${phrase}" (${meaning}). Make it realistic and slightly funny — reference a Dutch place (Albert Heijn, NS trein, gemeente, huisarts, OV-chipkaart, etc.) or compare to Delhi (CP, DTC bus, auto-wala). Return JSON only: {"scenario":"scenario text here"}`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:150,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    let raw=(data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
+    const raw=(await apiFetch({json_mode:true,max_tokens:150,messages:[{role:'user',content:prompt}]})).replace(/```json|```/g,'').trim();
     const result=extractJSON(raw);
     promptEl.innerHTML=`<strong style="color:var(--orange)">📍 Scenario:</strong> ${esc(result.scenario)}<br><span style="color:var(--muted);font-size:12px;margin-top:4px;display:block">Respond using: <strong style="color:var(--gold)">${esc(phrase)}</strong></span>`;
     document.getElementById('exInput_'+id).classList.remove('hidden');
@@ -1876,10 +1877,7 @@ async function checkScenario(id, phrase){
   const prompt=`Dutch language teacher feedback. Student tried to use "${phrase}" in a response. Their answer: "${answer}". Was the phrase used correctly? Give 2-line feedback. Return JSON: {"rating":"good|close|wrong","feedback":"short feedback with encouragement"}`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:200,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    let raw=(data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
+    const raw=(await apiFetch({json_mode:true,max_tokens:200,messages:[{role:'user',content:prompt}]})).replace(/```json|```/g,'').trim();
     const result=extractJSON(raw);
     feedback.className='exercise-feedback '+(result.rating==='good'?'good':result.rating==='close'?'ok':'retry');
     feedback.innerHTML=`${result.rating==='good'?'✅':result.rating==='close'?'🟡':'❌'} ${esc(result.feedback)}`;
@@ -1911,10 +1909,7 @@ Return JSON only:
 ]}`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:500,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    let raw=(data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
+    const raw=(await apiFetch({json_mode:true,max_tokens:500,messages:[{role:'user',content:prompt}]})).replace(/```json|```/g,'').trim();
     drillData=extractJSON(raw).drills;
     drillIndex=0; drillScore=0;
     renderDrill();
@@ -1962,10 +1957,7 @@ async function checkDrill(targetWord){
   const prompt=`Student answered a Dutch drill. Target word: "${targetWord}". Their answer: "${answer}". Did they correctly use the word? Return JSON: {"correct":true/false,"feedback":"one encouraging line"}`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:150,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    let raw=(data.content?.[0]?.text||'').replace(/```json|```/g,'').trim();
+    const raw=(await apiFetch({json_mode:true,max_tokens:150,messages:[{role:'user',content:prompt}]})).replace(/```json|```/g,'').trim();
     const r=extractJSON(raw);
     if(r.correct){drillScore++;sfxCorrect();}else{sfxWrong();}
     result.className='drill-result '+(r.correct?'pass':'fail');
@@ -2022,11 +2014,7 @@ Rules:
 - Pure JSON only, no markdown`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:2000,messages:[{role:'user',content:prompt}]})});
-    if(!res.ok)throw new Error('API '+res.status);
-    const data=await res.json();
-    let raw=data.content?.[0]?.text||'';
+    const raw=await apiFetch({json_mode:true,max_tokens:2000,messages:[{role:'user',content:prompt}]});
     // OWASP A08 – Validate and sanitise before use
     const parsed=safeParseTest(raw);
     testQuestions=parsed.questions;
@@ -2186,11 +2174,7 @@ Style rules:
 - Make Dutch feel achievable — inburgering exam is the goal!`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({max_tokens:500,system:sys,messages:chatHistory})});
-    if(!res.ok)throw new Error('API '+res.status);
-    const data=await res.json();
-    const reply=data.content?.[0]?.text||'Kuch problem aa gayi. Try again!';
+    const reply=(await apiFetch({max_tokens:500,system:sys,messages:chatHistory}))||'Kuch problem aa gayi. Try again!';
     // OWASP A07 – Cap reply length
     const safeReply=reply.slice(0,2000);
     loading.remove();appendMsg(safeReply,'ai');
@@ -3408,10 +3392,7 @@ Return JSON only:
 {"totalScore":0-100,"taakvoltooiing":0-25,"grammatica":0-25,"woordenschat":0-25,"structuur":0-25,"verdict":"one-line overall verdict","strengths":"what was good","improvements":"specific things to fix","correctedSentence":"one corrected example sentence from their text","exampleOpening":"a good Dutch opening sentence for this task"}`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:600,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const r=extractJSON(data.content?.[0]?.text||'');
+    const r=extractJSON(await apiFetch({json_mode:true,max_tokens:600,messages:[{role:'user',content:prompt}]}));
     const passed=r.totalScore>=70;
     saveExamScore('schrijven',r.totalScore,100);
     addExamXP(passed?40:15);
@@ -3520,11 +3501,8 @@ async function showOGOSampleResult(){
   const results=[];
   for(const item of examState.ogoResults){
     try{
-      checkRateLimit();
       const prompt=`Dutch inburgeringsexamen OGO evaluator. Situation: ${item.scenario.situation}. Prompt: ${item.scenario.prompt}. Student answered: "${item.answer}". Rate: pass/partial/fail. Return JSON: {"rating":"pass|partial|fail","feedback":"one line in English","correction":"corrected Dutch if needed"}`;
-      const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:200,messages:[{role:'user',content:prompt}]})});
-      const data=await res.json();
-      const r=extractJSON(data.content?.[0]?.text||'');
+      const r=extractJSON(await apiFetch({json_mode:true,max_tokens:200,messages:[{role:'user',content:prompt}]}));
       results.push({...item,rating:r.rating,feedback:r.feedback,correction:r.correction});
     }catch(e){results.push({...item,rating:'partial',feedback:'Could not evaluate',correction:''});}
   }
@@ -3698,10 +3676,7 @@ Give feedback in English (3-4 lines). Be encouraging but honest. Include one spe
 Return JSON only: {"rating":"pass|partial|fail","verdict":"one-line verdict in English","feedback":"detailed feedback","correction":"corrected Dutch sentence if needed, else empty","example":"example of a good Dutch answer for this situation"}`;
 
   try{
-    checkRateLimit();
-    const res=await fetch('/api/claude',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({json_mode:true,max_tokens:400,messages:[{role:'user',content:prompt}]})});
-    const data=await res.json();
-    const r=extractJSON(data.content?.[0]?.text||'');
+    const r=extractJSON(await apiFetch({json_mode:true,max_tokens:400,messages:[{role:'user',content:prompt}]}));
     const cls=r.rating==='pass'?'pass':r.rating==='partial'?'partial':'fail';
     const icon=r.rating==='pass'?'✅':r.rating==='partial'?'🟡':'❌';
     if(r.rating==='pass'){sfxCorrect();addExamXP(20);}
