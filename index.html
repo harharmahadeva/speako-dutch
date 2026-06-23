@@ -101,8 +101,9 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .disc-row-label{font-size:13px;color:rgba(255,255,255,0.8);font-weight:500;}
 .disc-privacy{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:16px 18px;margin-top:10px;}
 .disc-btn-wrap{position:fixed;bottom:0;left:0;right:0;padding:16px 24px 28px;background:linear-gradient(to top,rgba(15,12,41,0.98) 60%,transparent);display:flex;justify-content:center;z-index:10;}
-.disc-btn{width:100%;max-width:480px;border:none;border-radius:14px;padding:17px;font-size:16px;font-weight:700;cursor:pointer;font-family:"Space Grotesk",sans-serif;background:linear-gradient(135deg,#2a5fd4,#6a35c2);color:#fff;transition:all 0.3s;box-shadow:0 4px 24px rgba(42,95,212,0.35);}
-.disc-btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(42,95,212,0.45);}
+.disc-btn{width:100%;max-width:480px;border:none;border-radius:99px;padding:17px;font-size:16px;font-weight:700;cursor:pointer;font-family:"Space Grotesk",sans-serif;background:linear-gradient(135deg,#3b82f6,#7c3aed);color:#fff;transition:all 0.22s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 24px rgba(91,141,238,0.4);letter-spacing:0.2px;}
+.disc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(91,141,238,0.55);}
+.disc-btn:active{transform:scale(0.98);}
 
 #loginScreen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#0c1020 0%,#162040 50%,#1a3a70 100%);position:relative;z-index:1;overflow-y:auto;}
 #loginScreen::before{content:"";position:fixed;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.04);top:-60px;left:-80px;pointer-events:none;}
@@ -124,8 +125,9 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .field-input{width:100%;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:#fff;border-radius:12px;padding:14px 16px;font-size:15px;outline:none;font-family:"Space Grotesk",sans-serif;margin-bottom:14px;transition:all 0.2s;}
 .field-input:focus{border-color:rgba(255,255,255,0.5);background:rgba(255,255,255,0.15);box-shadow:0 0 0 3px rgba(255,255,255,0.1);}
 .field-input::placeholder{color:rgba(255,255,255,0.35);}
-.login-btn{width:100%;border:none;border-radius:12px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;font-family:"Space Grotesk",sans-serif;background:linear-gradient(135deg,#2a5fd4,#6a35c2);color:#fff;transition:all 0.3s;box-shadow:0 4px 20px rgba(42,95,212,0.35);}
-.login-btn:hover{transform:translateY(-1px);box-shadow:0 8px 30px rgba(42,95,212,0.45);}
+.login-btn{width:100%;border:none;border-radius:99px;padding:15px;font-size:16px;font-weight:700;cursor:pointer;font-family:"Space Grotesk",sans-serif;background:linear-gradient(135deg,#3b82f6,#7c3aed);color:#fff;transition:all 0.22s cubic-bezier(.4,0,.2,1);box-shadow:0 4px 20px rgba(91,141,238,0.4);letter-spacing:0.2px;}
+.login-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(91,141,238,0.55);}
+.login-btn:active{transform:scale(0.98);}
 .login-error{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;}
 
 #appScreen{display:none;position:relative;z-index:1;}
@@ -198,13 +200,17 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .phrase-funny{font-size:12px;color:var(--orange);font-style:italic;}
 .phrase-hero{background:linear-gradient(135deg,rgba(139,92,246,0.1),rgba(6,182,212,0.06));border:1px solid rgba(139,92,246,0.2);border-radius:var(--r);padding:24px 20px;text-align:center;margin-bottom:14px;}
 
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:13px 22px;border-radius:99px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all 0.2s;font-family:"Space Grotesk",sans-serif;min-height:44px;}
-.btn-gold{background:linear-gradient(135deg,#3b82f6,#8b5cf6);color:#fff;box-shadow:0 4px 15px rgba(59,130,246,0.3);}
-.btn-gold:hover{transform:translateY(-1px);box-shadow:0 6px 25px rgba(59,130,246,0.4);}
-.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border2);}
-.btn-outline:hover{border-color:var(--blue);color:var(--blue-b);}
-.btn-green{background:linear-gradient(135deg,var(--green),var(--cyan));color:#000;}
-.btn-sm{padding:11px 18px;font-size:13px;min-height:44px;}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:13px 24px;border-radius:99px;font-size:14px;font-weight:600;border:none;cursor:pointer;transition:all 0.22s cubic-bezier(.4,0,.2,1);font-family:"Space Grotesk",sans-serif;min-height:44px;letter-spacing:0.2px;position:relative;overflow:hidden;}
+.btn::after{content:'';position:absolute;inset:0;border-radius:99px;opacity:0;transition:opacity 0.2s;background:rgba(255,255,255,0.08);}
+.btn:hover::after{opacity:1;}
+.btn:active{transform:scale(0.97);}
+.btn-gold{background:linear-gradient(135deg,#3b82f6 0%,#7c3aed 100%);color:#fff;box-shadow:0 4px 18px rgba(91,141,238,0.35);}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(91,141,238,0.5);}
+.btn-outline{background:rgba(255,255,255,0.04);color:var(--text2);border:1px solid var(--border2);backdrop-filter:blur(4px);}
+.btn-outline:hover{background:rgba(91,141,238,0.1);border-color:rgba(91,141,238,0.5);color:var(--blue-b);transform:translateY(-1px);box-shadow:0 4px 14px rgba(91,141,238,0.15);}
+.btn-green{background:linear-gradient(135deg,#22c55e 0%,#06b6d4 100%);color:#fff;box-shadow:0 4px 16px rgba(34,197,94,0.3);}
+.btn-green:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(34,197,94,0.4);}
+.btn-sm{padding:10px 18px;font-size:13px;min-height:40px;}
 .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
 
 .btn-listen{display:inline-flex;align-items:center;gap:6px;padding:12px 20px;border-radius:99px;font-size:13px;font-weight:600;cursor:pointer;background:rgba(59,130,246,0.1);border:1px solid rgba(59,130,246,0.3);color:var(--blue-b);transition:all 0.2s;font-family:"Space Grotesk",sans-serif;min-height:44px;}
@@ -277,6 +283,26 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .test-result-msg strong{color:var(--orange);}
 
 .extend-bar{background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.25);border-radius:var(--r);padding:13px 17px;margin-bottom:14px;display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;}
+
+.home-cards-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px;}
+.home-action-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:18px 14px;cursor:pointer;transition:all 0.22s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;gap:6px;position:relative;overflow:hidden;}
+.home-action-card::before{content:'';position:absolute;inset:0;border-radius:16px;opacity:0;transition:opacity 0.2s;background:rgba(91,141,238,0.06);}
+.home-action-card:hover::before,.home-action-card:active::before{opacity:1;}
+.home-action-card:hover{transform:translateY(-2px);border-color:rgba(91,141,238,0.35);box-shadow:0 6px 24px rgba(0,0,0,0.3);}
+.home-action-card:active{transform:scale(0.97);}
+.hac-icon{font-size:26px;line-height:1;margin-bottom:2px;}
+.hac-title{font-size:14px;font-weight:700;color:var(--text);}
+.hac-sub{font-size:11px;color:var(--text3);line-height:1.4;}
+.hac-status{font-size:11px;font-weight:700;margin-top:6px;padding:4px 10px;border-radius:99px;display:inline-block;width:fit-content;}
+.hac-status-active{background:rgba(91,141,238,0.15);color:var(--blue-b);}
+.hac-status-locked{background:rgba(255,255,255,0.05);color:var(--text3);}
+.hac-status-exam{background:rgba(155,114,207,0.15);color:var(--violet);}
+.hac-status-done{background:rgba(52,201,122,0.15);color:var(--green);}
+
+.home-stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.home-stat{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:14px 12px;text-align:center;}
+.home-stat-val{font-size:22px;font-weight:800;color:var(--blue-b);line-height:1;}
+.home-stat-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-top:4px;}
 
 .lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0 6px;gap:10px;}
 .lesson-nav-dots{display:flex;gap:4px;flex-wrap:wrap;}
@@ -490,7 +516,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
   </div>
 
   <div class="disc-btn-wrap">
-    <button class="disc-btn" onclick="acceptDisclaimer()">I understand. Let's start learning →</button>
+    <button class="disc-btn" onclick="acceptDisclaimer()">I understand. Let's start learning</button>
   </div>
 </div>
 
@@ -509,7 +535,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     <input class="field-input" id="loginName" placeholder="Enter your username" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')document.getElementById('loginPin').focus()" />
     <label class="field-label">PIN — 4 digits</label>
     <input class="field-input" id="loginPin" type="password" maxlength="4" placeholder="• • • •" inputmode="numeric" autocomplete="off" onkeydown="if(event.key==='Enter')handleLogin()" />
-    <button class="login-btn" id="loginBtn" onclick="handleLogin()">Sign in to continue →</button>
+    <button class="login-btn" id="loginBtn" onclick="handleLogin()">Sign in</button>
     <div style="margin-top:16px;font-size:11px;color:rgba(255,255,255,0.45);text-align:center;line-height:1.7">
       Personal learning app. Progress stored locally.
     </div>
@@ -529,6 +555,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 
   <div class="main">
     <div id="resumeBanner" style="display:none;opacity:1;transition:opacity 0.6s;background:linear-gradient(135deg,rgba(52,201,122,0.12),rgba(91,141,238,0.08));border:1px solid rgba(52,201,122,0.25);border-radius:12px;padding:12px 16px;margin-bottom:12px;font-size:13px;color:var(--text2);line-height:1.6;"></div>
+    <!-- COMPACT HERO — always visible -->
     <div class="home-hero" id="homeHero">
       <div class="hero-greeting" id="heroGreeting">Good morning</div>
       <div class="hero-name" id="heroName">Welcome back!</div>
@@ -539,56 +566,97 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
       </div>
     </div>
 
-    <div class="mot-banner" id="motBanner"></div>
-
-    <div class="session-bar">
-      <div class="session-top">
-        <span class="session-label">Today's session</span>
-        <span class="session-time" id="sessionTime">0 / 60 min</span>
-      </div>
-      <div class="bar-track"><div class="bar-fill" id="sessionBar" style="width:0%"></div></div>
-    </div>
-
-    <div class="extend-bar" id="extendBar">
-      <div style="font-size:14px;color:var(--text)">✅ <strong>60 min done!</strong> Session complete! Test is now unlocked! Keep going? 🎯</div>
-      <button class="btn btn-green" onclick="extendSession()">+ 30 min</button>
-    </div>
-
-    <div class="day-progress">
-      <div class="dp-header">
-        <div class="dp-title" id="journeyTitle">Your Dutch Journey 🗺️</div>
-        <div class="dp-day" id="currentDayLabel">Day 1</div>
-      </div>
-      <div class="dp-dots" id="dayDots"></div>
-    </div>
-
+    <!-- BOTTOM NAV TABS -->
     <div class="tabs">
-      <div class="tab active" id="tabBtnLesson" onclick="switchTab('lesson',this)">📚 Lesson</div>
+      <div class="tab active" id="tabBtnHome" onclick="switchTab('home',this);renderHomeTab()">🏠 Home</div>
+      <div class="tab" id="tabBtnLesson" onclick="switchTab('lesson',this)">📚 Lesson</div>
       <div class="tab" id="tabBtnSpeak" onclick="switchTab('speak',this)">🎤 Speaking</div>
-      <div class="tab locked" id="tabBtnTest" onclick="openTest()">🎯 Test</div>
       <div class="tab" id="tabBtnExam" onclick="switchTab('exam',this);renderExamHome()">🎓 Examen</div>
     </div>
 
-    <div id="tab-lesson">
+    <!-- HOME DASHBOARD TAB -->
+    <div id="tab-home">
+      <!-- Session bar -->
+      <div class="session-bar">
+        <div class="session-top">
+          <span class="session-label">Today's session</span>
+          <span class="session-time" id="sessionTime">0 / 60 min</span>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="sessionBar" style="width:0%"></div></div>
+      </div>
+      <div class="extend-bar" id="extendBar">
+        <div style="font-size:14px;color:var(--text)">✅ <strong>60 min done!</strong> Test unlocked! Keep going? 🎯</div>
+        <button class="btn btn-green" onclick="extendSession()">+ 30 min</button>
+      </div>
+
+      <!-- Motivation banner -->
+      <div class="mot-banner" id="motBanner"></div>
+
+      <!-- Action cards grid -->
+      <div class="home-cards-grid">
+        <div class="home-action-card" onclick="switchTab('lesson',document.getElementById('tabBtnLesson'))">
+          <div class="hac-icon">📚</div>
+          <div class="hac-title">Today's Lesson</div>
+          <div class="hac-sub" id="homeLessonSub">Dag <span id="homeDayNum">1</span></div>
+          <div class="hac-status hac-status-active" id="homeLessonStatus">Start</div>
+        </div>
+        <div class="home-action-card" onclick="switchTab('speak',document.getElementById('tabBtnSpeak'))">
+          <div class="hac-icon">🎤</div>
+          <div class="hac-title">Speaking</div>
+          <div class="hac-sub">Pronunciation practice</div>
+          <div class="hac-status hac-status-active">Practice</div>
+        </div>
+        <div class="home-action-card" id="homeTestCard" onclick="openTest()">
+          <div class="hac-icon">🎯</div>
+          <div class="hac-title">Daily Test</div>
+          <div class="hac-sub" id="homeTestSub">60 min to unlock</div>
+          <div class="hac-status hac-status-locked" id="homeTestStatus">Locked</div>
+        </div>
+        <div class="home-action-card" onclick="switchTab('exam',document.getElementById('tabBtnExam'));renderExamHome()">
+          <div class="hac-icon">🎓</div>
+          <div class="hac-title">Exam Prep</div>
+          <div class="hac-sub">KNM · Lezen · OGO</div>
+          <div class="hac-status hac-status-exam">Open</div>
+        </div>
+      </div>
+
+      <!-- XP + Readiness row -->
+      <div class="home-stats-row" id="homeStatsRow"></div>
+
+      <!-- 45-day journey -->
+      <div class="day-progress">
+        <div class="dp-header">
+          <div class="dp-title" id="journeyTitle">Your Dutch Journey 🗺️</div>
+          <div class="dp-day" id="currentDayLabel">Day 1</div>
+        </div>
+        <div class="dp-dots" id="dayDots"></div>
+      </div>
+    </div>
+
+    <!-- LESSON TAB -->
+    <div id="tab-lesson" class="hidden">
       <div id="lessonContent">
         <div class="lesson-loading"><div class="spinner"></div><div>Generating your lesson... hang tight! 🍛</div></div>
       </div>
     </div>
 
+    <!-- SPEAKING TAB -->
     <div id="tab-speak" class="hidden">
       <div class="no-speech-warn" id="noSpeechWarn">
         ⚠️ Speech recognition works best on Chrome or Edge. Safari is not supported.
       </div>
-      <div class="section-intro">🎤 Pronunciation practice — <strong>Listen first, then repeat.</strong> Your browser listens and tells you how accurate your pronunciation is. Use Chrome or Edge for best results.</div>
+      <div class="section-intro">🎤 Pronunciation practice — <strong>Listen first, then repeat.</strong> Your browser listens and tells you how accurate your pronunciation is.</div>
       <div id="speakContent">
         <div class="lesson-loading"><div class="spinner"></div><div>Loading lesson content... 🎤</div></div>
       </div>
     </div>
 
+    <!-- TEST TAB (hidden, opened via openTest()) -->
     <div id="tab-test" class="hidden">
       <div id="testContent"></div>
     </div>
 
+    <!-- EXAM TAB -->
     <div id="tab-exam" class="hidden">
       <div id="examContent"></div>
     </div>
@@ -985,8 +1053,11 @@ function showApp(){
       setTimeout(()=>{resumeEl.style.opacity='0';setTimeout(()=>resumeEl.style.display='none',600);},5000);
     }
   }
-  loadLesson(day);
   startTimer();
+  // Land on home dashboard, load lesson in background
+  switchTab('home', document.getElementById('tabBtnHome'));
+  renderHomeTab();
+  loadLesson(day);
 }
 
 function updateMotBanner(){
@@ -1000,6 +1071,50 @@ function updateMotBanner(){
     `🎯 <strong>${streak} dagen sterk!</strong> You started. You showed up. That already puts you ahead of most. Goed bezig! 💪`,
   ];
   document.getElementById('motBanner').innerHTML=msgs[Math.min(Math.floor(done/5),msgs.length-1)];
+}
+
+function renderHomeTab(){
+  if(!currentUser||!userProgress)return;
+  const day=userProgress.day||1;
+  const done=(userProgress.completedDays||[]).length;
+  const scores=getExamScores();
+  const xp=userProgress.xp||0;
+  const readiness=userProgress.readiness||0;
+  const testUnlocked=sessionMinutes>=sessionTarget;
+
+  // Update day number in lesson card
+  const dn=document.getElementById('homeDayNum');
+  if(dn)dn.textContent=day;
+
+  // Update test card status
+  const testCard=document.getElementById('homeTestCard');
+  const testSub=document.getElementById('homeTestSub');
+  const testStatus=document.getElementById('homeTestStatus');
+  if(testCard&&testSub&&testStatus){
+    if(testUnlocked){
+      testSub.textContent='Ready to attempt';
+      testStatus.textContent='Unlocked';
+      testStatus.className='hac-status hac-status-done';
+    } else {
+      const minsLeft=sessionTarget-sessionMinutes;
+      testSub.textContent=minsLeft+' min to unlock';
+      testStatus.textContent='Locked';
+      testStatus.className='hac-status hac-status-locked';
+    }
+  }
+
+  // Stats row
+  const statsRow=document.getElementById('homeStatsRow');
+  if(statsRow){
+    statsRow.innerHTML=`
+      <div class="home-stat"><div class="home-stat-val">${day}</div><div class="home-stat-lbl">Current Day</div></div>
+      <div class="home-stat"><div class="home-stat-val">${xp}</div><div class="home-stat-lbl">XP earned</div></div>
+      <div class="home-stat"><div class="home-stat-val">${readiness}%</div><div class="home-stat-lbl">Readiness</div></div>
+    `;
+  }
+
+  updateMotBanner();
+  renderDayDots();
 }
 
 function renderDayDots(){
@@ -1226,7 +1341,7 @@ function renderLesson(lesson){
         <div class="exercise-box" style="margin-top:12px">
           <div class="exercise-label">🎭 Amsterdam Scenario</div>
           <div id="scenarioPrompt_${sid}">
-            <button class="btn btn-outline btn-sm" onclick="loadScenario('${sid}','${p.de.replace(/'/g,"\\'")}','${p.en.replace(/'/g,"\\'")}')">Get a scenario →</button>
+            <button class="btn btn-outline btn-sm" onclick="loadScenario('${sid}','${p.de.replace(/'/g,"\\'")}','${p.en.replace(/'/g,"\\'")}')">Get a scenario</button>
           </div>
           <input class="exercise-input hidden" id="exInput_${sid}" placeholder="Respond in Dutch..." onkeydown="if(event.key==='Enter')checkScenario('${sid}','${p.de.replace(/'/g,"\\'")}')"/>
           <button class="btn btn-outline btn-sm hidden" id="exBtn_${sid}" onclick="checkScenario('${sid}','${p.de.replace(/'/g,"\\'")}')">Check ✓</button>
@@ -1264,7 +1379,7 @@ function renderLesson(lesson){
       <div class="drill-title">⚡ Quick Drill — Final Challenge</div>
       <div class="drill-sub">3 Amsterdam scenarios. Answer in Dutch. You've got this!</div>
       <div id="drillContent">
-        <button class="btn btn-gold" onclick="loadDrill()">Start Drill →</button>
+        <button class="btn btn-gold" onclick="loadDrill()">Start Drill</button>
       </div>
     </div>
     <div style="text-align:center;padding:14px 0;color:var(--muted);font-size:13px">
@@ -1558,7 +1673,7 @@ function renderDrill(){
         <span style="color:var(--muted);font-size:12px;margin-top:4px;display:block">💡 Hint: ${esc(d.hint)}</span>
       </div>
       <input class="drill-input" id="drillInput" placeholder="Type your answer in Dutch..." onkeydown="if(event.key==='Enter')checkDrill('${d.targetWord.replace(/'/g,"\\'")}')"/>
-      <button class="btn btn-gold btn-sm" onclick="checkDrill('${d.targetWord.replace(/'/g,"\\'")}')">Submit →</button>
+      <button class="btn btn-gold btn-sm" onclick="checkDrill('${d.targetWord.replace(/'/g,"\\'")}')">Submit</button>
       <div class="drill-result" id="drillResult"></div>
     </div>`;
   document.getElementById('drillInput').focus();
@@ -1830,9 +1945,13 @@ function appendMsg(text,type){
 }
 
 function switchTab(name,el){
-  ['lesson','speak','test'].forEach(t=>document.getElementById('tab-'+t).classList.add('hidden'));
+  ['home','lesson','speak','test','exam'].forEach(t=>{
+    const d=document.getElementById('tab-'+t);
+    if(d)d.classList.add('hidden');
+  });
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('tab-'+name).classList.remove('hidden');
+  const target=document.getElementById('tab-'+name);
+  if(target)target.classList.remove('hidden');
   if(el)el.classList.add('active');
   if(name==='speak')renderSpeakTab();
 }
@@ -2574,7 +2693,7 @@ function showKNMResult(){
           </div>
         </div>`).join('')}
       <div style="margin-top:12px">
-        <button class="btn btn-outline btn-sm" onclick="showKNMStudyCards()">📋 Review flashcards for weak topics →</button>
+        <button class="btn btn-outline btn-sm" onclick="showKNMStudyCards()">📋 Review flashcards for weak topics</button>
       </div>
     </div>`:'' ;
 
@@ -2640,7 +2759,7 @@ function startLezenMenu(){
             ${s?`<div style="font-size:16px;font-weight:900;color:${s.pct>=70?'var(--green)':'var(--orange)'}">${s.pct}%</div><div style="font-size:11px;color:var(--text3)">Beste score</div>`:'<div style="font-size:12px;color:var(--text3)">Nog niet gedaan</div>'}
           </div>
         </div>
-        <div class="btn btn-outline btn-sm" style="margin-top:12px;pointer-events:none">${s?'Opnieuw proberen →':'Start →'}</div>
+        <div class="btn btn-outline btn-sm" style="margin-top:12px;pointer-events:none">${s?'Opnieuw proberen →':'Start'}</div>
       </div>`;
     }).join('')}`;
 }
@@ -2661,7 +2780,7 @@ function renderLezenPassage(){
       <div class="lezen-passage-label">📄 Tekst — lees goed!</div>
       ${p.text}
     </div>
-    <div class="btn btn-gold" style="display:block;text-align:center;cursor:pointer;margin-bottom:8px" onclick="renderLezenQuestion()">Start vragen →</div>`;
+    <div class="btn btn-gold" style="display:block;text-align:center;cursor:pointer;margin-bottom:8px" onclick="renderLezenQuestion()">Start vragen</div>`;
 }
 
 function renderLezenQuestion(){
@@ -2759,7 +2878,7 @@ function renderLezenSamplePassage(){
       <button class="exam-back-btn" onclick="if(lezenSampleTimer)clearInterval(lezenSampleTimer);renderExamHome()">← Stop</button>
     </div>
     <div class="lezen-passage"><div class="lezen-passage-label">📄 Tekst ${idx+1} — lees goed</div>${p.text}</div>
-    <button class="btn btn-gold" style="width:100%;margin-bottom:8px" onclick="renderLezenSampleQuestion()">Start vragen →</button>`;
+    <button class="btn btn-gold" style="width:100%;margin-bottom:8px" onclick="renderLezenSampleQuestion()">Start vragen</button>`;
 }
 
 function renderLezenSampleQuestion(){
@@ -2858,7 +2977,7 @@ function startSchrijvenMenu(){
           <span style="font-size:11px;padding:2px 8px;background:rgba(91,141,238,0.1);color:var(--blue-b);border-radius:99px;font-weight:600">${esc(p.level)}</span>
         </div>
         <div style="font-size:13px;color:var(--text2);line-height:1.6">${esc(p.context)}</div>
-        <div class="btn btn-outline btn-sm" style="margin-top:10px;pointer-events:none">Start opdracht →</div>
+        <div class="btn btn-outline btn-sm" style="margin-top:10px;pointer-events:none">Start opdracht</div>
       </div>`).join('')}`;
 }
 
@@ -3062,7 +3181,7 @@ function showWeaknessReport(){
       <div class="card" style="text-align:center;padding:40px">
         <div style="font-size:40px;margin-bottom:12px">📊</div>
         <div style="color:var(--text2)">No data yet. Complete at least one practice or sample test first!</div>
-        <button class="btn btn-gold" style="margin-top:16px" onclick="renderExamHome()">Start practicing →</button>
+        <button class="btn btn-gold" style="margin-top:16px" onclick="renderExamHome()">Start practicing</button>
       </div>`;
     return;
   }
@@ -3092,7 +3211,7 @@ function showWeaknessReport(){
             <span style="font-size:14px;font-weight:800;color:var(--red)">${scores[m.key].pct}%</span>
           </div>
           <div class="bar-track" style="margin-bottom:8px"><div class="bar-fill" style="width:${scores[m.key].pct}%;background:linear-gradient(90deg,var(--red),var(--orange))"></div></div>
-          <button class="btn btn-outline btn-sm" onclick="${m.action}">Practice now →</button>
+          <button class="btn btn-outline btn-sm" onclick="${m.action}">Practice now</button>
         </div>`).join('')}
     </div>`:''}
     ${strong.length?`
@@ -3126,7 +3245,7 @@ function renderOGOHome(){
       <div class="ogo-scenario" style="cursor:pointer" onclick="renderOGOScenario(${i})">
         <div class="ogo-role">${esc(s.role)}</div>
         <div class="ogo-situation">${esc(s.situation)}</div>
-        <div class="btn btn-outline btn-sm" style="pointer-events:none">Start scenario →</div>
+        <div class="btn btn-outline btn-sm" style="pointer-events:none">Start scenario</div>
       </div>`).join('')}`;
 }
 
