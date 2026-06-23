@@ -1043,10 +1043,9 @@ function unlockTest(){
 async function loadLesson(day){
   currentLesson=null;
   const topic=DAY_TOPICS_NL[(day-1)%DAY_TOPICS_NL.length]||'Advanced Dutch';
-  document.getElementById('lessonContent').innerHTML=`<div class="lesson-loading"><div class="spinner"></div><div>Generating ${isNL?'Dag':'Day'} ${day} lesson... hang tight! 🍛</div></div>`;
+  document.getElementById('lessonContent').innerHTML=`<div class="lesson-loading"><div class="spinner"></div><div>Generating Dag ${day} lesson... hang tight! 🍛</div></div>`;
 
-  const prompt=isNL?
-`You are a structured Dutch tutor for an IT professional from New Delhi now living in the Netherlands. Goal: reach Inburgeringsexamen A2 / KNM standard in 45 days. Warm, memorable humor — but accuracy comes first.
+  const prompt=`You are a structured Dutch tutor for an IT professional from New Delhi now living in the Netherlands. Goal: reach Inburgeringsexamen A2 / KNM standard in 45 days. Warm, memorable humor — but accuracy comes first.
 
 Generate Dag ${day} of 45 Dutch lesson on: "${topic}"
 
