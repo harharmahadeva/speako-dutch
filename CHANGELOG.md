@@ -7,6 +7,24 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.6.0] — 2026-06-24
+
+### Added
+- **Full Luisteren module** (Phase 2) — complete listening comprehension system replacing stub
+- `LUISTEREN_FRAGMENTS` data: 5 Dutch audio fragments (gemeente loket, huisarts, NS treinstation, sollicitatiegesprek, supermarkt) with 3 MCQ each (15 total)
+- **TTS playback** via `window.speechSynthesis` with nl-NL voice, normal and slow (0.8x) speed controls, stop/replay toggle
+- **Practice mode** — 2 random fragments; per-fragment scores saved individually; instant MCQ feedback with Dutch explanations
+- **Sample Test mode** — all 5 fragments in order, 25-minute countdown timer, auto-submits when time runs out
+- **Weakness analysis** — wrong-answer review grouped by context (gemeente/dokter/trein/werk/winkel) with counts
+- `startLuisterenFragment(idx)` — launch any single fragment directly from the fragment list
+- Per-fragment `saveExamScore(f.id, ...)` + `saveExamScore('luisteren', ...)` for sample test total
+- XP rewards: 40 XP (practice pass), 15 XP (practice fail), 60 XP (test pass), 25 XP (test fail)
+
+### Fixed
+- `renderLuisterenFragment` now routes to `showLuisterenSampleResult` vs `showLuisterenPracticeResult` based on mode (previously always called practice result)
+
+---
+
 ## [1.5.0] — 2026-06-23
 
 ### Changed
