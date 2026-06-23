@@ -2,6 +2,7 @@
 // API key stored as "deutch_key" in Vercel Environment Variables
 
 const ALLOWED_ORIGINS = [
+  'https://speako-dutch.vercel.app',
   'https://deutsch-jetzt.vercel.app',
   'http://localhost:8080',
   'http://localhost:3000',
