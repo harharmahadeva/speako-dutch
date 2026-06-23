@@ -1,17 +1,11 @@
 // Vercel Serverless Function — Groq API proxy
 // API key stored as "deutch_key" in Vercel Environment Variables
 
-const ALLOWED_ORIGINS = [
-  'https://speako-dutch.vercel.app',
-  'https://deutsch-jetzt.vercel.app',
-  'http://localhost:8080',
-  'http://localhost:3000',
-  'http://localhost:8888'
-];
-
 module.exports = async (req, res) => {
   const origin = req.headers.origin || '';
-  const allowed = ALLOWED_ORIGINS.some(o => origin.startsWith(o)) || origin === '';
+  const allowed = !origin
+    || origin.endsWith('.vercel.app')
+    || origin.startsWith('http://localhost');
 
   res.setHeader('Access-Control-Allow-Origin', allowed ? (origin || '*') : 'null');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
