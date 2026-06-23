@@ -338,11 +338,21 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .readiness-pct-num{font-family:"Outfit",sans-serif;font-size:28px;font-weight:900;color:#fff;line-height:1;}
 .readiness-pct-lbl{font-size:10px;color:rgba(255,255,255,0.6);margin-top:2px;}
 .exam-modules{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
-.exam-module{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all 0.2s;text-align:center;}
-.exam-module:hover{background:rgba(255,255,255,0.14);transform:translateY(-2px);}
-.exam-module-icon{font-size:28px;margin-bottom:6px;}
-.exam-module-name{font-size:13px;font-weight:700;color:#fff;margin-bottom:3px;}
-.exam-module-sub{font-size:11px;color:rgba(255,255,255,0.55);}
+.exam-module{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:14px 12px;cursor:pointer;transition:all 0.22s cubic-bezier(.4,0,.2,1);text-align:center;}
+.exam-module:hover{background:var(--card2);transform:translateY(-2px);border-color:rgba(91,141,238,0.35);}
+.exam-module-icon{font-size:26px;margin-bottom:6px;}
+.exam-module-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.exam-module-sub{font-size:11px;color:var(--text3);}
+
+.exam-modules-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.exam-grid-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:14px 12px;display:flex;flex-direction:column;gap:4px;transition:all 0.22s cubic-bezier(.4,0,.2,1);}
+.exam-grid-card:hover{transform:translateY(-2px);border-color:rgba(91,141,238,0.35);box-shadow:0 6px 20px rgba(0,0,0,0.25);}
+.egc-icon{font-size:24px;margin-bottom:2px;}
+.egc-title{font-size:14px;font-weight:700;color:var(--text);}
+.egc-sub{font-size:11px;color:var(--text3);}
+.egc-score{font-size:12px;font-weight:700;margin-top:2px;}
+.egc-btns{display:flex;gap:6px;margin-top:8px;}
+.egc-btn{flex:1;padding:8px 6px!important;font-size:12px!important;min-height:36px!important;}
 .exam-module-badge{display:inline-block;margin-top:6px;padding:2px 10px;border-radius:99px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;}
 .badge-free{background:rgba(34,197,94,0.2);color:#4ade80;border:1px solid rgba(34,197,94,0.3);}
 .badge-ai{background:rgba(139,92,246,0.2);color:#c084fc;border:1px solid rgba(139,92,246,0.3);}
@@ -623,13 +633,16 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
       <!-- XP + Readiness row -->
       <div class="home-stats-row" id="homeStatsRow"></div>
 
-      <!-- 45-day journey -->
+      <!-- Journey progress bar (compact, replaces 45 dots) -->
       <div class="day-progress">
         <div class="dp-header">
-          <div class="dp-title" id="journeyTitle">Your Dutch Journey 🗺️</div>
-          <div class="dp-day" id="currentDayLabel">Day 1</div>
+          <div class="dp-title" id="journeyTitle">🗺️ Dutch Journey</div>
+          <div class="dp-day" id="currentDayLabel">Day 1 of 45</div>
         </div>
-        <div class="dp-dots" id="dayDots"></div>
+        <div class="bar-track" style="height:8px;border-radius:99px;margin-bottom:8px">
+          <div class="bar-fill" id="journeyBar" style="width:2%;background:linear-gradient(90deg,var(--violet),var(--cyan))"></div>
+        </div>
+        <div id="recentDays" style="display:flex;gap:5px;flex-wrap:wrap"></div>
       </div>
     </div>
 
@@ -1114,7 +1127,41 @@ function renderHomeTab(){
   }
 
   updateMotBanner();
-  renderDayDots();
+  renderJourneyProgress();
+}
+
+function renderJourneyProgress(){
+  const done=userProgress.completedDays||[];
+  const failed=userProgress.failedDays||[];
+  const cur=userProgress.day||1;
+  const total=TOTAL_DAYS();
+
+  // Update progress bar
+  const bar=document.getElementById('journeyBar');
+  if(bar)bar.style.width=Math.max(2,Math.round(done.length/total*100))+'%';
+
+  // Update day label
+  const lbl=document.getElementById('currentDayLabel');
+  if(lbl)lbl.textContent='Day '+cur+' of '+total;
+
+  // Show only last 7 days as compact chips
+  const recentEl=document.getElementById('recentDays');
+  if(!recentEl)return;
+  const start=Math.max(1,cur-6);
+  let html='';
+  for(let d=start;d<=Math.min(cur,total);d++){
+    const isDone=done.includes(d);
+    const isFail=failed.includes(d);
+    const isCur=d===cur;
+    const bg=isCur?'linear-gradient(135deg,#3b82f6,#8b5cf6)':isDone?'rgba(52,201,122,0.15)':isFail?'rgba(224,92,92,0.15)':'rgba(255,255,255,0.04)';
+    const col=isCur?'#fff':isDone?'var(--green)':isFail?'var(--red)':'var(--text3)';
+    const border=isCur?'transparent':isDone?'rgba(52,201,122,0.3)':isFail?'rgba(224,92,92,0.3)':'var(--border2)';
+    html+=`<div style="width:34px;height:34px;border-radius:8px;border:1px solid ${border};background:${bg};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:${col};flex-shrink:0">${d}</div>`;
+  }
+  if(cur<total){
+    html+=`<div style="font-size:12px;color:var(--text3);display:flex;align-items:center;padding-left:4px">+${total-cur} more</div>`;
+  }
+  recentEl.innerHTML=html;
 }
 
 function renderDayDots(){
@@ -2488,86 +2535,58 @@ function renderExamHome(){
   }
 
   function moduleCard(icon,title,sub,practiceAction,testAction,scoreKey){
-    return `<div class="card" style="padding:16px;margin-bottom:10px">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
-        <div style="font-size:28px">${icon}</div>
-        <div>
-          <div style="font-size:15px;font-weight:700;color:var(--text)">${title}</div>
-          <div style="font-size:12px;color:var(--text3);margin-top:1px">${sub}</div>
-        </div>
-        <div style="margin-left:auto">${scoreBadge(scoreKey)}</div>
-      </div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-outline btn-sm" style="flex:1" onclick="${practiceAction}">🎯 Practice</button>
-        <button class="btn btn-gold btn-sm" style="flex:1" onclick="${testAction}">📝 Sample Test</button>
+    const s=scores[scoreKey];
+    const scoreStr=s?`${s.pct}% ${s.pct>=70?'✅':'⚡'}`:'—';
+    const scoreCol=s?(s.pct>=70?'var(--green)':'var(--orange)'):'var(--text3)';
+    return `<div class="exam-grid-card">
+      <div class="egc-icon">${icon}</div>
+      <div class="egc-title">${title}</div>
+      <div class="egc-sub">${sub}</div>
+      <div class="egc-score" style="color:${scoreCol}">${scoreStr}</div>
+      <div class="egc-btns">
+        <button class="btn btn-outline btn-sm egc-btn" onclick="${practiceAction}">Practice</button>
+        <button class="btn btn-gold btn-sm egc-btn" onclick="${testAction}">Test</button>
       </div>
     </div>`;
   }
 
   document.getElementById('examContent').innerHTML=`
-    <div class="exam-hero">
-      <div class="exam-hero-title">🎓 Inburgeringsexamen Prep</div>
-      <div class="exam-hero-sub">Practice anytime — no timer, always unlocked</div>
-
-      <div class="readiness-ring-wrap">
-        <div class="readiness-ring">
-          ${svgRing(pct,110,10,band.col)}
-          <div class="readiness-pct">
-            <div class="readiness-pct-num" style="color:${band.col}">${pct}%</div>
-            <div class="readiness-pct-lbl">Readiness</div>
-          </div>
-        </div>
+    <!-- Compact header strip -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--card);border:1px solid var(--border2);border-radius:var(--r);margin-bottom:12px">
+      <div>
+        <div style="font-size:15px;font-weight:700;color:var(--text)">🎓 Examen Prep</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:2px">Always unlocked · no timer</div>
       </div>
-      <div style="font-size:14px;font-weight:700;color:${band.col};margin-bottom:14px;position:relative">${band.lbl}</div>
-
-      <div class="xp-bar-wrap" style="position:relative">
-        <div class="xp-icon">⚡</div>
-        <div class="xp-info">
-          <div class="xp-label">Level ${xpLevel} · ${xp} XP total</div>
-          <div class="xp-track"><div class="xp-fill" style="width:${xpInLevel}%"></div></div>
-        </div>
-        <div class="xp-count">${xp} XP</div>
+      <div style="text-align:right">
+        <div style="font-size:22px;font-weight:800;color:${band.col}">${pct}%</div>
+        <div style="font-size:11px;color:var(--text3)">${band.lbl}</div>
       </div>
     </div>
 
-    <!-- ONA exemption notice -->
-    <div style="background:rgba(52,201,122,0.08);border:1px solid rgba(52,201,122,0.2);border-radius:12px;padding:12px 16px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px">
-      <div style="font-size:20px;flex-shrink:0">✅</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.6">
-        <strong style="color:var(--green)">ONA module — niet van toepassing.</strong><br>
-        As an expat on an HSM visa / 30% ruling working in the Netherlands, you are exempt from the ONA (Oriëntatie op de Nederlandse Arbeidsmarkt) component. You only need to pass the 4 core modules below.
-      </div>
+    <!-- ONA pill -->
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(52,201,122,0.08);border:1px solid rgba(52,201,122,0.2);border-radius:99px;padding:8px 14px;margin-bottom:14px;font-size:12px;color:var(--green);font-weight:600">
+      ✅ ONA vrijgesteld — HSM visa / 30% ruling
     </div>
 
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">4 Core Modules</div>
+    <!-- 2×2 module grid -->
+    <div class="exam-modules-grid">
+      ${moduleCard('🏛️','KNM','50 vragen','startKNMPractice()','startKNMSampleTest()','knm')}
+      ${moduleCard('📖','Lezen','5 passages','startLezenMenu()','startLezenSampleTest()','lezen1')}
+      ${moduleCard('✍️','Schrijven','AI beoordeeld','startSchrijvenMenu()','startSchrijvenSampleTest()','schrijven')}
+      ${moduleCard('🎭','OGO','Rollenspel','startOGO()','startOGOSampleTest()','ogo')}
+    </div>
 
-    ${moduleCard('🏛️','KNM','Civic knowledge · 50 questions','startKNMPractice()','startKNMSampleTest()','knm')}
-    ${moduleCard('📖','Lezen','Reading comprehension · 5 passages','startLezenMenu()','startLezenSampleTest()','lezen1')}
-    ${moduleCard('✍️','Schrijven','Writing tasks · AI evaluated','startSchrijvenMenu()','startSchrijvenSampleTest()','schrijven')}
-    ${moduleCard('🎭','Spreken — OGO','Role-play scenarios · AI scored','startOGO()','startOGOSampleTest()','ogo')}
-
-    <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:1px;margin:14px 0 10px">Study Tools</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+    <!-- Tools row -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
       <div class="exam-module" onclick="showKNMStudyCards()">
         <div class="exam-module-icon">📋</div>
         <div class="exam-module-name">Flashcards</div>
-        <div class="exam-module-sub">KNM study cards</div>
-        <span class="exam-module-badge badge-free">15 kaarten</span>
+        <div class="exam-module-sub">KNM kaarten</div>
       </div>
       <div class="exam-module" onclick="showWeaknessReport()">
         <div class="exam-module-icon">📊</div>
-        <div class="exam-module-name">Weakness Report</div>
-        <div class="exam-module-sub">Where to focus next</div>
-        <span class="exam-module-badge badge-free">Analysis</span>
-      </div>
-    </div>
-
-    <div class="card" style="background:rgba(91,141,238,0.05);border-color:var(--border2)">
-      <div class="card-title">💡 Exam structure</div>
-      <div style="font-size:13px;line-height:1.9;color:var(--text2)">
-        <strong style="color:var(--text)">Practice</strong> — 20 random questions, instant feedback after each.<br>
-        <strong style="color:var(--text)">Sample Test</strong> — full exam simulation, timed, analysis at the end.<br>
-        <strong style="color:var(--orange)">Pass mark: 70%+ in every module.</strong>
+        <div class="exam-module-name">Zwaktes</div>
+        <div class="exam-module-sub">Analyse</div>
       </div>
     </div>`;
 }
