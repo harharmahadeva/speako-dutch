@@ -15,8 +15,8 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
   if (!allowed) return res.status(403).json({ error: 'Forbidden' });
 
-  const apiKey = process.env.deutch_key;
-  if (!apiKey) return res.status(500).json({ error: 'API key not configured' });
+  const apiKey = process.env.deutch_key || process.env.DEUTCH_KEY || process.env.GROQ_API_KEY;
+  if (!apiKey) return res.status(500).json({ error: 'API key not configured', env_keys: Object.keys(process.env).filter(k=>!k.startsWith('npm_')) });
 
   try {
     const body = req.body || {};
