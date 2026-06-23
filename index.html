@@ -322,9 +322,197 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 
 @media(max-width:480px){.test-options{grid-template-columns:1fr;}.word-de{font-size:42px;}.word-en{font-size:18px;}.word-pron{font-size:15px;}.phrase-de{font-size:21px;}.header{padding:10px 14px;}.main{padding:14px 12px 80px;}.tabs{gap:3px;}.tab{font-size:12px;padding:10px 6px;}.logout-btn .lbl{display:none;}.exercise-input,.drill-input{font-size:16px;}}
 @media(min-width:1024px){.main{padding:24px 20px 90px;}.card{padding:24px;}}
-::-webkit-scrollbar{width:5px;}
-::-webkit-scrollbar-track{background:var(--surface);}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:99px;}
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:99px;}
+
+/* ══════════════════════════════════════════════
+   SPEAKO v2 — Smooth UI Redesign
+   ══════════════════════════════════════════════ */
+:root{
+  --bg:#0d1117;
+  --surface:#131920;
+  --card:#181f2e;
+  --card2:#1e2639;
+  --border:rgba(255,255,255,0.06);
+  --border2:rgba(100,130,220,0.16);
+  --r:16px;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+  --accent:#f0700a;
+  --accent-g:rgba(240,112,10,0.11);
+}
+body{background:var(--bg);}
+
+/* Smooth micro-interactions on interactive elements only */
+.btn,.home-action-card,.exam-grid-card,.exam-module,.knm-opt,.ogo-scenario[onclick],.nav-item{
+  transition:all 0.2s var(--ease)!important;
+}
+
+/* ── Hide old top tabs (bottom nav replaces it) ── */
+.tabs{display:none!important;}
+/* Remove always-visible hero — only shown on home tab */
+#homeHero{display:none;}
+
+/* ── Header: cleaner and slimmer ── */
+.header{
+  background:rgba(13,17,23,0.97);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+  padding:9px 16px;
+}
+.logo{font-size:16px;font-weight:800;letter-spacing:.4px;}
+.streak{padding:5px 10px;font-size:12px;}
+.user-name{padding:5px 12px;font-size:12px;}
+.logout-btn{padding:5px 10px;font-size:11px;}
+
+/* ── Main: bottom padding for nav ── */
+.main{padding-bottom:90px!important;padding-top:14px!important;}
+
+/* ── Bottom Navigation Bar ── */
+.bottom-nav{
+  position:fixed;
+  bottom:0;left:0;right:0;
+  background:rgba(17,22,30,0.97);
+  backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  border-top:1px solid rgba(255,255,255,0.07);
+  display:flex;
+  justify-content:space-around;
+  align-items:flex-start;
+  padding:10px 4px calc(env(safe-area-inset-bottom,0px) + 10px);
+  z-index:200;
+}
+.nav-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:4px 8px;border-radius:14px;cursor:pointer;flex:1;
+  opacity:0.38;position:relative;
+}
+.nav-item.active{opacity:1;}
+.nav-item:active{transform:scale(0.88)!important;}
+.nav-item-icon{font-size:21px;transition:transform 0.2s var(--ease);}
+.nav-item.active .nav-item-icon{transform:translateY(-1px) scale(1.08);}
+.nav-item-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.2px;}
+.nav-item.active .nav-item-label{color:var(--accent);}
+.nav-active-bar{
+  position:absolute;top:-10px;left:20%;right:20%;
+  height:2.5px;border-radius:99px;
+  background:var(--accent);
+  opacity:0;transform:scaleX(0);
+  transition:opacity 0.2s var(--ease),transform 0.25s var(--ease);
+}
+.nav-item.active .nav-active-bar{opacity:1;transform:scaleX(1);}
+
+/* ── Tab content animation ── */
+@keyframes tabSlideUp{
+  from{opacity:0;transform:translateY(8px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.tab-animate{animation:tabSlideUp 0.22s var(--ease) both;}
+
+/* ── Home: streak card ── */
+.home-stats-row{display:block!important;}
+.streak-card{
+  display:flex;align-items:center;gap:14px;
+  background:var(--card);
+  border:1px solid rgba(240,112,10,0.18);
+  border-radius:18px;padding:14px 18px;
+  margin-bottom:12px;
+}
+.streak-card-flame{font-size:28px;flex-shrink:0;}
+.streak-card-info{flex:1;}
+.streak-card-num{font-size:22px;font-weight:900;color:var(--accent);line-height:1;}
+.streak-card-lbl{font-size:10px;color:var(--text3);font-weight:700;letter-spacing:.6px;text-transform:uppercase;margin-top:3px;}
+.streak-card-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.xp-pill-new{background:rgba(240,180,41,0.1);border:1px solid rgba(240,180,41,0.22);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--gold);}
+.readiness-pill-new{background:rgba(52,201,122,0.1);border:1px solid rgba(52,201,122,0.22);border-radius:99px;padding:4px 10px;font-size:11px;font-weight:700;color:var(--green);}
+
+/* ── Home action cards ── */
+.home-action-card{
+  border-radius:18px;padding:16px 14px;
+  background:var(--card);border:1px solid rgba(255,255,255,0.06);
+}
+.home-action-card:hover{
+  border-color:rgba(240,112,10,0.28);
+  box-shadow:0 6px 28px rgba(0,0,0,0.32);
+  transform:translateY(-3px)!important;
+}
+.home-action-card:active{transform:scale(0.97)!important;}
+.home-action-card::before{background:rgba(240,112,10,0.04)!important;}
+
+/* ── Session bar: slimmer ── */
+.session-bar{
+  background:var(--card);border:1px solid rgba(255,255,255,0.05);
+  border-radius:12px;padding:10px 14px;margin-bottom:10px;
+}
+.session-label{font-size:11px;}
+.session-time{font-size:12px;}
+
+/* ── Motivation banner: subtler ── */
+.mot-banner{background:rgba(91,141,238,0.06);border-color:rgba(91,141,238,0.14);font-size:12px;padding:12px 16px;}
+
+/* ── Primary button = Dutch orange ── */
+.btn-gold{
+  background:linear-gradient(135deg,#f07010 0%,#c04008 100%);
+  color:#fff;
+  box-shadow:0 4px 16px rgba(240,112,10,0.26);
+}
+.btn-gold:hover{
+  transform:translateY(-2px)!important;
+  box-shadow:0 8px 26px rgba(240,112,10,0.4)!important;
+}
+
+/* ── Exam grid: 3 columns ── */
+.exam-modules-grid{
+  grid-template-columns:1fr 1fr 1fr!important;
+  gap:8px!important;
+}
+.exam-grid-card{
+  border-radius:16px;padding:12px 10px;
+}
+.exam-grid-card:hover{
+  transform:translateY(-3px)!important;
+  box-shadow:0 8px 24px rgba(0,0,0,0.3)!important;
+}
+.egc-icon{font-size:20px;}
+.egc-title{font-size:12px;}
+.egc-sub{font-size:10px;}
+.egc-score{font-size:11px;}
+.egc-btns{gap:4px;margin-top:6px;}
+.egc-btn{padding:6px 4px!important;font-size:11px!important;min-height:32px!important;}
+
+/* Module color left-borders */
+.egc-knm{border-left:3px solid var(--blue)!important;}
+.egc-lezen{border-left:3px solid var(--cyan)!important;}
+.egc-schrijven{border-left:3px solid var(--violet)!important;}
+.egc-ogo{border-left:3px solid var(--orange)!important;}
+.egc-luisteren{border-left:3px solid var(--green)!important;}
+.egc-mock{border-left:3px solid var(--gold)!important;background:rgba(240,180,41,0.05)!important;}
+
+/* ── KNM options: subtle slide on hover ── */
+.knm-opt:hover:not(:disabled){transform:translateX(3px);}
+
+/* ── OGO scenario hover ── */
+.ogo-scenario[onclick]:hover{border-color:rgba(139,92,246,0.45);transform:translateY(-2px);}
+
+/* ── Back button slide ── */
+.exam-back-btn{transition:all 0.18s var(--ease)!important;}
+.exam-back-btn:hover{transform:translateX(-2px);background:rgba(255,255,255,0.12);}
+
+/* ── Progress bars ── */
+.bar-fill{transition:width 0.55s var(--ease)!important;}
+
+/* ── Cards ── */
+.card{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:18px;}
+
+/* ── Journey day chips ── */
+#recentDays>div{transition:all 0.2s var(--ease);}
+
+/* ── Mobile: 2-col fallback for exam grid ── */
+@media(max-width:360px){
+  .exam-modules-grid{grid-template-columns:1fr 1fr!important;}
+  .egc-title{font-size:11px;}
+}
 
 /* ── EXAM PREP ── */
 .exam-hero{background:linear-gradient(135deg,#1a1060 0%,#0d3b6e 50%,#0a5c3a 100%);border-radius:20px;padding:24px 20px;margin-bottom:16px;text-align:center;position:relative;overflow:hidden;}
@@ -682,6 +870,31 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
     </div>
 
   </div>
+
+  <!-- BOTTOM NAVIGATION BAR -->
+  <div class="bottom-nav" id="bottomNav">
+    <div class="nav-item tab active" id="tabBtnHome" onclick="switchTab('home',this);renderHomeTab()">
+      <div class="nav-active-bar"></div>
+      <div class="nav-item-icon">🏠</div>
+      <div class="nav-item-label">Home</div>
+    </div>
+    <div class="nav-item tab" id="tabBtnLesson" onclick="switchTab('lesson',this)">
+      <div class="nav-active-bar"></div>
+      <div class="nav-item-icon">📚</div>
+      <div class="nav-item-label">Lesson</div>
+    </div>
+    <div class="nav-item tab" id="tabBtnSpeak" onclick="switchTab('speak',this)">
+      <div class="nav-active-bar"></div>
+      <div class="nav-item-icon">🎤</div>
+      <div class="nav-item-label">Speaking</div>
+    </div>
+    <div class="nav-item tab" id="tabBtnExam" onclick="switchTab('exam',this);renderExamHome()">
+      <div class="nav-active-bar"></div>
+      <div class="nav-item-icon">🎓</div>
+      <div class="nav-item-label">Examen</div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -960,7 +1173,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.4.0';
+const APP_VERSION='1.5.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1116,13 +1329,22 @@ function renderHomeTab(){
     }
   }
 
-  // Stats row
+  // Stats row — streak card
   const statsRow=document.getElementById('homeStatsRow');
   if(statsRow){
+    const streak=userProgress.streak||1;
     statsRow.innerHTML=`
-      <div class="home-stat"><div class="home-stat-val">${day}</div><div class="home-stat-lbl">Current Day</div></div>
-      <div class="home-stat"><div class="home-stat-val">${xp}</div><div class="home-stat-lbl">XP earned</div></div>
-      <div class="home-stat"><div class="home-stat-val">${readiness}%</div><div class="home-stat-lbl">Readiness</div></div>
+      <div class="streak-card">
+        <div class="streak-card-flame">🔥</div>
+        <div class="streak-card-info">
+          <div class="streak-card-num">${streak} ${streak===1?'day':'days'}</div>
+          <div class="streak-card-lbl">Current streak</div>
+        </div>
+        <div class="streak-card-right">
+          <div class="xp-pill-new">⚡ ${xp} XP</div>
+          <div class="readiness-pill-new">${readiness}% ready</div>
+        </div>
+      </div>
     `;
   }
 
@@ -1195,11 +1417,11 @@ function extendSession(){sessionTarget+=30;document.getElementById('extendBar').
 
 function unlockTest(){
   document.getElementById('extendBar').style.display='flex';
-  const tb=document.getElementById('tabBtnTest');
-  tb.classList.remove('locked');
-  tb.textContent='🎯 Take Test ← Now!';
-  tb.style.color='var(--gold)';
-  tb.style.borderColor='var(--gold)';
+  // Update home test card status
+  const testStatus=document.getElementById('homeTestStatus');
+  const testSub=document.getElementById('homeTestSub');
+  if(testStatus){testStatus.textContent='Unlocked ✅';testStatus.className='hac-status hac-status-done';}
+  if(testSub)testSub.textContent='Ready to attempt';
 }
 
 async function loadLesson(day){
@@ -1994,11 +2216,15 @@ function appendMsg(text,type){
 function switchTab(name,el){
   ['home','lesson','speak','test','exam'].forEach(t=>{
     const d=document.getElementById('tab-'+t);
-    if(d)d.classList.add('hidden');
+    if(d){d.classList.add('hidden');d.classList.remove('tab-animate');}
   });
   document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
   const target=document.getElementById('tab-'+name);
-  if(target)target.classList.remove('hidden');
+  if(target){
+    target.classList.remove('hidden');
+    void target.offsetWidth;
+    target.classList.add('tab-animate');
+  }
   if(el)el.classList.add('active');
   if(name==='speak')renderSpeakTab();
 }
@@ -2534,46 +2760,64 @@ function renderExamHome(){
     return `<span style="font-size:12px;font-weight:700;color:${col}">Best: ${s.pct}% ${s.pct>=70?'✅':'⚡'}</span>`;
   }
 
-  function moduleCard(icon,title,sub,practiceAction,testAction,scoreKey){
+  function moduleCard(icon,title,sub,practiceAction,testAction,scoreKey,extraClass=''){
     const s=scores[scoreKey];
     const scoreStr=s?`${s.pct}% ${s.pct>=70?'✅':'⚡'}`:'—';
     const scoreCol=s?(s.pct>=70?'var(--green)':'var(--orange)'):'var(--text3)';
-    return `<div class="exam-grid-card">
+    return `<div class="exam-grid-card ${extraClass}">
       <div class="egc-icon">${icon}</div>
       <div class="egc-title">${title}</div>
       <div class="egc-sub">${sub}</div>
       <div class="egc-score" style="color:${scoreCol}">${scoreStr}</div>
       <div class="egc-btns">
-        <button class="btn btn-outline btn-sm egc-btn" onclick="${practiceAction}">Practice</button>
+        <button class="btn btn-outline btn-sm egc-btn" onclick="${practiceAction}">Oefenen</button>
         <button class="btn btn-gold btn-sm egc-btn" onclick="${testAction}">Test</button>
       </div>
     </div>`;
   }
 
+  const mockBestScore=scores['mock_exam'];
+  const mockStr=mockBestScore?`${mockBestScore.pct}%`:'—';
+  const mockCol=mockBestScore?(mockBestScore.pct>=70?'var(--green)':'var(--orange)'):'var(--text3)';
+
   document.getElementById('examContent').innerHTML=`
     <!-- Compact header strip -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--card);border:1px solid var(--border2);border-radius:var(--r);margin-bottom:12px">
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 18px;background:var(--card);border:1px solid var(--border2);border-radius:18px;margin-bottom:12px">
       <div>
-        <div style="font-size:15px;font-weight:700;color:var(--text)">🎓 Examen Prep</div>
-        <div style="font-size:12px;color:var(--text3);margin-top:2px">Always unlocked · no timer</div>
+        <div style="font-size:15px;font-weight:800;color:var(--text)">🎓 Examen Prep</div>
+        <div style="font-size:11px;color:var(--text3);margin-top:2px">5 modules · Altijd beschikbaar</div>
       </div>
       <div style="text-align:right">
-        <div style="font-size:22px;font-weight:800;color:${band.col}">${pct}%</div>
-        <div style="font-size:11px;color:var(--text3)">${band.lbl}</div>
+        <div style="font-size:24px;font-weight:900;color:${band.col}">${pct}%</div>
+        <div style="font-size:10px;color:var(--text3)">${band.lbl}</div>
       </div>
     </div>
 
     <!-- ONA pill -->
-    <div style="display:flex;align-items:center;gap:8px;background:rgba(52,201,122,0.08);border:1px solid rgba(52,201,122,0.2);border-radius:99px;padding:8px 14px;margin-bottom:14px;font-size:12px;color:var(--green);font-weight:600">
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(52,201,122,0.07);border:1px solid rgba(52,201,122,0.18);border-radius:99px;padding:7px 14px;margin-bottom:12px;font-size:11px;color:var(--green);font-weight:700">
       ✅ ONA vrijgesteld — HSM visa / 30% ruling
     </div>
 
-    <!-- 2×2 module grid -->
+    <!-- 3×2 module grid -->
     <div class="exam-modules-grid">
-      ${moduleCard('🏛️','KNM','50 vragen','startKNMPractice()','startKNMSampleTest()','knm')}
-      ${moduleCard('📖','Lezen','5 passages','startLezenMenu()','startLezenSampleTest()','lezen1')}
-      ${moduleCard('✍️','Schrijven','AI beoordeeld','startSchrijvenMenu()','startSchrijvenSampleTest()','schrijven')}
-      ${moduleCard('🎭','OGO','Rollenspel','startOGO()','startOGOSampleTest()','ogo')}
+      ${moduleCard('🏛️','KNM','50 vragen','startKNMPractice()','startKNMSampleTest()','knm','egc-knm')}
+      ${moduleCard('📖','Lezen','5 teksten','startLezenMenu()','startLezenSampleTest()','lezen1','egc-lezen')}
+      ${moduleCard('✍️','Schrijven','AI beoordeeld','startSchrijvenMenu()','startSchrijvenSampleTest()','schrijven','egc-schrijven')}
+      ${moduleCard('🎭','OGO','Rollenspel','startOGO()','startOGOSampleTest()','ogo','egc-ogo')}
+      ${moduleCard('🎧','Luisteren','Audio MCQ','startLuisterenMenu()','startLuisterenSampleTest()','luisteren','egc-luisteren')}
+      <div class="exam-grid-card egc-mock" style="display:flex;flex-direction:column;justify-content:space-between">
+        <div>
+          <div class="egc-icon">⏱️</div>
+          <div class="egc-title">Mock Exam</div>
+          <div class="egc-sub">Alle 5 modules</div>
+        </div>
+        <div>
+          <div class="egc-score" style="color:${mockCol}">${mockStr}</div>
+          <div class="egc-btns" style="margin-top:6px">
+            <button class="btn btn-gold btn-sm egc-btn" style="width:100%" onclick="startMockExam()">Start ⏱️</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Tools row -->
@@ -3394,6 +3638,49 @@ function nextStudyCard(){
   else{addExamXP(15);renderExamHome();}
 }
 function prevStudyCard(){if(studyCardIndex>0){studyCardIndex--;studyCardFlipped=false;renderStudyCard();}}
+
+// ── LUISTEREN MODULE (stub — full build Phase 2) ──
+function startLuisterenMenu(){
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">🎧 Luisteren</div><div class="exam-section-sub">Luistervaardigheid — Audio MCQ</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div class="card" style="text-align:center;padding:40px 24px">
+      <div style="font-size:48px;margin-bottom:16px">🎧</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Luisteren — Binnenkort beschikbaar</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px">
+        De luistermodule is in ontwikkeling. Je kunt binnenkort oefenen met echte Nederlandse audiofragmenten van gemeente, dokter, trein en werk gesprekken.
+      </div>
+      <button class="btn btn-outline" onclick="renderExamHome()">← Terug naar overzicht</button>
+    </div>`;
+}
+function startLuisterenSampleTest(){startLuisterenMenu();}
+
+// ── MOCK FULL EXAM (stub — full build Phase 3) ──
+function startMockExam(){
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">⏱️ Mock Examen</div><div class="exam-section-sub">Alle 5 modules · Volledige tijdslimiet</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div class="card" style="text-align:center;padding:40px 24px">
+      <div style="font-size:48px;margin-bottom:16px">⏱️</div>
+      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Mock Examen — Binnenkort beschikbaar</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
+        Het volledige mock-examen simuleert de echte inburgeringstest:<br>
+        KNM (35 min) → Lezen (35 min) → Luisteren (25 min) → Schrijven (60 min) → OGO (15 min)
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;text-align:left">
+        ${[['🏛️ KNM','35 min'],['📖 Lezen','35 min'],['🎧 Luisteren','25 min'],['✍️ Schrijven','60 min'],['🎭 OGO','15 min'],['📊 Totaal','170 min']].map(([m,t])=>`
+          <div style="background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center">
+            <span style="font-size:12px;font-weight:600;color:var(--text)">${m}</span>
+            <span style="font-size:11px;color:var(--text3)">${t}</span>
+          </div>`).join('')}
+      </div>
+      <button class="btn btn-outline" onclick="renderExamHome()">← Terug naar overzicht</button>
+    </div>`;
+}
 </script>
 <script>
 if('serviceWorker' in navigator){

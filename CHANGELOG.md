@@ -7,6 +7,33 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.5.0] — 2026-06-23
+
+### Changed
+- **Full UI/UX redesign** — complete visual overhaul inspired by modern language learning apps
+- **Bottom navigation bar** (fixed, thumb-friendly) replaces top tab bar — Home · Lesson · Speaking · Examen
+- **Dutch orange accent** (`#f0700a`) replaces blue/purple as primary CTA color — warmer, less eye strain
+- **Palette refresh** — darker, warmer background (`#0d1117`), softer card surfaces, reduced border contrast
+- **Tab transitions** — smooth `fadeSlideUp` animation (0.22s) on every tab switch
+- **Streak card** on Home — flame icon, day count, XP pill, readiness % in one compact bar (replaces 3-col stat grid)
+- **Home action cards** — updated hover (orange border glow, -3px lift, 0.2s ease)
+- **Exam grid: 3×2 layout** — 6 cards (KNM · Lezen · Schrijven | OGO · Luisteren · Mock Exam)
+- Each exam module card gets a **color-coded left border** accent (blue/cyan/violet/orange/green/gold)
+- **KNM options** slide right on hover; **back button** slides left on hover
+- **Bottom nav active state** — orange dot bar at top + icon scale + label color change
+- Session bar, motivation banner, cards all with softened borders and transitions
+- iOS safe-area inset respected in bottom nav padding
+
+### Added
+- **Luisteren module stub** — 🎧 card in exam grid; full audio MCQ coming in Phase 2
+- **Mock Exam stub** — ⏱️ card shows 5-module plan (KNM 35min → Lezen 35min → Luisteren 25min → Schrijven 60min → OGO 15min); full simulator coming in Phase 3
+- `tab-animate` CSS animation class for smooth tab entry
+- `.streak-card` component (flame + count + XP + readiness in one row)
+- `.nav-active-bar` — animated orange line above active nav item
+- `--ease` CSS variable for consistent cubic-bezier across all transitions
+
+---
+
 ## [1.4.0] — 2026-06-23
 
 ### Added
