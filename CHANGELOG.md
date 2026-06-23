@@ -7,6 +7,16 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.3.1] — 2026-06-23
+
+### Fixed
+- Disclaimer screen: "Before You Begin" title and subtitle now center-aligned to match logo/tagline above
+- JS syntax error (`isNL?` ternary with no false branch) that crashed app on load, leaving users stuck on spinner
+- CORS: API now allows all `*.vercel.app` origins instead of hardcoded URL
+- CORS: added `speako-dutch.vercel.app` to allowed origins
+
+---
+
 ## [1.3.0] — 2026-06-23
 
 ### Added
