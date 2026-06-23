@@ -7,6 +7,23 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.4.0] — 2026-06-23
+
+### Added
+- **Home dashboard tab** — new landing screen with 4 action cards (Lesson, Speaking, Test, Exam), XP / Day / Readiness stats row, session progress bar, motivation banner, 45-day journey dots all in one view
+- `renderHomeTab()` — dynamically updates test locked/unlocked state, stats, and day number
+- App now lands on Home tab on login; lesson loads in background
+
+### Changed
+- Tabs: Home | Lesson | Speaking | Examen (Test accessible via Home card, no longer a separate tab)
+- Session bar and 45-day dots moved from above tabs into the Home tab — eliminates the long scroll before reaching content
+- Button redesign: smooth cubic-bezier transitions, lift + glow on hover, ripple overlay on all buttons, active scale, consistent pill shape
+- Arrows removed from all entry/action buttons (Start, Submit, Get scenario, Practice now etc.)
+- Arrows kept only on navigation/flow buttons (Volgende →, Next →, See Results 🎯)
+- `disc-btn` and `login-btn` updated to match new pill style
+
+---
+
 ## [1.3.1] — 2026-06-23
 
 ### Fixed
