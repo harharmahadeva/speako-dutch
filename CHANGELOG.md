@@ -7,6 +7,18 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.9.0] — 2026-06-24
+
+### Changed
+- **Lesson prompt rewritten** — simpler, exam-first teaching style ("explain like a smart 8-year-old"); every word and phrase now tied to a specific inburgering exam module
+- Each word card now shows an exam tag (KNM / Lezen / Luisteren / Schrijven / OGO) so learners know exactly why they're learning it
+- Phrase cards now show exact usage context ("Say this when the gemeente officer asks...") instead of a generic joke
+- Lesson intro now shows an **Examen hook** — which exam modules today's lesson directly prepares
+- `safeParseLesson` updated: handles `examHook`, `survivalTip` (replaces `berlinTip`), word `exam` field, phrase `use` field; backward-compatible with old field names
+- Grammar explanation simplified: one rule (max 15 words), 3 short examples (max 6 words each), one mistake fix
+
+---
+
 ## [1.8.0] — 2026-06-24
 
 ### Added

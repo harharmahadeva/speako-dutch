@@ -1095,13 +1095,16 @@ function safeParseLesson(raw){
   if(!obj.phrases||!Array.isArray(obj.phrases))throw new Error('Invalid lesson structure');
   // Sanitise all string fields from AI response
   obj.funnyIntro=esc(obj.funnyIntro||'');
-  obj.berlinTip=esc(obj.berlinTip||'');
+  obj.examHook=esc(obj.examHook||'');
+  // support both old (berlinTip) and new (survivalTip) field names
+  obj.survivalTip=esc(obj.survivalTip||obj.berlinTip||'');
+  obj.berlinTip=obj.survivalTip;
   obj.jobTip=esc(obj.jobTip||'');
   obj.topic=esc(obj.topic||'');
   if(obj.grammar&&typeof obj.grammar==='object'){
     obj.grammar={
       rule:esc(obj.grammar.rule||''),
-      explanation:esc(obj.grammar.explanation||''),
+      explanation:esc(obj.grammar.explanation||obj.grammar.rule||''),
       examples:(Array.isArray(obj.grammar.examples)?obj.grammar.examples:[]).slice(0,5).map(e=>esc(String(e||''))),
       mistake:esc(obj.grammar.mistake||'')
     };
@@ -1109,10 +1112,11 @@ function safeParseLesson(raw){
   obj.words=obj.words.slice(0,12).map(w=>({
     de:esc(w.de||''), pron:esc(w.pron||''), en:esc(w.en||''),
     example_de:esc(w.example_de||''), example_en:esc(w.example_en||''),
-    funny:esc(w.funny||'')
+    funny:esc(w.funny||''), exam:esc(w.exam||'')
   }));
   obj.phrases=obj.phrases.slice(0,10).map(p=>({
-    de:esc(p.de||''), en:esc(p.en||''), funny:esc(p.funny||'')
+    de:esc(p.de||''), en:esc(p.en||''),
+    funny:esc(p.funny||p.use||''), use:esc(p.use||p.funny||'')
   }));
   return obj;
 }
@@ -1236,7 +1240,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.8.0';
+const APP_VERSION='1.9.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1493,43 +1497,43 @@ async function loadLesson(day){
   const topic=DAY_TOPICS_NL[(day-1)%DAY_TOPICS_NL.length]||'Advanced Dutch';
   document.getElementById('lessonContent').innerHTML=`<div class="lesson-loading"><div class="spinner"></div><div>Generating Dag ${day} lesson... hang tight! 🍛</div></div>`;
 
-  const prompt=`You are a structured Dutch tutor for an IT professional from New Delhi now living in the Netherlands. Goal: reach Inburgeringsexamen A2 / KNM standard in 45 days. Warm, memorable humor — but accuracy comes first.
+  const prompt=`You are a Dutch inburgering coach for Indian IT professionals in the Netherlands. Your job: help them pass the Inburgeringsexamen (A2/KNM) in 45 days. Teach like you're explaining to a smart 8-year-old — SHORT, SIMPLE, VISUAL, FUN. No jargon. No walls of text. Every word and phrase must connect to a REAL inburgering exam situation.
 
-Generate Dag ${day} of 45 Dutch lesson on: "${topic}"
+DAG ${day} VAN 45 — Topic: "${topic}"
 
-LEVEL RULES (strictly enforced):
-- Days 1-7: A1 absolute basics — isolated words only, no full sentences in examples
-- Days 8-21: A1→A2 — Inburgering daily life topics, simple present tense sentences
-- Days 22-25: A2 scenarios — Spreken (speaking) practice: dokter, gemeente, sollicitatie
-- Days 26-32: A2 grammar — present tense, de/het, word order, question words, negation, modal verbs
-- Days 33-39: A2 advanced — healthcare, housing, job applications, forms, past tense
-- Days 40-44: Exam prep — Lezen, Luisteren, Schrijven, Spreken, KNM mock
-- Day 45: Graduation — full review
+LEVEL (strictly follow):
+- Days 1-7: Single words only, A1. No sentences in examples — just the word + sound + meaning + 1 emoji image
+- Days 8-21: Simple A1→A2 sentences. Only present tense. Real places: Albert Heijn, NS, gemeente, huisarts
+- Days 22-25: Short spoken exchanges for dokter / gemeente / sollicitatie. 2-3 line dialogues
+- Days 26-32: One grammar rule per lesson, super simple. Show the pattern with 3 short examples
+- Days 33-39: Reading/writing words — forms, letters, healthcare, housing. Exam-style sentences
+- Days 40-44: Exam drills — KNM facts, listening words, writing openers, speaking responses
+- Day 45: Quick-fire review of the 45 most important words from the whole course
 
-GRAMMAR POINT (mandatory):
-- Explain the specific Dutch grammar concept for day ${day} in simple English
-- Clear rule, 2-3 example sentences, common mistake to avoid
-- Days 1-7: grammar field still required but keep it simple (e.g. Dutch pronunciation rule)
+GRAMMAR — ONE rule, explained in 1 sentence like you're 8 years old. Then show it with 3 SHORT examples (max 6 words each). Then 1 mistake to avoid.
 
-VOCABULARY RULES:
-- Words must match the Inburgering A2 / NT2 word lists
-- For NOUNS only: prefix with de or het (e.g. "de fiets", "het huis"). For verbs, adjectives, greetings, adverbs, pronouns — NO article prefix, just the bare word (e.g. "hallo", "goed", "ik", "lopen")
-- Pronunciation guide using approximate English sounds (Dutch G = KH, Dutch IJ = AY, V = F/V, W = V)
-- Example sentences use realistic Dutch daily-life situations (Albert Heijn, NS trein, gemeente, huisarts)
+WORDS — 8 words from the NT2/A2 inburgering word list. For each word:
+- Nouns: always include de/het (e.g. "de fiets"). Verbs/adj/etc: no article
+- Pronunciation: spell it out in English sounds (Dutch G = kh, IJ = ay, OE = oo, UI = ow)
+- Example: ONE short Dutch sentence (max 8 words) from a real inburgering scenario
+- Memory hook: a funny/vivid Delhi→Amsterdam comparison (DTC bus → NS trein, auto-wala → fiets, jugaad → Dutch directness, chai → koffie)
+- Exam link: which exam module uses this word (KNM / Lezen / Luisteren / Schrijven / OGO)
 
-TONE: Like a brilliant desi didi who passed her inburgering exam. Humor through Delhi+Amsterdam comparisons.
-Delhi: CP, DTC bus, auto-wala, chai, Chandni Chowk, jugaad, "yaar"
-Amsterdam/NL: Albert Heijn, NS trein, OV-chipkaart, gemeente, huisarts, fiets, stroopwafel, gezellig, Randstad
+PHRASES — 6 phrases you WILL need in real inburgering life. For each:
+- The Dutch phrase (short, max 7 words)
+- English meaning
+- Exact situation: "Say this when the gemeente officer asks..." or "Write this to open your Schrijven letter..."
 
-Return ONLY valid JSON (no markdown, no backticks):
-{"day":${day},"topic":"${topic}","funnyIntro":"2 sentences — Delhi+Amsterdam humor, set up why today's topic matters for inburgering","grammar":{"rule":"Clear one-sentence Dutch grammar rule","explanation":"2-3 sentences with logic behind it","examples":["Dutch sentence 1 — English translation","Dutch sentence 2 — English translation","Dutch sentence 3 — English translation"],"mistake":"Most common error and how to avoid it"},"words":[{"de":"Dutch word with de/het if noun","pron":"[sounds-like-english]","en":"meaning","example_de":"Dutch daily-life sentence","example_en":"translation","funny":"Delhi/Amsterdam memory hook"}],"phrases":[{"de":"Dutch phrase","en":"meaning","funny":"when to use — real inburgering situation"}],"berlinTip":"Practical Netherlands survival tip (gemeente, zorgverzekering, OV, etc.) linked to today's topic","jobTip":"Job hunting in NL tip — IT sector, Dutch workplace culture, LinkedIn NL"}
+TONE: Like a brilliant desi didi who already passed her inburgering. Warm, funny, never boring. 1 Delhi joke per lesson max.
 
-STRICT RULES:
-- Exactly 8 words (NT2 A2 level)
-- Exactly 6 phrases
-- grammar field REQUIRED — no exceptions
-- All example sentences grammatically correct Dutch
-- Inburgering/KNM angle where relevant (rechten, plichten, Nederlandse waarden, participatie)
+Return ONLY valid JSON (no markdown, no backticks, no extra text):
+{"day":${day},"topic":"${topic}","funnyIntro":"1 punchy sentence — Delhi↔Amsterdam joke that sets up WHY today's topic matters for the exam","examHook":"Which specific inburgering exam module(s) today's lesson directly helps with, and how","grammar":{"rule":"One rule in plain English — max 15 words","examples":["Dutch (max 6 words) — English","Dutch — English","Dutch — English"],"mistake":"What Indians get wrong — and the fix in 1 sentence"},"words":[{"de":"word (de/het if noun)","pron":"[english-sounds]","en":"meaning","example_de":"short Dutch sentence","example_en":"translation","funny":"Delhi/Amsterdam memory hook","exam":"KNM|Lezen|Luisteren|Schrijven|OGO"}],"phrases":[{"de":"Dutch phrase","en":"English meaning","use":"exact situation — gemeente/dokter/NS/schrijven/OGO etc"}],"survivalTip":"1 practical NL tip this week — gemeente/zorgverzekering/OV/BSN/DigiD/DUO related","jobTip":"1 IT job tip for NL — LinkedIn NL / Dutch workplace / salary negotiation"}
+
+RULES:
+- Exactly 8 words, exactly 6 phrases
+- Every example sentence must be grammatically correct Dutch
+- Every word/phrase must appear in a real inburgering exam context
+- Short sentences always — nobody learns from paragraphs
 - Pure JSON only`;
 
   try{
@@ -1563,7 +1567,8 @@ function renderLesson(lesson){
       <div style="font-size:14px;line-height:1.8;background:var(--surface);padding:14px;border-radius:10px;border-left:3px solid var(--orange)">
         😄 ${lesson.funnyIntro}
       </div>
-      <div style="margin-top:16px;padding:12px;background:var(--surface);border-radius:10px;font-size:13px;color:var(--muted);text-align:center;line-height:1.8">
+      ${lesson.examHook?`<div style="margin-top:10px;padding:10px 14px;background:rgba(240,112,10,0.08);border-radius:10px;border-left:3px solid var(--accent);font-size:12px;color:var(--text2);line-height:1.6">🎯 <strong style="color:var(--accent)">Examen:</strong> ${esc(lesson.examHook)}</div>`:''}
+      <div style="margin-top:12px;padding:12px;background:var(--surface);border-radius:10px;font-size:13px;color:var(--muted);text-align:center;line-height:1.8">
         📖 <strong style="color:var(--text)">${lesson.words.length} words</strong> &nbsp;·&nbsp;
         💬 <strong style="color:var(--text)">${lesson.phrases.length} phrases</strong> &nbsp;·&nbsp;
         ✍️ <strong style="color:var(--text)">exercises</strong> &nbsp;·&nbsp;
@@ -1623,6 +1628,7 @@ function renderLesson(lesson){
             </div>
           </div>
           <div class="wc-tip">💡 ${w.funny}</div>
+          ${w.exam?`<div style="display:inline-block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:99px;background:rgba(240,112,10,0.12);color:var(--accent);border:1px solid rgba(240,112,10,0.25)">🎯 ${w.exam}</div>`:''}
           <div class="wc-actions">
             <button class="wc-action" onclick="speakWord('${safeDE}');sfxTap()" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:var(--primary)"><span style="font-size:20px">🔊</span>Listen</button>
             <button class="wc-action" id="micWord_${sid}" onclick="startVoiceValidation('${sid}','${safeDE}','word')" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)"><span style="font-size:20px">🎤</span>Say it</button>
@@ -1649,7 +1655,7 @@ function renderLesson(lesson){
           <div style="font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">Phrase ${i+1} of ${lesson.phrases.length}</div>
           <div class="pc-nl">${p.de}</div>
           <div class="pc-en">${p.en}</div>
-          <div class="pc-tip">😄 ${p.funny}</div>
+          ${p.use?`<div style="margin-top:6px;font-size:12px;color:var(--text2);background:rgba(91,141,238,0.07);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:7px 10px;line-height:1.5">📍 ${p.use}</div>`:`<div class="pc-tip">😄 ${p.funny}</div>`}
           <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
             <button class="btn btn-outline btn-sm" onclick="speakGerman('${safeDE}')">🔊 Listen</button>
             <button class="btn btn-outline btn-sm" id="micPhrase_${sid}" onclick="startVoiceValidation('${sid}','${safeDE}','phrase')">🎤 Say it</button>
