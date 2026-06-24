@@ -7,6 +7,19 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.9.1] — 2026-06-24
+
+### Changed
+- **Removed all German references** — renamed `speakGerman()` → `speakDutch()` throughout
+- **Removed all Hindi/Hinglish** — every error message, UI string, prompt, and AI instruction cleaned up
+- **Removed all Delhi references** — lesson prompts, drill prompts, chat system prompt, pronunciation feedback
+- Memory hooks now use NL references only (Albert Heijn, NS, stroopwafel, fiets, gemeente)
+- All error/status messages now in plain English
+- Pronunciation tips title: "for Hindi Speakers" removed
+- Mic permission and no-speech messages now in English
+
+---
+
 ## [1.9.0] — 2026-06-24
 
 ### Changed
