@@ -2,6 +2,32 @@
 
 ---
 
+## [2.2.0] — 2026-06-24
+
+### Added — Vocabulary learning path (synced with Android v1.6.3)
+
+**1. Mini-quiz after every lesson day**
+- After completing all words on a lesson day, a 3-question vocabulary quiz appears before the completion card
+- Each question shows the English meaning → user picks the correct Dutch word from 4 options
+- Distractors are other words from the same day's lesson (shuffled)
+- Instant MCQ feedback: green highlight = correct, red = wrong; auto-advances after 700ms
+- Score screen: "X/3 goed" with message — Perfect (3/3), Goed gedaan (2/3), Herhaal (0–1/3)
+- "Dag klaar! ✅" button on score screen leads to normal completion card
+- Falls back to completion card directly if lesson has fewer than 2 words
+
+**2. Exam relevance tag on lesson card**
+- Small "🎯 Oefent: [module]" tag shown on the Today's Lesson home card
+- `DAY_MODULE_MAP` covers all 45 days: Days 1–3 OGO, 4–6 KNM, 7 Herhaling, 8–9 KNM, 10–13 Schrijven, 14 Herhaling, 15–17 Lezen, 18–20 Luisteren, 21 Herhaling, 22–24 OGO/KNM, 25 Herhaling, 26–27 KNM, 28 Schrijven, 29–30 Lezen, 31–32 Luisteren, 33 Herhaling, 34–35 OGO, 36 KNM, 37 Schrijven, 38 Lezen, 39 Luisteren, 40 Herhaling, 41–45 Mock Exam
+- Tag styled as small semi-transparent text on the lesson card
+
+**3. Day 45 completion banner**
+- Once all 45 days are completed (`done >= 45`), the lesson card transforms into a green celebration banner
+- Shows: "🎓 45-daagse cursus voltooid!" + subtitle + "Start Proefexamen →" button
+- Button navigates directly to Mock Exam
+- Triggered by `renderHomeTab()` — no extra storage needed
+
+---
+
 ## [2.1.0] — 2026-06-24
 
 ### Added — DUO A2 Audit Sync (aligned with Android app v1.6.2)

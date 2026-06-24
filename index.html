@@ -838,10 +838,11 @@ body{background:var(--bg);}
 
       <!-- Action cards grid -->
       <div class="home-cards-grid">
-        <div class="home-action-card" onclick="switchTab('lesson',document.getElementById('tabBtnLesson'))">
+        <div class="home-action-card" id="homeLessonCard" onclick="switchTab('lesson',document.getElementById('tabBtnLesson'))">
           <div class="hac-icon">📚</div>
           <div class="hac-title">Today's Lesson</div>
           <div class="hac-sub" id="homeLessonSub">Dag <span id="homeDayNum">1</span></div>
+          <div id="homeModuleTag" style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:3px"></div>
           <div class="hac-status hac-status-active" id="homeLessonStatus">Start</div>
         </div>
         <div class="home-action-card" onclick="switchTab('speak',document.getElementById('tabBtnSpeak'))">
@@ -1240,7 +1241,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.1.0';
+const APP_VERSION='2.2.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1366,6 +1367,20 @@ function updateMotBanner(){
   document.getElementById('motBanner').innerHTML=msgs[Math.min(Math.floor(done/5),msgs.length-1)];
 }
 
+const DAY_MODULE_MAP={
+  1:'OGO',2:'OGO',3:'OGO',
+  4:'KNM',5:'KNM',6:'KNM',7:'Herhaling',
+  8:'KNM',9:'KNM',
+  10:'Schrijven',11:'Schrijven',12:'Schrijven',13:'Schrijven',14:'Herhaling',
+  15:'Lezen',16:'Lezen',17:'Lezen',
+  18:'Luisteren',19:'Luisteren',20:'Luisteren',21:'Herhaling',
+  22:'OGO',23:'OGO',24:'OGO + KNM',25:'Herhaling',
+  26:'KNM',27:'KNM',28:'Schrijven',
+  29:'Lezen',30:'Lezen',31:'Luisteren',32:'Luisteren',33:'Herhaling',
+  34:'OGO',35:'OGO',36:'KNM',37:'Schrijven',38:'Lezen',39:'Luisteren',
+  40:'Herhaling',41:'Mock Exam',42:'Mock Exam',43:'Mock Exam',44:'Mock Exam',45:'Mock Exam'
+};
+
 function renderHomeTab(){
   if(!currentUser||!userProgress)return;
   const day=userProgress.day||1;
@@ -1378,6 +1393,26 @@ function renderHomeTab(){
   // Update day number in lesson card
   const dn=document.getElementById('homeDayNum');
   if(dn)dn.textContent=day;
+
+  // Exam module tag
+  const tagEl=document.getElementById('homeModuleTag');
+  if(tagEl){
+    const mod=DAY_MODULE_MAP[day];
+    tagEl.textContent=mod?'🎯 Oefent: '+mod:'';
+  }
+
+  // Day 45 completion banner — replace lesson card with CTA
+  const lessonCard=document.getElementById('homeLessonCard');
+  if(lessonCard&&done>=45){
+    lessonCard.onclick=null;
+    lessonCard.style.background='linear-gradient(135deg,#34c97a,#22a85d)';
+    lessonCard.style.cursor='default';
+    lessonCard.innerHTML=`
+      <div style="font-size:28px;margin-bottom:6px">🎓</div>
+      <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:4px">45-daagse cursus voltooid!</div>
+      <div style="font-size:11px;color:rgba(255,255,255,0.85);margin-bottom:10px">Je hebt alle woorden geleerd. Nu ben je klaar!</div>
+      <button class="btn" style="background:#fff;color:#22a85d;font-weight:800;font-size:12px;padding:7px 14px;border-radius:99px" onclick="event.stopPropagation();switchTab('exam',document.getElementById('tabBtnExam'));startMockExam()">Start Proefexamen →</button>`;
+  }
 
   // Update test card status
   const testCard=document.getElementById('homeTestCard');
@@ -1755,7 +1790,84 @@ function nextLessonPage(){ if(lessonPage<lessonPages.length-1){lessonPage++;rend
 function prevLessonPage(){ if(lessonPage>0){lessonPage--;renderLessonPage();} }
 function goToPage(i){ lessonPage=i; renderLessonPage(); }
 
+function buildMiniQuiz(words){
+  const pool=words.filter(w=>w.de&&w.en);
+  if(pool.length<2)return[];
+  const picks=shuffleArray(pool).slice(0,Math.min(3,pool.length));
+  return picks.map(correct=>{
+    const others=shuffleArray(pool.filter(w=>w.de!==correct.de)).slice(0,3);
+    // Pad with repeats if not enough distractors
+    while(others.length<3)others.push(pool[others.length%pool.length]);
+    const opts=shuffleArray([correct,...others.slice(0,3)]);
+    return{prompt:correct.en,options:opts.map(o=>o.de),answer:opts.findIndex(o=>o.de===correct.de)};
+  });
+}
+
 function showLessonComplete(){
+  const words=currentLesson?.words||[];
+  const quiz=buildMiniQuiz(words);
+  if(quiz.length>0){
+    showMiniQuiz(quiz,0,0);
+  } else {
+    showLessonCompletionCard();
+  }
+}
+
+function showMiniQuiz(quiz,qIdx,score){
+  if(qIdx>=quiz.length){showMiniQuizResult(score,quiz.length);return;}
+  const q=quiz[qIdx];
+  document.getElementById('lessonContent').innerHTML=`
+    <div class="lesson-wrap">
+      <div class="lc" style="border-color:rgba(91,141,238,.25)">
+        <div style="padding:16px 16px 0;display:flex;align-items:center;justify-content:space-between">
+          <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px">Mini-quiz · ${qIdx+1}/${quiz.length}</div>
+          <div style="font-size:12px;font-weight:700;color:var(--green)">${score}/${qIdx} goed</div>
+        </div>
+        <div style="padding:20px 16px 10px">
+          <div style="font-size:13px;color:var(--text3);margin-bottom:6px">Wat is de Nederlandse vertaling?</div>
+          <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:20px">${esc(q.prompt)}</div>
+          <div style="display:flex;flex-direction:column;gap:8px" id="mqOpts">
+            ${q.options.map((opt,i)=>`
+              <button class="btn btn-outline" style="text-align:left;padding:12px 16px;font-size:14px;justify-content:flex-start"
+                onclick="answerMiniQuiz(${JSON.stringify(quiz)},${qIdx},${score},${i},${q.answer})">
+                ${esc(opt)}
+              </button>`).join('')}
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
+
+function answerMiniQuiz(quiz,qIdx,score,chosen,correct){
+  const isRight=chosen===correct;
+  const newScore=score+(isRight?1:0);
+  const opts=document.getElementById('mqOpts');
+  if(opts){
+    [...opts.children].forEach((btn,i)=>{
+      btn.disabled=true;
+      if(i===correct)btn.style.cssText+=';border-color:var(--green);color:var(--green);background:rgba(52,201,122,.1)';
+      if(i===chosen&&!isRight)btn.style.cssText+=';border-color:var(--red);color:var(--red);background:rgba(224,92,92,.1)';
+    });
+  }
+  if(isRight)sfxCorrect();else sfxTap();
+  setTimeout(()=>showMiniQuiz(quiz,qIdx+1,newScore),700);
+}
+
+function showMiniQuizResult(score,total){
+  const msg=score===total?'Perfect! Alle woorden onthouden! 🌟':score>=total*0.67?'Goed gedaan! Blijf oefenen. 👍':'Herhaal de woorden en probeer opnieuw. 💪';
+  const col=score===total?'var(--green)':score>=total*0.67?'var(--orange)':'var(--red)';
+  document.getElementById('lessonContent').innerHTML=`
+    <div class="lesson-wrap">
+      <div class="lc" style="border-color:rgba(52,201,122,.25);text-align:center;padding:28px 20px">
+        <div style="font-size:40px;margin-bottom:10px">${score===total?'🏆':score>=total*0.67?'👍':'📖'}</div>
+        <div style="font-size:28px;font-weight:900;color:${col};margin-bottom:4px">${score}/${total} goed</div>
+        <div style="font-size:14px;color:var(--text2);margin-bottom:20px">${msg}</div>
+        <button class="btn btn-gold" style="width:100%;padding:14px" onclick="showLessonCompletionCard()">Dag klaar! ✅</button>
+      </div>
+    </div>`;
+}
+
+function showLessonCompletionCard(){
   addExamXP(10);
   sfxCongrats();
   const day=userProgress.day||1;
