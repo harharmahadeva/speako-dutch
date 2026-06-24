@@ -2,6 +2,29 @@
 
 ---
 
+## [2.3.0] — 2026-06-24
+
+### Added — Vocabulary → Exam bridge (synced with Android v1.6.5)
+
+**1. Example sentence on every word card**
+- New `sentence` field added to lesson word schema (AI prompt + `safeParseLesson`)
+- Shown as a light-blue 💬 card below the English translation on each word card
+- Only renders when non-empty; italic Dutch text in real-life exam context (gemeente/dokter/NS/werk)
+
+**2. "Lees dit!" reading card — Days 15–25**
+- After finishing the last word of a lesson day, Days 15–25 now show a short Dutch text + 1 MCQ comprehension question before the vocabulary quiz
+- `READING_CARDS` data object covers all 11 days with text, question, 4 options, and correct answer index
+- Flow: last word → reading card → answer MCQ → "Verder naar quiz 🧠" button → mini-quiz → completion card
+- Instant green/red feedback on answer; Verder button only appears after answering
+
+**3. Vraagwoorden Gids — exam question word reference**
+- New tile on Exam Home: "🔍 Vraagwoorden Gids — Begrijp elke examenvraag"
+- Lists 15 Dutch question words (Wat/Waar/Wanneer/Wie/Waarom/Welke/Hoeveel/Hoe/Mag/Moet/Kan/Is/Zijn/Heeft/Welk) with English meaning and a real exam example sentence
+- Two-column card layout: Dutch word (violet, large) | English + italic example
+- Tip at top: "💡 Zie je een woord niet? Zoek het hier op voor je antwoord geeft."
+
+---
+
 ## [2.2.0] — 2026-06-24
 
 ### Added — Vocabulary learning path (synced with Android v1.6.3)

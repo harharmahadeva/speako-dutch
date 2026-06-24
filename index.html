@@ -1113,7 +1113,8 @@ function safeParseLesson(raw){
   obj.words=obj.words.slice(0,12).map(w=>({
     de:esc(w.de||''), pron:esc(w.pron||''), en:esc(w.en||''),
     example_de:esc(w.example_de||''), example_en:esc(w.example_en||''),
-    funny:esc(w.funny||''), exam:esc(w.exam||'')
+    funny:esc(w.funny||''), exam:esc(w.exam||''),
+    sentence:esc(w.sentence||'')
   }));
   obj.phrases=obj.phrases.slice(0,10).map(p=>({
     de:esc(p.de||''), en:esc(p.en||''),
@@ -1241,7 +1242,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.2.0';
+const APP_VERSION='2.3.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1562,7 +1563,7 @@ PHRASES — 6 phrases you WILL need in real inburgering life. For each:
 TONE: Warm, encouraging, never boring. Like a good friend who already passed their inburgering. Use humour about real Dutch life — stroopwafels, cycling in rain, direct Dutch people, NS delays.
 
 Return ONLY valid JSON (no markdown, no backticks, no extra text):
-{"day":${day},"topic":"${topic}","funnyIntro":"1 punchy sentence — funny NL observation that sets up WHY today's topic matters for the exam","examHook":"Which specific inburgering exam module(s) today's lesson directly helps with, and how","grammar":{"rule":"One rule in plain English — max 15 words","examples":["Dutch (max 6 words) — English","Dutch — English","Dutch — English"],"mistake":"Common mistake learners make — and the fix in 1 sentence"},"words":[{"de":"word (de/het if noun)","pron":"[english-sounds]","en":"meaning","example_de":"short Dutch sentence","example_en":"translation","funny":"vivid NL memory hook (Albert Heijn/NS/gemeente/fiets/stroopwafel etc)","exam":"KNM|Lezen|Luisteren|Schrijven|OGO"}],"phrases":[{"de":"Dutch phrase","en":"English meaning","use":"exact situation — gemeente/dokter/NS/schrijven/OGO etc"}],"survivalTip":"1 practical NL tip — gemeente/zorgverzekering/OV/BSN/DigiD/DUO related","jobTip":"1 IT job tip for NL — LinkedIn NL / Dutch workplace / salary negotiation"}
+{"day":${day},"topic":"${topic}","funnyIntro":"1 punchy sentence — funny NL observation that sets up WHY today's topic matters for the exam","examHook":"Which specific inburgering exam module(s) today's lesson directly helps with, and how","grammar":{"rule":"One rule in plain English — max 15 words","examples":["Dutch (max 6 words) — English","Dutch — English","Dutch — English"],"mistake":"Common mistake learners make — and the fix in 1 sentence"},"words":[{"de":"word (de/het if noun)","pron":"[english-sounds]","en":"meaning","sentence":"one short real-life Dutch sentence using this word (exam context — gemeente/dokter/NS/werk/school)","example_de":"short Dutch sentence","example_en":"translation","funny":"vivid NL memory hook (Albert Heijn/NS/gemeente/fiets/stroopwafel etc)","exam":"KNM|Lezen|Luisteren|Schrijven|OGO"}],"phrases":[{"de":"Dutch phrase","en":"English meaning","use":"exact situation — gemeente/dokter/NS/schrijven/OGO etc"}],"survivalTip":"1 practical NL tip — gemeente/zorgverzekering/OV/BSN/DigiD/DUO related","jobTip":"1 IT job tip for NL — LinkedIn NL / Dutch workplace / salary negotiation"}
 
 RULES:
 - Exactly 8 words, exactly 6 phrases
@@ -1662,6 +1663,7 @@ function renderLesson(lesson){
               <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:5px 10px" onclick="speakDutch('${safeEx}')">🔊</button>
             </div>
           </div>
+          ${w.sentence?`<div style="background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:9px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px"><span style="font-size:14px;flex-shrink:0">💬</span><span style="font-size:12px;color:var(--text2);line-height:1.6;font-style:italic">${w.sentence}</span></div>`:''}
           <div class="wc-tip">💡 ${w.funny}</div>
           ${w.exam?`<div style="display:inline-block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:99px;background:rgba(240,112,10,0.12);color:var(--accent);border:1px solid rgba(240,112,10,0.25)">🎯 ${w.exam}</div>`:''}
           <div class="wc-actions">
@@ -1804,13 +1806,62 @@ function buildMiniQuiz(words){
 }
 
 function showLessonComplete(){
+  const day=userProgress?.day||1;
+  const card=READING_CARDS[day];
+  if(card){
+    showReadingCard(card);
+  } else {
+    const words=currentLesson?.words||[];
+    const quiz=buildMiniQuiz(words);
+    if(quiz.length>0) showMiniQuiz(quiz,0,0);
+    else showLessonCompletionCard();
+  }
+}
+
+function showReadingCard(card){
+  document.getElementById('lessonContent').innerHTML=`
+    <div class="lesson-wrap">
+      <div class="lc" style="margin-bottom:10px">
+        <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(91,141,238,0.12);border:1px solid rgba(91,141,238,0.25);border-radius:99px;padding:4px 12px;margin-bottom:12px">
+          <span style="font-size:13px">📖</span>
+          <span style="font-size:11px;font-weight:700;color:var(--primary);letter-spacing:.5px;text-transform:uppercase">Lees dit!</span>
+        </div>
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">Tekst</div>
+        <div style="font-size:15px;color:var(--text);line-height:1.8;margin-bottom:16px">${esc(card.text)}</div>
+        <div style="font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">Vraag</div>
+        <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:14px">${esc(card.q)}</div>
+        <div style="display:flex;flex-direction:column;gap:8px" id="rcOpts">
+          ${card.opts.map((opt,i)=>`
+            <button class="btn btn-outline" style="text-align:left;padding:11px 14px;font-size:13px;justify-content:flex-start"
+              onclick="answerReadingCard(${i},${card.ans})">
+              ${esc(opt)}
+            </button>`).join('')}
+        </div>
+        <div id="rcNext" class="hidden" style="margin-top:14px">
+          <button class="btn btn-gold" style="width:100%;padding:13px" onclick="startReadingCardQuiz()">Verder naar quiz 🧠</button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function answerReadingCard(chosen,correct){
+  const opts=document.getElementById('rcOpts');
+  if(!opts||opts.dataset.answered)return;
+  opts.dataset.answered='1';
+  [...opts.children].forEach((btn,i)=>{
+    btn.disabled=true;
+    if(i===correct)btn.style.cssText+=';border-color:var(--green);color:var(--green);background:rgba(52,201,122,.1)';
+    if(i===chosen&&chosen!==correct)btn.style.cssText+=';border-color:var(--red);color:var(--red);background:rgba(224,92,92,.1)';
+  });
+  if(chosen===correct)sfxCorrect();else sfxTap();
+  document.getElementById('rcNext').classList.remove('hidden');
+}
+
+function startReadingCardQuiz(){
   const words=currentLesson?.words||[];
   const quiz=buildMiniQuiz(words);
-  if(quiz.length>0){
-    showMiniQuiz(quiz,0,0);
-  } else {
-    showLessonCompletionCard();
-  }
+  if(quiz.length>0) showMiniQuiz(quiz,0,0);
+  else showLessonCompletionCard();
 }
 
 function showMiniQuiz(quiz,qIdx,score){
@@ -2940,6 +2991,20 @@ Zilveren Kruis`,
   }
 ];
 
+const READING_CARDS={
+  15:{text:'De basisschool in Nederland begint op vierjarige leeftijd. Kinderen zijn leerplichtig vanaf hun vijfde verjaardag. De school is gratis. U moet uw kind inschrijven bij een school in de buurt.',q:'Vanaf welke leeftijd zijn kinderen leerplichtig?',opts:['Vier jaar','Vijf jaar','Zes jaar','Zeven jaar'],ans:1},
+  16:{text:'In Nederland heeft iedereen recht op een eerlijk proces. U mag altijd een advocaat vragen. De politie moet zich aan de wet houden. Iedereen is gelijk voor de wet.',q:'Wat mag u altijd doen als u een probleem heeft met de wet?',opts:['Zelf naar de rechter gaan','Een advocaat vragen','Naar de gemeente gaan','Een brief schrijven'],ans:1},
+  17:{text:'Let op: uw huursubsidie stopt als uw inkomen te hoog wordt. U moet dit zelf melden bij de Belastingdienst. Doet u dit niet op tijd, dan moet u geld terugbetalen.',q:'Wat moet u doen als uw inkomen hoger wordt?',opts:['Niets doen','Wachten op een brief','Dit melden bij de Belastingdienst','Naar de gemeente gaan'],ans:2},
+  18:{text:'Geachte bewoner, de weg voor uw huis is afgesloten van maandag 3 tot vrijdag 7 juni voor werkzaamheden. U kunt via de Bergstraat rijden. Excuses voor het ongemak.',q:'Waarom is de weg afgesloten?',opts:['Er is een ongeluk','Er zijn werkzaamheden','De weg is gevaarlijk','Er is een evenement'],ans:1},
+  19:{text:'Morgen: zwaar bewolkt met perioden van regen. Temperatuur: 12 graden. Wind: zuidwest, vrij krachtig. Neem een warme jas en paraplu mee als u naar buiten gaat.',q:'Welke temperatuur wordt er morgen verwacht?',opts:['8 graden','10 graden','12 graden','15 graden'],ans:2},
+  20:{text:'In Nederland geldt het principe van scheiding van kerk en staat. De overheid bemoeit zich niet met religie. Iedereen mag zijn eigen geloof belijden, zolang dit de vrijheid van anderen niet schaadt.',q:'Wat betekent scheiding van kerk en staat?',opts:['Kerken mogen niet gebouwd worden','De overheid bemoeit zich niet met religie','Iedereen moet naar de kerk','Religie is verboden'],ans:1},
+  21:{text:'Beste bewoners, de bibliotheek organiseert gratis Nederlandse taallessen op dinsdag van 10 tot 12 uur. Aanmelden via de balie of per telefoon. Neem uw identiteitsbewijs mee.',q:'Hoe kunt u zich aanmelden voor de taallessen?',opts:['Per e-mail','Via de website','Via de balie of telefoon','Alleen aan de deur'],ans:2},
+  22:{text:'Mevrouw Yildiz heeft een afspraak bij haar huisarts op dinsdag 14 mei om 10:30 uur. Als u de afspraak wilt verzetten, bel dan minstens 24 uur van tevoren. Telefoonnummer: 030-2345678.',q:'Wat moet u doen als u de afspraak wilt verzetten?',opts:['Een e-mail sturen','Naar de praktijk gaan','Minstens 24 uur van tevoren bellen','Op de dag zelf bellen'],ans:2},
+  23:{text:'Voor een nieuw paspoort heeft u nodig: een geldig identiteitsbewijs, een pasfoto, en 73 euro. U kunt alleen op afspraak komen. Maak een afspraak via de website van de gemeente of bel ons.',q:'Hoeveel kost een nieuw paspoort?',opts:['53 euro','63 euro','73 euro','83 euro'],ans:2},
+  24:{text:'Vacature: wij zoeken een schoonmaker voor 20 uur per week. Salaris: minimumloon. Start: zo snel mogelijk. Stuur uw CV en motivatiebrief naar werk@schoonmaakbedrijf.nl.',q:'Hoeveel uur per week is deze baan?',opts:['10 uur','15 uur','20 uur','25 uur'],ans:2},
+  25:{text:'Belangrijk bericht: uw zorgverzekering wordt automatisch verlengd op 1 januari. Wilt u van verzekeraar wisselen? Dat kan tot en met 31 december. Vergelijk verzekeringen op zorgwijzer.nl.',q:'Tot wanneer kunt u van zorgverzekeraar wisselen?',opts:['Tot 1 januari','Tot 31 december','Tot 1 december','Altijd'],ans:1},
+};
+
 const OGO_SCENARIOS=[
   {id:'ogo1',role:'Bij de huisarts',situation:'U belt de huisartsenpraktijk. U heeft al 3 dagen hoofdpijn en koorts (38,5°C). U wilt een afspraak maken.',prompt:'De receptionist vraagt: "Wat zijn uw klachten en hoe lang heeft u dit al?"',targetLang:'nl',hint:'Describe your symptoms: hoofdpijn (headache), koorts (fever), and how long: 3 dagen'},
   {id:'ogo2',role:'Bij de gemeente',situation:'U bent bij het gemeenteloket. U wilt een uittreksel BRP aanvragen voor uw nieuwe werkgever.',prompt:'De medewerker vraagt: "Waarvoor heeft u het uittreksel nodig en op welk adres bent u ingeschreven?"',targetLang:'nl',hint:'Explain: voor mijn werkgever (for my employer) + give your address'},
@@ -3088,7 +3153,7 @@ function renderExamHome(){
     </div>
 
     <!-- Tools row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
       <div class="exam-module" onclick="showKNMStudyCards()">
         <div class="exam-module-icon">📋</div>
         <div class="exam-module-name">Flashcards</div>
@@ -3098,6 +3163,13 @@ function renderExamHome(){
         <div class="exam-module-icon">📊</div>
         <div class="exam-module-name">Zwaktes</div>
         <div class="exam-module-sub">Analyse</div>
+      </div>
+    </div>
+    <div style="margin-bottom:14px">
+      <div class="exam-module" style="background:rgba(139,92,246,0.07);border-color:rgba(139,92,246,0.2)" onclick="showVraagwoordenGids()">
+        <div class="exam-module-icon">🔍</div>
+        <div class="exam-module-name" style="color:var(--violet)">Vraagwoorden Gids</div>
+        <div class="exam-module-sub">Begrijp elke examenvraag</div>
       </div>
     </div>
 
@@ -4984,6 +5056,47 @@ async function mockShowResult(){
 // ─────────────────────────────────────
 // PHASE 4 — MAP & Participatieverklaring
 // ─────────────────────────────────────
+function showVraagwoordenGids(){
+  const words=[
+    {nl:'Wat',     en:'What',      ex:'Wat is uw adres?'},
+    {nl:'Waar',    en:'Where',     ex:'Waar woont u?'},
+    {nl:'Wanneer', en:'When',      ex:'Wanneer begint de cursus?'},
+    {nl:'Wie',     en:'Who',       ex:'Wie is uw huisarts?'},
+    {nl:'Waarom',  en:'Why',       ex:'Waarom bent u naar Nederland gekomen?'},
+    {nl:'Welke',   en:'Which',     ex:'Welke verzekering heeft u?'},
+    {nl:'Hoeveel', en:'How many/much', ex:'Hoeveel kost de cursus?'},
+    {nl:'Hoe',     en:'How',       ex:'Hoe gaat u naar het werk?'},
+    {nl:'Mag',     en:'May / Can', ex:'Mag ik een formulier invullen?'},
+    {nl:'Moet',    en:'Must',      ex:'Moet ik een afspraak maken?'},
+    {nl:'Kan',     en:'Can',       ex:'Kan ik hier pinnen?'},
+    {nl:'Is',      en:'Is',        ex:'Is het loket open op zondag?'},
+    {nl:'Zijn',    en:'Are',       ex:'Zijn kinderen welkom?'},
+    {nl:'Heeft',   en:'Has',       ex:'Heeft u een rijbewijs?'},
+    {nl:'Welk',    en:'Which (het-word)', ex:'Welk document heeft u nodig?'},
+  ];
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">🔍 Vraagwoorden Gids</div><div class="exam-section-sub">Begrijp elke examenvraag</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div style="background:rgba(139,92,246,0.08);border:1px solid rgba(139,92,246,0.2);border-radius:12px;padding:12px 14px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.6">
+      💡 Zie je een woord niet? Zoek het hier op voor je antwoord geeft.
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="display:grid;grid-template-columns:80px 1fr;font-size:10px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-bottom:1px solid var(--border2);background:rgba(255,255,255,0.02)">
+        <div>Nederlands</div><div>Engels · Voorbeeld</div>
+      </div>
+      ${words.map((w,i)=>`
+        <div style="display:grid;grid-template-columns:80px 1fr;padding:11px 14px;border-bottom:${i<words.length-1?'1px solid var(--border2)':'none'};align-items:start">
+          <div style="font-size:16px;font-weight:800;color:var(--violet)">${esc(w.nl)}</div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--text);margin-bottom:3px">${esc(w.en)}</div>
+            <div style="font-size:11px;color:var(--text3);font-style:italic">${esc(w.ex)}</div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+}
+
 function showMAPInfo(){
   document.getElementById('examContent').innerHTML=`
     <div class="exam-section-hdr">
