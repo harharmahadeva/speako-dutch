@@ -7,6 +7,13 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.7.5] — 2026-06-24
+
+### Fixed
+- **Dynamic Island / notch overlap** — header now uses `padding-top: calc(env(safe-area-inset-top,0px) + 9px)` so content never slides behind the Dynamic Island or status bar on iPhone (Safari + Chrome both use the same WebKit env() support)
+
+---
+
 ## [1.7.4] — 2026-06-24
 
 ### Fixed

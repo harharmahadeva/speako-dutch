@@ -404,7 +404,7 @@ body{background:var(--bg);}
   backdrop-filter:blur(24px);
   -webkit-backdrop-filter:blur(24px);
   border-bottom:1px solid rgba(255,255,255,0.06);
-  padding:9px 16px;
+  padding:calc(env(safe-area-inset-top,0px) + 9px) 16px 9px;
 }
 .logo{font-size:16px;font-weight:800;letter-spacing:.4px;}
 .streak{padding:5px 10px;font-size:12px;}
@@ -1236,7 +1236,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.7.4';
+const APP_VERSION='1.7.5';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
