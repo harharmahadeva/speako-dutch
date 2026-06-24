@@ -7,6 +7,21 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.7.0] — 2026-06-24
+
+### Changed
+- **Lesson card redesign** — replaced bloated `.card` blocks with compact `.lc` component (20px border-radius, tight padding, no excess whitespace)
+- **Grammar card** — rule in a left-bordered highlight block, examples in clean `lc-ex` rows (Dutch bold / English subdued), warning in amber box
+- **Word flashcard** — gradient header with 38px word, pronunciation pill, meaning badge; example + memory tip in body; 3-action grid (Listen / Say / Try)
+- **Phrase card** — header with Dutch phrase + translation + tip + audio buttons; scenario practice in body section
+- **Tips cards** — compact two-card layout with colored badge labels
+- **Desktop layout** — `.main` now uses `calc(50% - 340px)` side padding to cap content at ~680px; no more full-width card stretch
+- **Progress bar** — thin 4px gradient bar (blue→violet) replaces chunky bar-track; dots row above bar
+- **Lesson complete screen** — finishing the last page now shows a celebration card (+10 XP) with "Review" and "Practice exam" CTAs instead of a disabled button
+- **`showLessonComplete()`** — new function, awards XP, plays congrats sound, renders completion card
+
+---
+
 ## [1.6.3] — 2026-06-24
 
 ### Fixed

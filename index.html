@@ -304,13 +304,58 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .home-stat-val{font-size:22px;font-weight:800;color:var(--blue-b);line-height:1;}
 .home-stat-lbl{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.8px;margin-top:4px;}
 
-.lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:16px 0 6px;gap:10px;}
-.lesson-nav-dots{display:flex;gap:4px;flex-wrap:wrap;}
-.lesson-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,0.08);cursor:pointer;transition:all 0.2s;}
+/* ── Lesson layout ── */
+.lesson-wrap{max-width:600px;margin:0 auto;}
+.lesson-progress{margin-bottom:16px;}
+.lesson-prog-bar{height:4px;background:rgba(255,255,255,0.07);border-radius:2px;overflow:hidden;margin-bottom:8px;}
+.lesson-prog-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:2px;transition:width .4s var(--ease);}
+.lesson-prog-meta{display:flex;justify-content:space-between;align-items:center;}
+.lesson-prog-dots{display:flex;gap:3px;flex-wrap:wrap;}
+.lesson-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,0.1);cursor:pointer;transition:all .2s;}
 .lesson-dot.done{background:var(--green);}
-.lesson-dot.active{background:var(--blue);width:22px;border-radius:4px;box-shadow:0 0 8px rgba(59,130,246,0.5);}
-.section-label{font-size:13px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between;}
-.section-badge{background:var(--blue-g);color:var(--blue-b);border:1px solid rgba(59,130,246,0.3);border-radius:99px;padding:3px 12px;font-size:12px;font-weight:700;}
+.lesson-dot.active{background:var(--blue);width:20px;border-radius:3px;}
+
+/* ── Lesson card ── */
+.lc{background:var(--card);border:1px solid rgba(255,255,255,0.07);border-radius:20px;overflow:hidden;margin-bottom:12px;}
+.lc-badge{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;letter-spacing:.8px;text-transform:uppercase;padding:4px 10px;border-radius:99px;margin-bottom:14px;}
+.lc-rule{background:rgba(139,92,246,.1);border-left:3px solid var(--violet);border-radius:0 10px 10px 0;padding:12px 14px;margin-bottom:14px;}
+.lc-rule-text{font-size:14px;font-weight:700;color:var(--text);line-height:1.5;}
+.lc-body{font-size:13px;line-height:1.75;color:var(--text2);margin-bottom:14px;}
+.lc-examples{margin-bottom:14px;}
+.lc-ex-lbl{font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);margin-bottom:8px;}
+.lc-ex{padding:10px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.lc-ex:last-child{border-bottom:none;}
+.lc-ex-nl{font-size:14px;font-weight:600;color:var(--text);}
+.lc-ex-en{font-size:12px;color:var(--text2);margin-top:2px;}
+.lc-warn{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.2);border-radius:10px;padding:10px 12px;font-size:12px;color:var(--text2);display:flex;gap:8px;align-items:flex-start;}
+
+/* ── Word flashcard ── */
+.wc-head{background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.08));padding:28px 20px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.05);}
+.wc-nl{font-size:38px;font-weight:900;background:linear-gradient(135deg,#93C5FD,#C084FC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;margin-bottom:6px;}
+.wc-pron{font-size:13px;color:var(--text3);font-style:italic;margin-bottom:10px;}
+.wc-en{display:inline-block;font-size:16px;font-weight:700;color:var(--text);background:rgba(255,255,255,0.07);border-radius:99px;padding:5px 18px;}
+.wc-body{padding:16px 18px;}
+.wc-ex{background:rgba(255,255,255,0.03);border-radius:10px;padding:10px 12px;margin-bottom:10px;}
+.wc-ex-nl{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;}
+.wc-ex-en{font-size:12px;color:var(--text2);}
+.wc-tip{font-size:12px;color:var(--text3);background:rgba(245,158,11,.07);border-radius:8px;padding:8px 10px;margin-bottom:12px;}
+.wc-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+.wc-action{display:flex;flex-direction:column;align-items:center;gap:5px;padding:12px 6px;border-radius:12px;border:1px solid;font-size:11px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:opacity .15s;}
+.wc-action:active{opacity:.75;}
+
+/* ── Phrase card ── */
+.pc-head{padding:24px 20px 16px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.05);}
+.pc-nl{font-size:22px;font-weight:700;color:var(--text);margin-bottom:5px;}
+.pc-en{font-size:13px;color:var(--text2);margin-bottom:6px;}
+.pc-tip{font-size:12px;color:var(--text3);}
+.pc-body{padding:14px 18px;}
+
+/* ── Lesson nav ── */
+.lesson-nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0 4px;gap:10px;}
+.lesson-nav .btn{min-width:90px;}
+
+.section-label{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;}
+.section-badge{background:rgba(59,130,246,.12);color:#93C5FD;border:1px solid rgba(59,130,246,.25);border-radius:99px;padding:2px 10px;font-size:11px;font-weight:700;text-transform:none;letter-spacing:0;}
 
 .scenario-box{background:rgba(255,255,255,0.02);border:1px solid var(--border2);border-left:3px solid var(--cyan);border-radius:14px;padding:16px;margin-top:12px;}
 
@@ -321,7 +366,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .hidden{display:none!important;}
 
 @media(max-width:480px){.test-options{grid-template-columns:1fr;}.word-de{font-size:42px;}.word-en{font-size:18px;}.word-pron{font-size:15px;}.phrase-de{font-size:21px;}.header{padding:10px 14px;}.main{padding:14px 12px 80px;}.tabs{gap:3px;}.tab{font-size:12px;padding:10px 6px;}.logout-btn .lbl{display:none;}.exercise-input,.drill-input{font-size:16px;}}
-@media(min-width:1024px){.main{padding:24px 20px 90px;}.card{padding:24px;}}
+@media(min-width:1024px){.main{padding:24px calc(50% - 340px) 90px;}.card{padding:22px;}}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:99px;}
@@ -1190,7 +1235,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.6.3';
+const APP_VERSION='1.7.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1531,69 +1576,63 @@ function renderLesson(lesson){
     const g=lesson.grammar;
     const exHtml=g.examples.map(ex=>{
       const parts=ex.split(' — ');
-      return `<div style="padding:8px 0;border-bottom:1px solid var(--border)">
-        <div style="font-weight:600;color:var(--text)">${parts[0]||ex}</div>
-        ${parts[1]?`<div style="font-size:12px;color:var(--muted);margin-top:2px">${parts[1]}</div>`:''}
+      return `<div class="lc-ex">
+        <div class="lc-ex-nl">${parts[0]||ex}</div>
+        ${parts[1]?`<div class="lc-ex-en">${parts[1]}</div>`:''}
       </div>`;
     }).join('');
     lessonPages.push({type:'grammar', html:`
-      <div class="card" style="border-color:var(--violet)">
-        <div class="section-label" style="color:var(--violet);margin-bottom:8px">📐 Grammar <span class="section-badge">${lesson.topic}</span></div>
-        <div style="background:var(--surface);border-left:3px solid var(--violet);padding:10px 12px;border-radius:8px;margin-bottom:10px">
-          <div style="font-size:14px;font-weight:700;color:var(--text);line-height:1.4">${g.rule}</div>
+      <div class="lc" style="border-color:rgba(139,92,246,.25)">
+        <div style="padding:16px 18px 0">
+          <div class="lc-badge" style="background:rgba(139,92,246,.12);color:#c4b5fd">📐 Grammar</div>
+          <div class="section-badge" style="margin-left:6px;vertical-align:middle">${lesson.topic}</div>
+          <div class="lc-rule"><div class="lc-rule-text">${g.rule}</div></div>
+          <div class="lc-body">${g.explanation}</div>
+          <div class="lc-examples">
+            <div class="lc-ex-lbl">Examples</div>
+            ${exHtml}
+          </div>
+          ${g.mistake?`<div class="lc-warn" style="margin-bottom:16px"><span style="color:#f87171;font-size:14px">⚠️</span><span>${g.mistake}</span></div>`:''}
         </div>
-        <div style="font-size:12px;line-height:1.7;color:var(--muted);margin-bottom:10px">${g.explanation}</div>
-        <div style="margin-bottom:10px">
-          <div style="font-size:11px;color:var(--violet);font-weight:600;margin-bottom:4px;text-transform:uppercase;letter-spacing:.05em">Examples</div>
-          ${exHtml}
-        </div>
-        ${g.mistake?`<div style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:8px 10px;font-size:12px">
-          <span style="color:#f87171;font-weight:600">⚠️ </span><span style="color:var(--muted)">${g.mistake}</span>
-        </div>`:''}
       </div>`});
   }
 
   // Vocab pages — one word per page
   lesson.words.forEach((w,i)=>{
     const sid=`w${i}`;
+    const safeDE=w.de.replace(/'/g,"\\'");
+    const safeEN=w.en.replace(/'/g,"\\'");
+    const safeEx=w.example_de.replace(/'/g,"\\'");
     lessonPages.push({type:'word', html:`
-      <div class="card">
-        <div class="section-label" style="margin-bottom:8px">📖 Word ${i+1}/${lesson.words.length} <span class="section-badge">${lesson.topic}</span></div>
-
-        <div style="text-align:center;padding:8px 0 6px">
-          <div class="word-de">${w.de}</div>
-          <div class="word-pron" style="margin:4px 0">${w.pron}</div>
-          <div class="word-en" style="font-size:17px">${w.en}</div>
+      <div class="lc">
+        <div class="wc-head">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:rgba(147,197,253,.6);margin-bottom:10px">Word ${i+1} of ${lesson.words.length}</div>
+          <div class="wc-nl">${w.de}</div>
+          <div class="wc-pron">${w.pron}</div>
+          <div class="wc-en">${w.en}</div>
         </div>
-
-        <div class="word-example" style="margin-bottom:10px">
-          <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px">
-            <div style="flex:1;min-width:0">
-              <div style="font-size:13px"><strong>${w.example_de}</strong></div>
-              <div style="color:var(--muted);font-size:12px;margin-top:2px">${w.example_en}</div>
+        <div class="wc-body">
+          <div class="wc-ex">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
+              <div>
+                <div class="wc-ex-nl">${w.example_de}</div>
+                <div class="wc-ex-en">${w.example_en}</div>
+              </div>
+              <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:5px 10px" onclick="speakGerman('${safeEx}')">🔊</button>
             </div>
-            <button class="btn btn-outline btn-sm" onclick="speakGerman('${w.example_de.replace(/'/g,"\\'")}')">🔊</button>
           </div>
-          <div class="word-funny" style="margin-top:6px;font-size:12px">💡 ${w.funny}</div>
-        </div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:8px">
-          <button onclick="speakWord('${w.de.replace(/'/g,"\\'")}');sfxTap()" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:14px;background:rgba(99,102,241,0.12);border:1px solid rgba(99,102,241,0.3);color:var(--primary);font-size:11px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background .2s" onmousedown="this.style.background='rgba(99,102,241,0.25)'" onmouseup="this.style.background='rgba(99,102,241,0.12)'">
-            <span style="font-size:22px">🔊</span>Listen
-          </button>
-          <button id="micWord_${sid}" onclick="startVoiceValidation('${sid}','${w.de.replace(/'/g,"\\'")}','word')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:14px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:var(--green);font-size:11px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background .2s" onmousedown="this.style.background='rgba(16,185,129,0.25)'" onmouseup="this.style.background='rgba(16,185,129,0.12)'">
-            <span style="font-size:22px">🎤</span>Say it
-          </button>
-          <button id="exToggle_${sid}" onclick="toggleExercise('${sid}','${w.de.replace(/'/g,"\\'")}');" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 6px;border-radius:14px;background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.3);color:var(--gold);font-size:11px;font-weight:600;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:background .2s" onmousedown="this.style.background='rgba(245,158,11,0.25)'" onmouseup="this.style.background='rgba(245,158,11,0.12)'">
-            <span style="font-size:22px">✍️</span>Try it
-          </button>
-        </div>
-        <div id="voiceResult_${sid}"></div>
-
-        <div class="exercise-box hidden" id="exBox_${sid}" style="margin-top:8px">
-          <input class="exercise-input" id="exInput_${sid}" placeholder="Sentence with: ${w.de}" onkeydown="if(event.key==='Enter')checkExercise('${sid}','${w.de.replace(/'/g,"\\'")}','${w.en.replace(/'/g,"\\'")}')"/>
-          <button class="btn btn-outline btn-sm" onclick="checkExercise('${sid}','${w.de.replace(/'/g,"\\'")}','${w.en.replace(/'/g,"\\'")}')">Check ✓</button>
-          <div class="exercise-feedback" id="exFeedback_${sid}"></div>
+          <div class="wc-tip">💡 ${w.funny}</div>
+          <div class="wc-actions">
+            <button class="wc-action" onclick="speakWord('${safeDE}');sfxTap()" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:var(--primary)"><span style="font-size:20px">🔊</span>Listen</button>
+            <button class="wc-action" id="micWord_${sid}" onclick="startVoiceValidation('${sid}','${safeDE}','word')" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)"><span style="font-size:20px">🎤</span>Say it</button>
+            <button class="wc-action" id="exToggle_${sid}" onclick="toggleExercise('${sid}','${safeDE}')" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--gold)"><span style="font-size:20px">✍️</span>Try it</button>
+          </div>
+          <div id="voiceResult_${sid}"></div>
+          <div class="exercise-box hidden" id="exBox_${sid}" style="margin-top:10px">
+            <input class="exercise-input" id="exInput_${sid}" placeholder="Write a sentence with: ${w.de}" onkeydown="if(event.key==='Enter')checkExercise('${sid}','${safeDE}','${safeEN}')"/>
+            <button class="btn btn-outline btn-sm" onclick="checkExercise('${sid}','${safeDE}','${safeEN}')">Check ✓</button>
+            <div class="exercise-feedback" id="exFeedback_${sid}"></div>
+          </div>
         </div>
       </div>`});
   });
@@ -1601,29 +1640,28 @@ function renderLesson(lesson){
   // One phrase per page
   lesson.phrases.forEach((p,i)=>{
     const sid=`p${i}`;
+    const safeDE=p.de.replace(/'/g,"\\'");
+    const safeEN=p.en.replace(/'/g,"\\'");
     lessonPages.push({type:'phrase', html:`
-      <div class="card">
-        <div class="section-label" style="margin-bottom:6px">💬 Phrase ${i+1}/${lesson.phrases.length} <span class="section-badge">${lesson.topic}</span></div>
-
-        <div style="text-align:center;padding:8px 0 6px">
-          <div class="phrase-de" style="font-size:19px;font-weight:700">${p.de}</div>
-          <div class="phrase-en" style="font-size:13px;margin-top:4px">${p.en}</div>
-          <div class="phrase-funny" style="margin-top:4px;font-size:12px">😄 ${p.funny}</div>
-        </div>
-
-        <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;justify-content:center">
-          <button class="btn btn-outline btn-sm" onclick="speakGerman('${p.de.replace(/'/g,"\\'")}')">🔊 Listen</button>
-          <button class="mic-btn" id="micPhrase_${sid}" onclick="startVoiceValidation('${sid}','${p.de.replace(/'/g,"\\'")}','phrase')">🎤 Say it</button>
-        </div>
-        <div id="voiceResult_${sid}"></div>
-
-        <div class="exercise-box" style="margin-top:12px">
-          <div class="exercise-label">🎭 Amsterdam Scenario</div>
-          <div id="scenarioPrompt_${sid}">
-            <button class="btn btn-outline btn-sm" onclick="loadScenario('${sid}','${p.de.replace(/'/g,"\\'")}','${p.en.replace(/'/g,"\\'")}')">Get a scenario</button>
+      <div class="lc">
+        <div class="pc-head">
+          <div style="font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:var(--text3);margin-bottom:10px">Phrase ${i+1} of ${lesson.phrases.length}</div>
+          <div class="pc-nl">${p.de}</div>
+          <div class="pc-en">${p.en}</div>
+          <div class="pc-tip">😄 ${p.funny}</div>
+          <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
+            <button class="btn btn-outline btn-sm" onclick="speakGerman('${safeDE}')">🔊 Listen</button>
+            <button class="btn btn-outline btn-sm" id="micPhrase_${sid}" onclick="startVoiceValidation('${sid}','${safeDE}','phrase')">🎤 Say it</button>
           </div>
-          <input class="exercise-input hidden" id="exInput_${sid}" placeholder="Respond in Dutch..." onkeydown="if(event.key==='Enter')checkScenario('${sid}','${p.de.replace(/'/g,"\\'")}')"/>
-          <button class="btn btn-outline btn-sm hidden" id="exBtn_${sid}" onclick="checkScenario('${sid}','${p.de.replace(/'/g,"\\'")}')">Check ✓</button>
+          <div id="voiceResult_${sid}" style="margin-top:8px"></div>
+        </div>
+        <div class="pc-body">
+          <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">🎭 Practice Scenario</div>
+          <div id="scenarioPrompt_${sid}" style="margin-bottom:8px">
+            <button class="btn btn-outline btn-sm" onclick="loadScenario('${sid}','${safeDE}','${safeEN}')">Get a scenario →</button>
+          </div>
+          <input class="exercise-input hidden" id="exInput_${sid}" placeholder="Respond in Dutch..." onkeydown="if(event.key==='Enter')checkScenario('${sid}','${safeDE}')"/>
+          <button class="btn btn-outline btn-sm hidden" id="exBtn_${sid}" onclick="checkScenario('${sid}','${safeDE}')">Check ✓</button>
           <div class="exercise-feedback" id="exFeedback_${sid}"></div>
         </div>
       </div>`});
@@ -1631,13 +1669,17 @@ function renderLesson(lesson){
 
   // Tips page
   lessonPages.push({type:'tips', html:`
-    <div class="card" style="border-color:var(--primary)">
-      <div class="section-label">🇳🇱 Netherlands Survival Tip</div>
-      <div style="font-size:14px;line-height:1.8">${lesson.berlinTip}</div>
+    <div class="lc" style="border-color:rgba(59,130,246,.2)">
+      <div style="padding:16px 18px">
+        <div class="lc-badge" style="background:rgba(59,130,246,.1);color:#93C5FD">🇳🇱 NL Survival Tip</div>
+        <div class="lc-body" style="margin-top:10px;margin-bottom:0">${lesson.berlinTip}</div>
+      </div>
     </div>
-    <div class="card" style="border-color:var(--green)">
-      <div class="section-label" style="color:var(--green)">💼 Job Hunting Tip</div>
-      <div style="font-size:14px;line-height:1.8">${lesson.jobTip}</div>
+    <div class="lc" style="border-color:rgba(52,201,122,.2)">
+      <div style="padding:16px 18px">
+        <div class="lc-badge" style="background:rgba(52,201,122,.1);color:var(--green)">💼 Job Tip</div>
+        <div class="lc-body" style="margin-top:10px;margin-bottom:0">${lesson.jobTip}</div>
+      </div>
     </div>
     <div class="card" style="border-color:var(--orange)">
       <div class="section-label" style="color:var(--orange)">🧠 Dutch Pronunciation Tips</div>
@@ -1682,18 +1724,20 @@ function renderLessonPage(){
   ).join('');
 
   const html=`
-    <div style="margin-bottom:12px">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-        <span style="font-size:11px;color:var(--muted)">${lessonPage+1} of ${total}</span>
-        <span style="font-size:11px;color:var(--primary);font-weight:600">${pct}% complete</span>
+    <div class="lesson-wrap">
+      <div class="lesson-progress">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+          <div class="lesson-prog-dots">${dots}</div>
+          <span style="font-size:11px;font-weight:700;color:var(--blue)">${pct}% complete</span>
+        </div>
+        <div class="lesson-prog-bar"><div class="lesson-prog-fill" style="width:${pct}%"></div></div>
       </div>
-      <div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div>
-      <div class="lesson-nav-dots" style="margin-top:8px;flex-wrap:wrap">${dots}</div>
-    </div>
-    ${page.html}
-    <div class="lesson-nav">
-      <button class="btn btn-outline" onclick="prevLessonPage()" ${isFirst?'disabled style="opacity:0.3;cursor:default"':''}>Back</button>
-      <button class="btn btn-gold" onclick="${isLast?'':'nextLessonPage()'}" ${isLast?'disabled style="opacity:0.5;cursor:default"':''}>${isLast?'✅ Done!':'Next'}</button>
+      ${page.html}
+      <div class="lesson-nav">
+        <button class="btn btn-outline" onclick="prevLessonPage()" ${isFirst?'disabled style="opacity:0.3;cursor:not-allowed"':''}>← Back</button>
+        <span style="font-size:12px;color:var(--text3)">${lessonPage+1} / ${total}</span>
+        <button class="btn btn-gold" onclick="${isLast?'showLessonComplete()':'nextLessonPage()'}">${isLast?'✅ Finish':'Next →'}</button>
+      </div>
     </div>`;
 
   document.getElementById('lessonContent').innerHTML=html;
@@ -1703,6 +1747,29 @@ function renderLessonPage(){
 function nextLessonPage(){ if(lessonPage<lessonPages.length-1){lessonPage++;renderLessonPage();} }
 function prevLessonPage(){ if(lessonPage>0){lessonPage--;renderLessonPage();} }
 function goToPage(i){ lessonPage=i; renderLessonPage(); }
+
+function showLessonComplete(){
+  addExamXP(10);
+  sfxCongrats();
+  const day=userProgress.day||1;
+  document.getElementById('lessonContent').innerHTML=`
+    <div class="lesson-wrap">
+      <div class="lc" style="border-color:rgba(52,201,122,.25);text-align:center">
+        <div style="padding:32px 20px 24px">
+          <div style="font-size:48px;margin-bottom:12px">🎉</div>
+          <div style="font-size:20px;font-weight:800;color:var(--text);margin-bottom:6px">Dag ${day} voltooid!</div>
+          <div style="font-size:13px;color:var(--text2);margin-bottom:20px">Je hebt vandaag nieuwe woorden en zinnen geleerd. Ga zo door!</div>
+          <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(52,201,122,.1);border:1px solid rgba(52,201,122,.25);border-radius:99px;padding:6px 16px;margin-bottom:24px">
+            <span style="color:var(--green);font-weight:700">+10 XP</span>
+          </div>
+          <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+            <button class="btn btn-outline" onclick="lessonPage=0;renderLessonPage()">↩ Review lesson</button>
+            <button class="btn btn-gold" onclick="switchTab('exam',document.getElementById('tabBtnExam'));renderExamHome()">Practice exam →</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+}
 
 // ═══════════════════════════════════
 // VOICE VALIDATION WITH AI FEEDBACK
