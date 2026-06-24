@@ -295,6 +295,22 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .hac-sub{font-size:11px;color:var(--text3);line-height:1.4;}
 .hac-status{font-size:11px;font-weight:700;margin-top:6px;padding:4px 10px;border-radius:99px;display:inline-block;width:fit-content;}
 .hac-status-active{background:rgba(91,141,238,0.15);color:var(--blue-b);}
+.dw-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px;}
+.dw-topic-card{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:16px 12px;cursor:pointer;transition:all .18s ease;text-align:center;}
+.dw-topic-card:hover{transform:translateY(-2px);border-color:rgba(91,141,238,.35);}
+.dw-topic-icon{font-size:28px;margin-bottom:6px;}
+.dw-topic-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.dw-topic-sub{font-size:10px;color:var(--text3);}
+.dw-word-card{background:var(--card);border:1px solid var(--border2);border-radius:16px;padding:20px 18px;margin-bottom:12px;}
+.dw-nl{font-size:34px;font-weight:900;background:linear-gradient(135deg,#93C5FD,#C084FC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;margin-bottom:4px;word-break:break-word;}
+.dw-pron{font-size:13px;color:var(--text3);font-style:italic;margin-bottom:6px;}
+.dw-en{font-size:16px;font-weight:600;color:var(--text2);margin-bottom:12px;}
+.dw-ex{background:rgba(91,141,238,.07);border:1px solid rgba(91,141,238,.18);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--text2);line-height:1.7;font-style:italic;margin-bottom:14px;}
+.dw-actions{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px;}
+.dw-action{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--bg);border:1px solid var(--border2);border-radius:12px;padding:10px 6px;cursor:pointer;transition:all .15s;font-size:11px;font-weight:600;color:var(--text2);}
+.dw-action:active{transform:scale(.95);}
+.dw-nav{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;margin-top:4px;}
+.dw-mic-result{border-radius:10px;padding:10px 12px;font-size:13px;margin-top:8px;text-align:center;}
 .hac-status-locked{background:rgba(255,255,255,0.05);color:var(--text3);}
 .hac-status-exam{background:rgba(155,114,207,0.15);color:var(--violet);}
 .hac-status-done{background:rgba(52,201,122,0.15);color:var(--green);}
@@ -865,6 +881,18 @@ body{background:var(--bg);}
         </div>
       </div>
 
+      <!-- Daily Words card -->
+      <div class="home-action-card" style="grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px" onclick="openDailyWords()">
+        <div style="display:flex;align-items:center;gap:14px">
+          <div style="font-size:30px">🗣️</div>
+          <div>
+            <div class="hac-title" style="margin-bottom:2px">Dagelijkse Woorden</div>
+            <div class="hac-sub">Werk · Ziekenhuis · Station · Winkel · meer</div>
+          </div>
+        </div>
+        <div class="hac-status hac-status-active" style="flex-shrink:0">Oefenen →</div>
+      </div>
+
       <!-- XP + Readiness row -->
       <div class="home-stats-row" id="homeStatsRow"></div>
 
@@ -1242,7 +1270,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.3.1';
+const APP_VERSION='2.4.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -2661,6 +2689,208 @@ function speakDutch(text){
 }
 function speakWord(text){speakDutch(text);}
 
+function speakDutchSlow(text){
+  if(!window.speechSynthesis)return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='nl-NL'; u.rate=0.65; u.pitch=1.0;
+  const doSpeak=()=>{
+    const v=window.speechSynthesis.getVoices();
+    const dv=v.find(x=>x.lang==='nl-NL')||v.find(x=>x.lang.startsWith('nl'));
+    if(dv)u.voice=dv;
+    window.speechSynthesis.speak(u);
+  };
+  const voices=window.speechSynthesis.getVoices();
+  if(voices.length>0)doSpeak();
+  else window.speechSynthesis.onvoiceschanged=doSpeak;
+}
+
+// ── DAILY WORDS MODULE ──
+let dwState={topic:null,idx:0};
+let dwRecognition=null;
+
+function openDailyWords(){
+  switchTab('exam',document.getElementById('tabBtnExam'));
+  showDailyWordsHome();
+}
+
+function showDailyWordsHome(){
+  const topicKeys=Object.keys(DAILY_WORDS);
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">🗣️ Dagelijkse Woorden</div><div class="exam-section-sub">Kies een onderwerp om te oefenen</div></div>
+      <button class="exam-back-btn" onclick="switchTab('home',document.getElementById('tabBtnHome'));renderHomeTab()">← Home</button>
+    </div>
+    <div style="font-size:12px;color:var(--text2);line-height:1.6;background:rgba(91,141,238,.07);border-radius:10px;padding:10px 14px;margin-bottom:14px;border-left:3px solid var(--blue)">
+      Luister → herhaal → spreek na. Gebruik de 🐢 knop voor langzamer geluid.
+    </div>
+    <div class="dw-grid">
+      ${topicKeys.map(k=>{
+        const t=DAILY_WORDS[k];
+        const [icon,...rest]=t.label.split(' ');
+        return `<div class="dw-topic-card" onclick="showDailyWordsTopic('${k}')">
+          <div class="dw-topic-icon">${icon}</div>
+          <div class="dw-topic-name">${rest.join(' ')}</div>
+          <div class="dw-topic-sub">${t.sub} · ${t.words.length} woorden</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function showDailyWordsTopic(topicKey){
+  dwState={topic:topicKey,idx:0};
+  showDailyWordCard();
+}
+
+function showDailyWordCard(){
+  const topic=DAILY_WORDS[dwState.topic];
+  const words=topic.words;
+  const idx=dwState.idx;
+  const w=words[idx];
+  const safNL=w.nl.replace(/'/g,"\\'");
+  const pct=Math.round((idx+1)/words.length*100);
+
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr" style="margin-bottom:10px">
+      <div>
+        <div class="exam-section-title">${topic.label}</div>
+        <div class="exam-section-sub">Woord ${idx+1} van ${words.length}</div>
+      </div>
+      <button class="exam-back-btn" onclick="showDailyWordsHome()">← Terug</button>
+    </div>
+
+    <!-- Progress bar -->
+    <div style="height:4px;background:var(--border2);border-radius:99px;margin-bottom:14px;overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:99px;transition:width .4s ease"></div>
+    </div>
+
+    <!-- Word card -->
+    <div class="dw-word-card">
+      <div class="dw-nl">${w.nl}</div>
+      <div class="dw-pron">[ ${w.pron} ]</div>
+      <div class="dw-en">${w.en}</div>
+      <div class="dw-ex">💬 ${w.ex}</div>
+
+      <!-- Audio + mic buttons -->
+      <div class="dw-actions">
+        <div class="dw-action" onclick="speakDutch('${safNL}')" style="color:var(--blue)">
+          <span style="font-size:22px">🔊</span>Luister
+        </div>
+        <div class="dw-action" onclick="speakDutchSlow('${safNL}')" style="color:var(--violet)">
+          <span style="font-size:22px">🐢</span>Langzaam
+        </div>
+        <div class="dw-action" id="dwMicBtn" onclick="startDWRecognition('${safNL}')" style="color:var(--green)">
+          <span style="font-size:22px">🎤</span>Spreek na
+        </div>
+      </div>
+      <div id="dwMicResult"></div>
+    </div>
+
+    <!-- Nav row -->
+    <div class="dw-nav">
+      <button class="btn btn-outline" style="padding:12px" ${idx===0?'disabled':''} onclick="dwNav(-1)">← Vorige</button>
+      <div style="font-size:12px;color:var(--text3);text-align:center">${idx+1} / ${words.length}</div>
+      ${idx<words.length-1
+        ? `<button class="btn btn-gold" style="padding:12px" onclick="dwNav(1)">Volgende →</button>`
+        : `<button class="btn btn-gold" style="padding:12px" onclick="showDWComplete()">Klaar ✅</button>`}
+    </div>`;
+
+  // Auto-play on load (slight delay so DOM is ready)
+  setTimeout(()=>speakDutch(w.nl), 400);
+}
+
+function dwNav(dir){
+  window.speechSynthesis.cancel();
+  if(dwRecognition){try{dwRecognition.stop();}catch(e){} dwRecognition=null;}
+  dwState.idx+=dir;
+  showDailyWordCard();
+}
+
+function startDWRecognition(targetWord){
+  const btn=document.getElementById('dwMicBtn');
+  const result=document.getElementById('dwMicResult');
+  if(!btn||!result)return;
+
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR){
+    result.innerHTML='<div class="dw-mic-result" style="background:rgba(255,200,0,.1);color:var(--gold)">⚠️ Spraakherkenning niet beschikbaar. Gebruik Chrome of Safari.</div>';
+    return;
+  }
+
+  if(dwRecognition){
+    try{dwRecognition.stop();}catch(e){}
+    dwRecognition=null;
+    btn.innerHTML='<span style="font-size:22px">🎤</span>Spreek na';
+    btn.style.color='var(--green)';
+    return;
+  }
+
+  btn.innerHTML='<span style="font-size:22px">🔴</span>Luistert...';
+  btn.style.color='var(--red)';
+  result.innerHTML='<div class="dw-mic-result" style="background:rgba(91,141,238,.08);color:var(--text2)">🎤 Spreek nu het woord uit...</div>';
+
+  const r=new SR();
+  r.lang='nl-NL';
+  r.continuous=false;
+  r.interimResults=false;
+  r.maxAlternatives=3;
+  dwRecognition=r;
+
+  r.onresult=(e)=>{
+    const heard=e.results[0][0].transcript.trim();
+    const score=similarityScore(heard.toLowerCase(), targetWord.toLowerCase());
+    btn.innerHTML='<span style="font-size:22px">🎤</span>Spreek na';
+    btn.style.color='var(--green)';
+    dwRecognition=null;
+
+    let bg,col,msg;
+    if(score>=0.80){bg='rgba(52,201,122,.1)';col='var(--green)';msg='✅ Uitstekend! Perfect uitgesproken.';}
+    else if(score>=0.50){bg='rgba(245,158,11,.1)';col='var(--orange)';msg='🟡 Bijna goed! Probeer nog een keer.';}
+    else{bg='rgba(224,92,92,.1)';col='var(--red)';msg='❌ Probeer opnieuw — luister eerst naar het voorbeeld.';}
+
+    result.innerHTML=`
+      <div class="dw-mic-result" style="background:${bg};color:${col}">
+        ${msg}<br>
+        <span style="font-size:11px;color:var(--text3);margin-top:4px;display:block">U zei: "${heard}"</span>
+      </div>`;
+  };
+
+  r.onerror=(e)=>{
+    btn.innerHTML='<span style="font-size:22px">🎤</span>Spreek na';
+    btn.style.color='var(--green)';
+    dwRecognition=null;
+    if(e.error==='no-speech')
+      result.innerHTML='<div class="dw-mic-result" style="background:rgba(255,200,0,.1);color:var(--gold)">Niets gehoord — tik opnieuw en spreek duidelijk.</div>';
+  };
+
+  r.onend=()=>{
+    dwRecognition=null;
+    btn.innerHTML='<span style="font-size:22px">🎤</span>Spreek na';
+    btn.style.color='var(--green)';
+  };
+
+  r.start();
+}
+
+function showDWComplete(){
+  window.speechSynthesis.cancel();
+  const topic=DAILY_WORDS[dwState.topic];
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">${topic.label}</div></div>
+      <button class="exam-back-btn" onclick="showDailyWordsHome()">← Terug</button>
+    </div>
+    <div class="card" style="text-align:center;padding:32px 20px">
+      <div style="font-size:48px;margin-bottom:10px">🎉</div>
+      <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:6px">Goed gedaan!</div>
+      <div style="font-size:14px;color:var(--text2);margin-bottom:20px">Je hebt alle ${topic.words.length} woorden geoefend van ${topic.label}.</div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
+        <button class="btn btn-outline" onclick="dwState.idx=0;showDailyWordCard()">🔄 Herhalen</button>
+        <button class="btn btn-gold" onclick="showDailyWordsHome()">Ander onderwerp →</button>
+      </div>
+    </div>`;
+}
+
 async function saveProgress(){
   if(!currentUser)return;
   // OWASP A02 – Always use hashed key, never raw PIN
@@ -2990,6 +3220,149 @@ Zilveren Kruis`,
     ]
   }
 ];
+
+const DAILY_WORDS={
+  werk:{label:'💼 Werk',sub:'Office & work',words:[
+    {nl:'vergadering',pron:'fer-HAA-de-ring',en:'meeting',ex:'De vergadering begint om negen uur.'},
+    {nl:'collega',pron:'ko-LAY-ha',en:'colleague',ex:'Mijn collega helpt me met het project.'},
+    {nl:'deadline',pron:'DEAD-line',en:'deadline',ex:'De deadline is vrijdag om vijf uur.'},
+    {nl:'verlof',pron:'fer-LOF',en:'leave / day off',ex:'Ik neem morgen verlof.'},
+    {nl:'salaris',pron:'sa-LAA-ris',en:'salary',ex:'Mijn salaris wordt maandelijks gestort.'},
+    {nl:'contract',pron:'kon-TRAKT',en:'contract',ex:'Ik heb een tijdelijk contract van een jaar.'},
+    {nl:'solliciteren',pron:'so-li-si-TAY-ren',en:'to apply for a job',ex:'Ik ga solliciteren bij een IT-bedrijf.'},
+    {nl:'overuren',pron:'O-fer-uu-ren',en:'overtime',ex:'Ik werk regelmatig overuren.'},
+    {nl:'ziekteverzuim',pron:'ZEEK-te-fer-zoim',en:'sick leave / absenteeism',ex:'Ziekteverzuim moet u melden bij uw werkgever.'},
+    {nl:'proeftijd',pron:'PROEF-tait',en:'probation period',ex:'De proeftijd duurt twee maanden.'},
+    {nl:'loonstrook',pron:'LOON-strook',en:'payslip',ex:'De loonstrook komt elke maand per e-mail.'},
+    {nl:'dienst',pron:'DEENST',en:'shift / service',ex:'Ik werk de vroege dienst vandaag.'},
+  ]},
+  ziekenhuis:{label:'🏥 Ziekenhuis',sub:'Hospital & health',words:[
+    {nl:'afspraak',pron:'AF-spraak',en:'appointment',ex:'Ik heb een afspraak om tien uur bij de dokter.'},
+    {nl:'wachtkamer',pron:'WACHT-kaa-mer',en:'waiting room',ex:'U kunt plaatsnemen in de wachtkamer.'},
+    {nl:'recept',pron:'reh-SEPT',en:'prescription',ex:'De dokter geeft u een recept voor de apotheek.'},
+    {nl:'bloeddruk',pron:'BLOOD-druk',en:'blood pressure',ex:'Mijn bloeddruk is te hoog.'},
+    {nl:'klachten',pron:'KLACH-ten',en:'complaints / symptoms',ex:'Wat zijn uw klachten vandaag?'},
+    {nl:'verwijzing',pron:'fer-WAI-zing',en:'referral',ex:'U heeft een verwijzing nodig voor de specialist.'},
+    {nl:'spoedeisend',pron:'SPOOD-ai-zend',en:'emergency',ex:'Ga naar de Spoedeisende Hulp als het ernstig is.'},
+    {nl:'pijnstiller',pron:'PAIN-stil-er',en:'painkiller',ex:'De apotheker geeft me een pijnstiller.'},
+    {nl:'nuchter',pron:'NOCH-ter',en:'fasting (no food)',ex:'U moet nuchter zijn voor het bloedonderzoek.'},
+    {nl:'verzekerd',pron:'fer-ZEE-kerd',en:'insured',ex:'Bent u verzekerd bij Zilveren Kruis?'},
+    {nl:'eigen risico',pron:'AI-hen REE-zi-ko',en:'personal excess / deductible',ex:'Het eigen risico is €385 per jaar.'},
+    {nl:'bloedonderzoek',pron:'BLOOD-on-der-zook',en:'blood test',ex:'De dokter vraagt een bloedonderzoek aan.'},
+  ]},
+  station:{label:'🚂 Station & Trein',sub:'Train & station',words:[
+    {nl:'perron',pron:'peh-RON',en:'platform',ex:'De trein naar Amsterdam vertrekt van perron zeven.'},
+    {nl:'vertrek',pron:'fer-TREK',en:'departure',ex:'Het vertrek is om kwart over acht.'},
+    {nl:'aankomst',pron:'AAN-komst',en:'arrival',ex:'De aankomst in Utrecht is om negen uur.'},
+    {nl:'vertraging',pron:'fer-TRAA-hing',en:'delay',ex:'Er is twintig minuten vertraging wegens een seinstoring.'},
+    {nl:'overstappen',pron:'O-fer-stap-pen',en:'to transfer / change trains',ex:'U moet overstappen in Utrecht Centraal.'},
+    {nl:'retourtje',pron:'reh-TOOR-chuh',en:'return ticket',ex:'Een retourtje Amsterdam, alstublieft.'},
+    {nl:'enkeltje',pron:'EN-kel-chuh',en:'single ticket',ex:'Ik neem een enkeltje naar Den Haag.'},
+    {nl:'ov-chipkaart',pron:'oh-vay CHIP-kaart',en:'public transport chip card',ex:'Vergeet niet in te checken met uw ov-chipkaart.'},
+    {nl:'spoor',pron:'SPOOR',en:'track / rail',ex:'De trein rijdt op spoor vier.'},
+    {nl:'conducteur',pron:'kon-duk-TEUR',en:'train conductor',ex:'De conducteur controleert uw kaartje.'},
+    {nl:'seinstoring',pron:'SAIN-sto-ring',en:'signal failure',ex:'Door een seinstoring rijden treinen met vertraging.'},
+    {nl:'reisplanner',pron:'RAIS-plan-ner',en:'journey planner',ex:'Gebruik de NS reisplanner voor de beste route.'},
+  ]},
+  bus:{label:'🚌 Bus & Tram',sub:'Bus, tram & metro',words:[
+    {nl:'halte',pron:'HAL-teh',en:'stop (bus/tram)',ex:'De bushalte is aan de overkant van de straat.'},
+    {nl:'inchecken',pron:'IN-chek-ken',en:'to check in',ex:'Inchecken bij de deur met uw chipkaart.'},
+    {nl:'uitchecken',pron:'OIT-chek-ken',en:'to check out',ex:'Vergeet niet uit te checken als u uitstapt.'},
+    {nl:'lijn',pron:'LAIN',en:'line (bus/tram number)',ex:'Lijn 12 rijdt naar het Centraal Station.'},
+    {nl:'dienstregeling',pron:'DEENST-ray-he-ling',en:'timetable',ex:'De dienstregeling hangt bij de halte.'},
+    {nl:'eindhalte',pron:'AIND-hal-teh',en:'terminus / last stop',ex:'Utrecht is de eindhalte van deze lijn.'},
+    {nl:'aansluting',pron:'AAN-sloi-ting',en:'connection',ex:'Er is een aansluiting op de metro om tien over.'},
+    {nl:'vervangend vervoer',pron:'fer-VAN-hend fer-VOOR',en:'replacement transport',ex:'Er rijdt vervangend busvervoer dit weekend.'},
+    {nl:'instappen',pron:'IN-stap-pen',en:'to board / get on',ex:'Stap in via de voordeur.'},
+    {nl:'uitstappen',pron:'OIT-stap-pen',en:'to get off',ex:'Ik moet hier uitstappen.'},
+    {nl:'reisinformatie',pron:'RAIS-in-for-MAA-tsee',en:'travel information',ex:'Bel 0900-9292 voor reisinformatie.'},
+    {nl:'maandabonnement',pron:'MAAND-a-bo-neh-MENT',en:'monthly pass',ex:'Een maandabonnement is goedkoper dan losse kaartjes.'},
+  ]},
+  luchthaven:{label:'✈️ Luchthaven',sub:'Airport',words:[
+    {nl:'vertrekhal',pron:'fer-TREK-hal',en:'departure hall',ex:'Ga naar de vertrekhal voor uw vlucht.'},
+    {nl:'aankomsthal',pron:'AAN-komst-hal',en:'arrivals hall',ex:'Uw familie wacht in de aankomsthal.'},
+    {nl:'gate',pron:'HAYT',en:'gate',ex:'Uw vlucht vertrekt van gate B7.'},
+    {nl:'inchecken',pron:'IN-chek-ken',en:'check-in',ex:'Online inchecken kan tot vier uur voor vertrek.'},
+    {nl:'bagage',pron:'ba-HAA-zhuh',en:'luggage',ex:'Uw bagage mag maximaal 23 kilo wegen.'},
+    {nl:'paspoortcontrole',pron:'pas-POORT-kon-tro-leh',en:'passport control',ex:'Paspoortcontrole is na de gate.'},
+    {nl:'douane',pron:'doo-AH-neh',en:'customs',ex:'Heeft u iets aan te geven bij de douane?'},
+    {nl:'vlucht',pron:'VLUCHT',en:'flight',ex:'Mijn vlucht is KL1234 naar Amsterdam.'},
+    {nl:'vertraging',pron:'fer-TRAA-hing',en:'delay',ex:'De vlucht heeft een uur vertraging.'},
+    {nl:'boarding pass',pron:'BOR-ding pas',en:'boarding pass',ex:'Laat uw boarding pass zien bij de gate.'},
+    {nl:'handbagage',pron:'HAND-ba-haa-zhuh',en:'hand luggage / carry-on',ex:'Handbagage mag maximaal 10 kilo zijn.'},
+    {nl:'verbinding',pron:'fer-BIN-ding',en:'connecting flight',ex:'Ik heb een verbinding in Frankfurt.'},
+  ]},
+  supermarkt:{label:'🛒 Supermarkt',sub:'Supermarket & shopping',words:[
+    {nl:'kassa',pron:'KAS-sa',en:'checkout / till',ex:'U kunt betalen bij kassa drie.'},
+    {nl:'bonuskaart',pron:'BOH-nus-kaart',en:'loyalty card',ex:'Heeft u een bonuskaart voor de korting?'},
+    {nl:'aanbieding',pron:'AAN-bee-ding',en:'offer / deal',ex:'Melk is in aanbieding — twee voor één euro.'},
+    {nl:'kassabon',pron:'KAS-sa-bon',en:'receipt',ex:'Wilt u de kassabon meenemen?'},
+    {nl:'pinnen',pron:'PIN-nen',en:'to pay by card',ex:'Kan ik hier pinnen of moet ik contant betalen?'},
+    {nl:'wisselgeld',pron:'WIS-sel-helt',en:'change (money)',ex:'Hier is uw wisselgeld — twee euro vijftig.'},
+    {nl:'statiegeld',pron:'STAA-tee-helt',en:'deposit (on bottles)',ex:'Flessen met statiegeld kunt u hier inleveren.'},
+    {nl:'houdbaarheidsdatum',pron:'HOUD-baar-haids-daa-tum',en:'expiry / best before date',ex:'Check de houdbaarheidsdatum op de verpakking.'},
+    {nl:'gangpad',pron:'HANG-pad',en:'aisle',ex:'Rijst vindt u in gangpad vijf.'},
+    {nl:'biologisch',pron:'bee-oh-LOH-his',en:'organic',ex:'Dit is biologisch fruit zonder bestrijdingsmiddelen.'},
+    {nl:'zelfscankassa',pron:'ZELF-skan-kas-sa',en:'self-checkout',ex:'De zelfscankassa is sneller als u weinig artikelen heeft.'},
+    {nl:'boodschappentas',pron:'BOOD-schap-pen-tas',en:'shopping bag',ex:'Wilt u een boodschappentas voor vijftien cent?'},
+  ]},
+  gemeente:{label:'🏛️ Gemeente',sub:'Municipality & government',words:[
+    {nl:'loket',pron:'lo-KET',en:'counter / desk',ex:'Ga naar loket drie voor uw paspoort.'},
+    {nl:'afspraak maken',pron:'AF-spraak MAA-ken',en:'to make an appointment',ex:'U moet online een afspraak maken.'},
+    {nl:'uittreksel',pron:'OIT-trek-sel',en:'official extract (BRP)',ex:'Ik heb een uittreksel BRP nodig voor mijn werkgever.'},
+    {nl:'inschrijven',pron:'IN-schrai-fen',en:'to register',ex:'U moet zich inschrijven bij de gemeente.'},
+    {nl:'legitimatiebewijs',pron:'leh-hi-ti-MAA-tsee-beh-wais',en:'ID document',ex:'Neem een geldig legitimatiebewijs mee.'},
+    {nl:'aanvraag',pron:'AAN-fraach',en:'application / request',ex:'Uw aanvraag wordt binnen vijf werkdagen verwerkt.'},
+    {nl:'DigiD',pron:'DEE-hi-dee',en:'digital ID (government login)',ex:'Log in met uw DigiD op de website van de gemeente.'},
+    {nl:'verblijfsvergunning',pron:'fer-BLAYFS-fer-hun-ning',en:'residence permit',ex:'Uw verblijfsvergunning moet verlengd worden.'},
+    {nl:'burgerlijke stand',pron:'BUR-her-lij-ke STAND',en:'civil registry',ex:'Aangifte van geboorte doet u bij de burgerlijke stand.'},
+    {nl:'belastingaangifte',pron:'beh-LAS-ting-aan-hif-teh',en:'tax return',ex:'De belastingaangifte moet voor 1 mei ingediend zijn.'},
+    {nl:'toeslagen',pron:'TOO-slaa-hen',en:'allowances / benefits',ex:'Vraag zorgtoeslag aan via de Belastingdienst.'},
+    {nl:'paspoort',pron:'PAS-poort',en:'passport',ex:'Een nieuw paspoort kost 73 euro en duurt vijf werkdagen.'},
+  ]},
+  school:{label:'🏫 School & Onderwijs',sub:'School & education',words:[
+    {nl:'basisschool',pron:'BAA-sis-school',en:'primary school',ex:'Kinderen gaan vanaf vier jaar naar de basisschool.'},
+    {nl:'inschrijving',pron:'IN-schrai-fing',en:'enrolment',ex:'De inschrijving voor de basisschool is open in januari.'},
+    {nl:'rapport',pron:'ra-PORT',en:'school report',ex:'Het rapport komt aan het einde van het trimester.'},
+    {nl:'ouderavond',pron:'OW-der-aa-font',en:'parents evening',ex:'De ouderavond is op dinsdag om zeven uur.'},
+    {nl:'huiswerk',pron:'HUIS-werk',en:'homework',ex:'Mijn kind heeft veel huiswerk vandaag.'},
+    {nl:'leerkracht',pron:'LEER-kracht',en:'teacher',ex:'De leerkracht van groep drie heet juf Marieke.'},
+    {nl:'schoolvakantie',pron:'SCHOOL-fa-kan-tsee',en:'school holiday',ex:'De zomervakantie duurt zes weken.'},
+    {nl:'leerplicht',pron:'LEER-plicht',en:'compulsory education',ex:'Leerplicht geldt vanaf vijf jaar.'},
+    {nl:'groep',pron:'HROOP',en:'year group (primary)',ex:'Mijn kind zit in groep vijf.'},
+    {nl:'absentie',pron:'ab-SEN-tsee',en:'absence',ex:'Meld absentie voor acht uur bij de school.'},
+    {nl:'schoolgids',pron:'SCHOOL-hits',en:'school prospectus / guide',ex:'De schoolgids staat op de website van de school.'},
+    {nl:'gymles',pron:'HIM-les',en:'PE / gym class',ex:'Gymles is elke dinsdag — neem sportschoenen mee.'},
+  ]},
+  winkelcentrum:{label:'🏪 Winkelcentrum',sub:'Shopping centre',words:[
+    {nl:'roltrap',pron:'ROL-trap',en:'escalator',ex:'De roltrap naar de eerste verdieping is rechts.'},
+    {nl:'lift',pron:'LIFT',en:'lift / elevator',ex:'De lift voor kinderwagens is naast de ingang.'},
+    {nl:'garderobe',pron:'har-deh-ROH-beh',en:'cloakroom / wardrobe',ex:'U kunt uw jas ophangen in de garderobe.'},
+    {nl:'klantenservice',pron:'KLAN-ten-ser-fees',en:'customer service',ex:'Ga naar de klantenservice op de tweede verdieping.'},
+    {nl:'omruilen',pron:'OM-roi-len',en:'to exchange (goods)',ex:'U kunt het artikel omruilen met de kassabon.'},
+    {nl:'korting',pron:'KOR-ting',en:'discount',ex:'Er is dertig procent korting op alle schoenen.'},
+    {nl:'uitverkoop',pron:'OIT-fer-koop',en:'sale',ex:'De uitverkoop begint op tweede kerstdag.'},
+    {nl:'paskamer',pron:'PAS-kaa-mer',en:'fitting room',ex:'De paskamers zijn achterin de winkel.'},
+    {nl:'garantie',pron:'ha-ran-TEE',en:'warranty / guarantee',ex:'Dit product heeft twee jaar garantie.'},
+    {nl:'openingstijden',pron:'OH-pe-nings-tai-den',en:'opening hours',ex:'De openingstijden zijn maandag tot zaterdag tien tot acht.'},
+    {nl:'parkeergarage',pron:'par-KEER-ha-raa-zhuh',en:'car park / parking garage',ex:'Parkeren is gratis de eerste twee uur in de parkeergarage.'},
+    {nl:'bezorgservice',pron:'beh-ZORH-ser-fees',en:'delivery service',ex:'Thuis bezorgd? Gebruik onze bezorgservice voor 5 euro.'},
+  ]},
+  thuis:{label:'🏠 Thuis & Wonen',sub:'Home & housing',words:[
+    {nl:'huurcontract',pron:'HUUR-kon-trakt',en:'rental contract',ex:'Lees het huurcontract goed door voor u tekent.'},
+    {nl:'borg',pron:'BORG',en:'deposit (rental)',ex:'De borg is twee maanden huur.'},
+    {nl:'verhuurder',pron:'fer-HUUR-der',en:'landlord',ex:'Meld reparaties altijd bij uw verhuurder.'},
+    {nl:'servicekosten',pron:'SER-fees-kos-ten',en:'service charges',ex:'Servicekosten voor gas en water zijn inbegrepen.'},
+    {nl:'reparatie',pron:'reh-pa-RAA-tsee',en:'repair',ex:'De reparatie van de verwarming duurt twee dagen.'},
+    {nl:'woningcorporatie',pron:'WOH-ning-kor-po-RAA-tsee',en:'housing association',ex:'Mijn woning is van een woningcorporatie.'},
+    {nl:'huurtoeslag',pron:'HUUR-too-slach',en:'housing benefit',ex:'Bij een laag inkomen kunt u huurtoeslag aanvragen.'},
+    {nl:'opzegtermijn',pron:'OP-zeh-ter-main',en:'notice period',ex:'De opzegtermijn voor mijn huurwoning is één maand.'},
+    {nl:'energielabel',pron:'eh-NER-hee-laa-bel',en:'energy label',ex:'Woningen met label A zijn goed geïsoleerd.'},
+    {nl:'buren',pron:'BUU-ren',en:'neighbours',ex:'Mijn buren zijn erg vriendelijk en helpzaam.'},
+    {nl:'sleutel',pron:'SLEU-tel',en:'key',ex:'Ik heb de sleutel van de voordeur gekregen.'},
+    {nl:'onderhoud',pron:'ON-der-hout',en:'maintenance',ex:'Groot onderhoud is de verantwoordelijkheid van de verhuurder.'},
+  ]},
+};
 
 const READING_CARDS={
   15:{text:'De basisschool in Nederland begint op vierjarige leeftijd. Kinderen zijn leerplichtig vanaf hun vijfde verjaardag. De school is gratis. U moet uw kind inschrijven bij een school in de buurt.',q:'Vanaf welke leeftijd zijn kinderen leerplichtig?',opts:['Vier jaar','Vijf jaar','Zes jaar','Zeven jaar'],ans:1},

@@ -2,6 +2,37 @@
 
 ---
 
+## [2.4.0] — 2026-06-24
+
+### Added — Dagelijkse Woorden vocabulary module
+
+**New home screen card** — "🗣️ Dagelijkse Woorden" full-width card below the 2×2 grid; opens topic selection in the exam area.
+
+**10 topic packs** (12 words each = 120 words total):
+- 💼 Werk (office, contracts, meetings, payslip)
+- 🏥 Ziekenhuis (appointments, prescriptions, blood test, insurance)
+- 🚂 Station & Trein (platform, delay, transfer, chipkaart)
+- 🚌 Bus & Tram (halte, check-in/out, timetable, monthly pass)
+- ✈️ Luchthaven (gate, boarding pass, customs, hand luggage)
+- 🛒 Supermarkt (kassa, bonus card, receipt, self-checkout)
+- 🏛️ Gemeente (loket, DigiD, uittreksel, residence permit)
+- 🏫 School & Onderwijs (enrolment, parents evening, compulsory education)
+- 🏪 Winkelcentrum (escalator, fitting room, warranty, opening hours)
+- 🏠 Thuis & Wonen (deposit, landlord, housing benefit, notice period)
+
+**Word card** — large Dutch word (gradient), phonetic pronunciation guide, English meaning, example sentence (blue italic card), auto-plays TTS on load.
+
+**Three action buttons per word:**
+- 🔊 Luister — normal speed TTS (rate 0.85)
+- 🐢 Langzaam — slow TTS (rate 0.65) for clear pronunciation
+- 🎤 Spreek na — mic opens; listens in nl-NL; scores against the word with `similarityScore`; shows ✅/🟡/❌ + "U zei: …" transcript
+
+**Navigation** — ← Vorige / Volgende → with progress bar; auto-cancels mic and TTS on page change. Completion card at end with Herhalen / Ander onderwerp options.
+
+**iOS safe:** mic uses synchronous `r.start()` within user-gesture tap; `webkitSpeechRecognition` fallback for Safari.
+
+---
+
 ## [2.3.1] — 2026-06-24
 
 ### Added
