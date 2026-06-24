@@ -1236,7 +1236,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.7.5';
+const APP_VERSION='1.8.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -2885,7 +2885,7 @@ function renderExamHome(){
     </div>
 
     <!-- Tools row -->
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
       <div class="exam-module" onclick="showKNMStudyCards()">
         <div class="exam-module-icon">📋</div>
         <div class="exam-module-name">Flashcards</div>
@@ -2895,6 +2895,20 @@ function renderExamHome(){
         <div class="exam-module-icon">📊</div>
         <div class="exam-module-name">Zwaktes</div>
         <div class="exam-module-sub">Analyse</div>
+      </div>
+    </div>
+
+    <!-- Phase 4: Info cards -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:4px">
+      <div class="card" style="cursor:pointer;border-left:3px solid var(--blue)" onclick="showMAPInfo()">
+        <div style="font-size:20px;margin-bottom:6px">🤝</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">MAP</div>
+        <div style="font-size:11px;color:var(--text2)">Maatschappelijke Participatie</div>
+      </div>
+      <div class="card" style="cursor:pointer;border-left:3px solid var(--violet)" onclick="showPVInfo()">
+        <div style="font-size:20px;margin-bottom:6px">📜</div>
+        <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px">Participatieverklaring</div>
+        <div style="font-size:11px;color:var(--text2)">PVT ondertekening</div>
       </div>
     </div>`;
 }
@@ -4228,27 +4242,447 @@ function showLuisterenSampleResult(){
 }
 
 // ── MOCK FULL EXAM (stub — full build Phase 3) ──
+// ═══════════════════════════════════
+// MOCK FULL EXAM  (Phase 3)
+// ═══════════════════════════════════
+let mockTimer=null;
+let mockState={};
+const MOCK_PHASES=[
+  {id:'knm',      icon:'🏛️',label:'KNM',        mins:35,desc:'50 vragen — Kennis van de Nederlandse Maatschappij'},
+  {id:'lezen',    icon:'📖',label:'Lezen',       mins:35,desc:'5 teksten met meerkeuze'},
+  {id:'luisteren',icon:'🎧',label:'Luisteren',   mins:25,desc:'5 audiofragmenten met MCQ'},
+  {id:'schrijven',icon:'✍️',label:'Schrijven',   mins:60,desc:'1 schrijfopdracht — AI-beoordeling'},
+  {id:'ogo',      icon:'🎭',label:'OGO / Spreken',mins:15,desc:'3 rollenspel-situaties — AI-beoordeling'},
+];
+
+function getMockHistory(){
+  try{return JSON.parse(localStorage.getItem('speako_mock_history_'+currentUser?.name)||'[]');}catch(e){return [];}
+}
+function saveMockHistory(entry){
+  const h=getMockHistory();
+  h.unshift(entry);
+  localStorage.setItem('speako_mock_history_'+currentUser?.name,JSON.stringify(h.slice(0,5)));
+}
+function mockFmtTime(s){return Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;}
+function mockTickTimer(){
+  mockState.secondsLeft--;
+  const el=document.getElementById('mockTimerEl');
+  if(el){
+    el.textContent=mockFmtTime(mockState.secondsLeft);
+    el.style.color=mockState.secondsLeft<120?'var(--red)':mockState.secondsLeft<300?'var(--orange)':'var(--green)';
+  }
+  if(mockState.secondsLeft<=0){clearInterval(mockTimer);mockAdvancePhase();}
+}
+
 function startMockExam(){
+  clearInterval(mockTimer);
+  const history=getMockHistory();
   document.getElementById('examContent').innerHTML=`
     <div class="exam-section-hdr">
-      <div><div class="exam-section-title">⏱️ Mock Examen</div><div class="exam-section-sub">Alle 5 modules · Volledige tijdslimiet</div></div>
+      <div><div class="exam-section-title">⏱️ Mock Inburgeringsexamen</div>
+      <div class="exam-section-sub">Volledige simulatie · 170 minuten</div></div>
       <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
     </div>
-    <div class="card" style="text-align:center;padding:40px 24px">
-      <div style="font-size:48px;margin-bottom:16px">⏱️</div>
-      <div style="font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px">Mock Examen — Binnenkort beschikbaar</div>
-      <div style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:12px">
-        Het volledige mock-examen simuleert de echte inburgeringstest:<br>
-        KNM (35 min) → Lezen (35 min) → Luisteren (25 min) → Schrijven (60 min) → OGO (15 min)
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📋 Examenstructuur</div>
+      ${MOCK_PHASES.map((p,i)=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:9px 0;${i<4?'border-bottom:1px solid var(--border)':''}">
+          <div style="font-size:22px;width:32px;text-align:center">${p.icon}</div>
+          <div style="flex:1"><div style="font-size:13px;font-weight:700;color:var(--text)">${p.label}</div>
+            <div style="font-size:11px;color:var(--text2)">${p.desc}</div></div>
+          <div style="font-size:11px;font-weight:700;color:var(--text3);background:var(--surface);border-radius:8px;padding:3px 10px">${p.mins} min</div>
+        </div>`).join('')}
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;padding-top:10px;border-top:1px solid var(--border)">
+        <span style="font-size:12px;color:var(--text3)">Totale duur</span>
+        <span style="font-size:15px;font-weight:900;color:var(--accent)">170 minuten</span>
       </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px;text-align:left">
-        ${[['🏛️ KNM','35 min'],['📖 Lezen','35 min'],['🎧 Luisteren','25 min'],['✍️ Schrijven','60 min'],['🎭 OGO','15 min'],['📊 Totaal','170 min']].map(([m,t])=>`
-          <div style="background:var(--card2);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center">
-            <span style="font-size:12px;font-weight:600;color:var(--text)">${m}</span>
-            <span style="font-size:11px;color:var(--text3)">${t}</span>
-          </div>`).join('')}
+    </div>
+    <div style="background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.2);border-radius:12px;padding:12px 16px;margin-bottom:14px;font-size:12px;color:var(--text2);line-height:1.7">
+      ⚠️ <strong style="color:var(--gold)">Let op:</strong> Elke module heeft een eigen timer. Je kunt niet teruggaan. Schrijven & OGO worden door AI beoordeeld — internet vereist.
+    </div>
+    ${history.length?`<div style="margin-bottom:14px">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px">Vorige pogingen</div>
+      ${history.slice(0,3).map(h=>{
+        const d=new Date(h.date).toLocaleDateString('nl-NL',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'});
+        const ok=h.totalPct>=70;
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 12px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;margin-bottom:6px">
+          <div><div style="font-size:12px;color:var(--text2)">${d}</div>
+            <div style="font-size:10px;color:var(--text3)">${h.passed.join(' · ')}</div></div>
+          <span style="font-size:14px;font-weight:800;color:${ok?'var(--green)':'var(--orange)'}">${h.totalPct}% ${ok?'✅':'⚡'}</span>
+        </div>`;}).join('')}
+    </div>`:''}
+    <button class="btn btn-gold" style="width:100%;padding:16px;font-size:15px" onclick="startMockPhase(0)">Begin Mock Examen →</button>`;
+}
+
+function startMockPhase(phaseIdx){
+  clearInterval(mockTimer);
+  if(phaseIdx===0){
+    mockState={phase:0,scores:{},knmQ:shuffleArray(KNM_QUESTIONS).slice(0,40),knmIdx:0,knmScore:0,
+      lezenP:shuffleArray(LEZEN_PASSAGES),lezenPIdx:0,lezenQIdx:0,lezenScore:0,lezenTotal:0,
+      luisF:shuffleArray(LUISTEREN_FRAGMENTS),luisFIdx:0,luisQIdx:0,luisScore:0,luisTotal:0,
+      schrijvenPrompt:SCHRIJVEN_PROMPTS[Math.floor(Math.random()*SCHRIJVEN_PROMPTS.length)],
+      schrijvenAnswer:'',schrijvenAIResult:null,
+      ogoSc:shuffleArray(OGO_SCENARIOS).slice(0,3),ogoIdx:0,ogoAnswers:[]};
+    mockState.lezenTotal=mockState.lezenP.reduce((a,p)=>a+p.questions.length,0);
+    mockState.luisTotal=mockState.luisF.reduce((a,f)=>a+f.questions.length,0);
+  }
+  mockState.phase=phaseIdx;
+  const ph=MOCK_PHASES[phaseIdx];
+  mockState.secondsLeft=ph.mins*60;
+  mockTimer=setInterval(mockTickTimer,1000);
+  mockRenderPhaseIntro(phaseIdx);
+}
+
+function mockRenderPhaseIntro(pi){
+  const ph=MOCK_PHASES[pi];
+  document.getElementById('examContent').innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--card);border:1px solid var(--border2);border-radius:14px;margin-bottom:14px">
+      <div>
+        <div style="font-size:11px;color:var(--text3);font-weight:700;text-transform:uppercase;letter-spacing:.5px">Module ${pi+1} van 5</div>
+        <div style="font-size:18px;font-weight:800;color:var(--text)">${ph.icon} ${ph.label}</div>
       </div>
-      <button class="btn btn-outline" onclick="renderExamHome()">← Terug naar overzicht</button>
+      <div style="text-align:right">
+        <div style="font-size:22px;font-weight:900;color:var(--green)" id="mockTimerEl">${mockFmtTime(mockState.secondsLeft)}</div>
+        <div style="font-size:10px;color:var(--text3)">${ph.mins} min</div>
+      </div>
+    </div>
+    <div class="card" style="text-align:center;padding:32px 20px">
+      <div style="font-size:48px;margin-bottom:12px">${ph.icon}</div>
+      <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:6px">${ph.label}</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:20px">${ph.desc}</div>
+      <button class="btn btn-gold" style="width:100%;padding:14px" onclick="mockStartPhaseContent(${pi})">Start ${ph.label} →</button>
+    </div>`;
+}
+
+function mockHeader(pi){
+  const ph=MOCK_PHASES[pi];
+  return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--card);border:1px solid var(--border2);border-radius:14px;margin-bottom:12px">
+    <div style="font-size:13px;font-weight:700;color:var(--text)">${ph.icon} ${ph.label}</div>
+    <div style="font-size:16px;font-weight:900;color:var(--green)" id="mockTimerEl">${mockFmtTime(mockState.secondsLeft)}</div>
+  </div>`;
+}
+
+function mockStartPhaseContent(pi){
+  if(pi===0)mockRenderKNM();
+  else if(pi===1)mockRenderLezen();
+  else if(pi===2)mockRenderLuisteren();
+  else if(pi===3)mockRenderSchrijven();
+  else mockRenderOGO();
+}
+
+function mockAdvancePhase(){
+  clearInterval(mockTimer);
+  const pi=mockState.phase;
+  if(pi===0)mockState.scores.knm={score:mockState.knmScore,total:mockState.knmQ.length,pct:Math.round(mockState.knmScore/mockState.knmQ.length*100)};
+  else if(pi===1)mockState.scores.lezen={score:mockState.lezenScore,total:mockState.lezenTotal,pct:Math.round(mockState.lezenScore/mockState.lezenTotal*100)};
+  else if(pi===2)mockState.scores.luisteren={score:mockState.luisScore,total:mockState.luisTotal,pct:Math.round(mockState.luisScore/mockState.luisTotal*100)};
+  if(pi<4){startMockPhase(pi+1);}
+  else{mockShowResult();}
+}
+
+// ── Mock KNM ──
+function mockRenderKNM(){
+  const qi=mockState.knmIdx;
+  if(qi>=mockState.knmQ.length){mockState.scores.knm={score:mockState.knmScore,total:mockState.knmQ.length,pct:Math.round(mockState.knmScore/mockState.knmQ.length*100)};mockAdvancePhase();return;}
+  const q=mockState.knmQ[qi];
+  const opts=shuffleArray([...q.wrong,q.correct]);
+  document.getElementById('examContent').innerHTML=`
+    ${mockHeader(0)}
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Vraag ${qi+1} / ${mockState.knmQ.length}</div>
+    <div class="card">
+      <div style="font-size:15px;font-weight:700;color:var(--text);margin-bottom:14px">${esc(q.q)}</div>
+      ${opts.map((o,i)=>`<button class="btn btn-outline" style="width:100%;text-align:left;margin-bottom:8px;padding:12px 14px" onclick="mockAnswerKNM(${JSON.stringify(o)},${JSON.stringify(q.correct)})">${esc(o)}</button>`).join('')}
+    </div>`;
+}
+function mockAnswerKNM(chosen,correct){
+  if(chosen===correct)mockState.knmScore++;
+  mockState.knmIdx++;
+  mockRenderKNM();
+}
+
+// ── Mock Lezen ──
+function mockRenderLezen(){
+  const pi=mockState.lezenPIdx;
+  if(pi>=mockState.lezenP.length){mockState.scores.lezen={score:mockState.lezenScore,total:mockState.lezenTotal,pct:Math.round(mockState.lezenScore/mockState.lezenTotal*100)};mockAdvancePhase();return;}
+  const passage=mockState.lezenP[pi];
+  const qi=mockState.lezenQIdx;
+  if(qi>=passage.questions.length){mockState.lezenPIdx++;mockState.lezenQIdx=0;mockRenderLezen();return;}
+  const q=passage.questions[qi];
+  const opts=shuffleArray([...q.wrong,q.correct]);
+  document.getElementById('examContent').innerHTML=`
+    ${mockHeader(1)}
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Tekst ${pi+1}/5 · Vraag ${qi+1}/${passage.questions.length}</div>
+    <div class="card" style="margin-bottom:10px;max-height:180px;overflow-y:auto">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);margin-bottom:6px;text-transform:uppercase">${esc(passage.title)}</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.7;white-space:pre-wrap">${esc(passage.text)}</div>
+    </div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">${esc(q.q)}</div>
+      ${opts.map(o=>`<button class="btn btn-outline" style="width:100%;text-align:left;margin-bottom:8px;padding:11px 14px;font-size:13px" onclick="mockAnswerLezen(${JSON.stringify(o)},${JSON.stringify(q.correct)})">${esc(o)}</button>`).join('')}
+    </div>`;
+}
+function mockAnswerLezen(chosen,correct){
+  if(chosen===correct)mockState.lezenScore++;
+  mockState.lezenQIdx++;
+  mockRenderLezen();
+}
+
+// ── Mock Luisteren ──
+function mockRenderLuisteren(){
+  const fi=mockState.luisFIdx;
+  if(fi>=mockState.luisF.length){mockState.scores.luisteren={score:mockState.luisScore,total:mockState.luisTotal,pct:Math.round(mockState.luisScore/mockState.luisTotal*100)};mockAdvancePhase();return;}
+  const frag=mockState.luisF[fi];
+  const qi=mockState.luisQIdx;
+  if(qi>=frag.questions.length){mockState.luisFIdx++;mockState.luisQIdx=0;mockRenderLuisteren();return;}
+  const q=frag.questions[qi];
+  const opts=shuffleArray([...q.wrong,q.correct]);
+  document.getElementById('examContent').innerHTML=`
+    ${mockHeader(2)}
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Fragment ${fi+1}/5 · Vraag ${qi+1}/${frag.questions.length}</div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:12px;font-weight:700;color:var(--text3);margin-bottom:6px">${esc(frag.context)}</div>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:10px">${esc(frag.speakers)}</div>
+      <button class="btn btn-outline" style="width:100%;margin-bottom:6px" onclick="mockSpeakFragment(${JSON.stringify(frag.text)})">🔊 Beluister fragment</button>
+      <button class="btn" style="width:100%;font-size:11px;background:var(--surface)" onclick="mockSpeakFragment(${JSON.stringify(frag.text)},0.8)">🐢 Langzaam afspelen</button>
+    </div>
+    <div class="card">
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px">${esc(q.q)}</div>
+      ${opts.map(o=>`<button class="btn btn-outline" style="width:100%;text-align:left;margin-bottom:8px;padding:11px 14px;font-size:13px" onclick="mockAnswerLuisteren(${JSON.stringify(o)},${JSON.stringify(q.correct)})">${esc(o)}</button>`).join('')}
+    </div>`;
+}
+function mockSpeakFragment(text,rate=1.0){
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='nl-NL';u.rate=rate;
+  const voices=window.speechSynthesis.getVoices().filter(v=>v.lang.startsWith('nl'));
+  if(voices.length)u.voice=voices[0];
+  window.speechSynthesis.speak(u);
+}
+function mockAnswerLuisteren(chosen,correct){
+  if(chosen===correct)mockState.luisScore++;
+  mockState.luisQIdx++;
+  mockRenderLuisteren();
+}
+
+// ── Mock Schrijven ──
+function mockRenderSchrijven(){
+  const p=mockState.schrijvenPrompt;
+  document.getElementById('examContent').innerHTML=`
+    ${mockHeader(3)}
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:6px">✍️ SCHRIJFOPDRACHT</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px">${esc(p.title)}</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.6">${esc(p.prompt)}</div>
+    </div>
+    <div class="card">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Schrijf minimaal 80 woorden in het Nederlands:</div>
+      <textarea id="mockSchrijvenInput" placeholder="Schrijf hier je antwoord..." style="width:100%;min-height:160px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px;color:var(--text);font-size:14px;line-height:1.6;resize:vertical;font-family:inherit"></textarea>
+      <div style="font-size:11px;color:var(--text3);margin-top:6px" id="mockWordCount">0 woorden</div>
+    </div>
+    <button class="btn btn-gold" style="width:100%;padding:14px;margin-top:10px" onclick="mockSubmitSchrijven()">Inleveren en doorgaan →</button>`;
+  document.getElementById('mockSchrijvenInput').addEventListener('input',function(){
+    const wc=this.value.trim().split(/\s+/).filter(Boolean).length;
+    document.getElementById('mockWordCount').textContent=wc+' woorden'+(wc<80?' (minimum 80)':'');
+    mockState.schrijvenAnswer=this.value;
+  });
+}
+function mockSubmitSchrijven(){
+  const ans=(mockState.schrijvenAnswer||document.getElementById('mockSchrijvenInput')?.value||'').trim();
+  mockState.schrijvenAnswer=ans;
+  mockState.schrijvenSubmitted=true;
+  mockAdvancePhase();
+}
+
+// ── Mock OGO ──
+function mockRenderOGO(){
+  const idx=mockState.ogoIdx;
+  if(idx>=mockState.ogoSc.length){mockAdvancePhase();return;}
+  const sc=mockState.ogoSc[idx];
+  document.getElementById('examContent').innerHTML=`
+    ${mockHeader(4)}
+    <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Situatie ${idx+1} van ${mockState.ogoSc.length}</div>
+    <div class="card" style="margin-bottom:10px">
+      <div style="font-size:12px;font-weight:700;color:var(--accent);margin-bottom:4px">🎭 ${esc(sc.situation)}</div>
+      <div style="font-size:14px;font-weight:700;color:var(--text);margin:8px 0">${esc(sc.prompt)}</div>
+      ${sc.tip?`<div style="font-size:11px;color:var(--text3);margin-top:4px">💡 ${esc(sc.tip)}</div>`:''}
+    </div>
+    <div class="card">
+      <div style="font-size:11px;color:var(--text3);margin-bottom:8px">Jouw antwoord in het Nederlands:</div>
+      <textarea id="mockOGOInput" placeholder="Reageer in het Nederlands..." style="width:100%;min-height:100px;background:var(--surface);border:1px solid var(--border2);border-radius:10px;padding:12px;color:var(--text);font-size:14px;line-height:1.6;resize:vertical;font-family:inherit"></textarea>
+    </div>
+    <button class="btn btn-gold" style="width:100%;padding:14px;margin-top:10px" onclick="mockSubmitOGO()">
+      ${idx<mockState.ogoSc.length-1?'Volgende situatie →':'Afronden en resultaten bekijken →'}</button>`;
+}
+function mockSubmitOGO(){
+  const ans=(document.getElementById('mockOGOInput')?.value||'').trim();
+  mockState.ogoAnswers.push({scenario:mockState.ogoSc[mockState.ogoIdx],answer:ans});
+  mockState.ogoIdx++;
+  mockRenderOGO();
+}
+
+// ── Mock Result ──
+async function mockShowResult(){
+  clearInterval(mockTimer);
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">📊 Mock Examen Resultaat</div></div>
+    </div>
+    <div class="card" style="text-align:center;padding:24px"><div class="spinner"></div><div style="font-size:13px;color:var(--text2);margin-top:10px">AI beoordeelt Schrijven & OGO…</div></div>`;
+
+  // AI score Schrijven
+  let schrijvenPct=0;
+  if(mockState.schrijvenAnswer&&mockState.schrijvenAnswer.length>20){
+    try{
+      const p=mockState.schrijvenPrompt;
+      const prompt=`Dutch inburgering examiner. Task: "${p.title}" — "${p.prompt}". Student wrote: "${mockState.schrijvenAnswer}". Score 0-100: taakvoltooiing(25)+grammatica(25)+woordenschat(25)+structuur(25). Return JSON: {"totalScore":0-100}`;
+      const r=extractJSON(await apiFetch({json_mode:true,max_tokens:100,messages:[{role:'user',content:prompt}]}));
+      schrijvenPct=r.totalScore||0;
+    }catch(e){schrijvenPct=50;}
+  }
+  mockState.scores.schrijven={score:schrijvenPct,total:100,pct:schrijvenPct};
+
+  // AI score OGO
+  let ogoPassed=0;
+  for(const item of mockState.ogoAnswers){
+    try{
+      const prompt=`OGO evaluator. Situation: ${item.scenario.situation}. Prompt: ${item.scenario.prompt}. Answer: "${item.answer}". Return JSON: {"pass":true/false}`;
+      const r=extractJSON(await apiFetch({json_mode:true,max_tokens:60,messages:[{role:'user',content:prompt}]}));
+      if(r.pass)ogoPassed++;
+    }catch(e){if(item.answer&&item.answer.length>5)ogoPassed++;}
+  }
+  const ogoPct=mockState.ogoAnswers.length?Math.round(ogoPassed/mockState.ogoAnswers.length*100):0;
+  mockState.scores.ogo={score:ogoPassed,total:mockState.ogoAnswers.length||3,pct:ogoPct};
+
+  // Aggregate
+  const moduleOrder=['knm','lezen','luisteren','schrijven','ogo'];
+  const labels={knm:'KNM 🏛️',lezen:'Lezen 📖',luisteren:'Luisteren 🎧',schrijven:'Schrijven ✍️',ogo:'OGO 🎭'};
+  let totalPctSum=0,totalCount=0;
+  const passedModules=[];
+  moduleOrder.forEach(k=>{
+    const s=mockState.scores[k];
+    if(s){totalPctSum+=s.pct;totalCount++;}
+    if(s&&s.pct>=70)passedModules.push(labels[k]);
+  });
+  const totalPct=totalCount?Math.round(totalPctSum/totalCount):0;
+  const allPassed=passedModules.length===5;
+
+  // Save
+  saveMockHistory({date:new Date().toISOString(),totalPct,passed:passedModules,scores:mockState.scores});
+  saveExamScore('mock_exam',totalPct,100);
+  addExamXP(allPassed?100:40);
+  userProgress.readiness=Math.max(userProgress.readiness||0,totalPct);
+  saveProgress();
+  if(allPassed)sfxCongrats();else sfxTap();
+
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">📊 Mock Examen Resultaat</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Overzicht</button>
+    </div>
+    <div class="card" style="text-align:center;padding:28px 20px;margin-bottom:12px">
+      <div style="font-size:52px;margin-bottom:8px">${allPassed?'🎉':'💪'}</div>
+      <div style="font-size:36px;font-weight:900;color:${allPassed?'var(--green)':'var(--orange)'};">${totalPct}%</div>
+      <div style="font-size:14px;color:var(--text2);margin-top:4px">${allPassed?'Alle modules geslaagd! Je bent klaar voor het echte examen 🏆':'Blijf oefenen — 70% per module is vereist'}</div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      ${moduleOrder.map(k=>{
+        const s=mockState.scores[k];
+        if(!s)return '';
+        const ok=s.pct>=70;
+        return `<div style="display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border)">
+          <div style="font-size:13px;color:var(--text)">${labels[k]}</div>
+          <div style="display:flex;align-items:center;gap:10px">
+            <div style="width:80px;height:6px;background:var(--surface);border-radius:3px;overflow:hidden">
+              <div style="height:100%;width:${s.pct}%;background:${ok?'var(--green)':'var(--orange)'};border-radius:3px;transition:width 0.6s"></div>
+            </div>
+            <span style="font-size:13px;font-weight:800;color:${ok?'var(--green)':'var(--orange)'};">${s.pct}% ${ok?'✅':'❌'}</span>
+          </div>
+        </div>`;}).join('')}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+      <button class="btn btn-outline" style="padding:14px" onclick="startMockExam()">Opnieuw proberen</button>
+      <button class="btn btn-gold" style="padding:14px" onclick="renderExamHome()">Terug naar overzicht</button>
+    </div>`;
+}
+
+// ─────────────────────────────────────
+// PHASE 4 — MAP & Participatieverklaring
+// ─────────────────────────────────────
+function showMAPInfo(){
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">🤝 MAP — Maatschappelijke Participatie</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Wat is MAP?</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        MAP staat voor <strong style="color:var(--text)">Maatschappelijke Participatie</strong>. Je moet 40 uur vrijwilligerswerk of participatieactiviteiten aantonen als onderdeel van je inburgeringsplicht (Wet Inburgering 2021).
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📋 Wat telt mee?</div>
+      ${[
+        ['Vrijwilligerswerk','Bij een erkende organisatie — voedselbank, bibliotheek, buurtcentrum, sport club'],
+        ['Taalvrijwilligerswerk','Taalmaatje bij Bibliotheek of ROC — extra nuttig voor NT2!'],
+        ['Stage','Meeloopstage bij een Nederlands bedrijf (min. 24 uur)'],
+        ['Cursussen','Erkende participatie-cursussen via gemeente'],
+        ['Sport/cultuur','Georganiseerde activiteiten bij erkende clubs (check met gemeente)'],
+      ].map(([t,d])=>`<div style="padding:9px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:700;color:var(--blue)">${t}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">${d}</div>
+      </div>`).join('')}
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📬 Hoe lever je in bij DUO?</div>
+      <div style="font-size:12px;color:var(--text2);line-height:1.8">
+        <strong style="color:var(--text)">Stap 1</strong> — Vraag een <em>urenstaat</em> (uren-overzicht) op bij de organisatie. Ze moeten handtekenen + stempel zetten.<br><br>
+        <strong style="color:var(--text)">Stap 2</strong> — Log in op <strong>MijnDUO</strong> (mijn.duo.nl) met DigiD.<br><br>
+        <strong style="color:var(--text)">Stap 3</strong> — Ga naar <em>Inburgering → MAP → Upload bewijs</em>.<br><br>
+        <strong style="color:var(--text)">Stap 4</strong> — Upload de urenstaat als PDF of foto. DUO bevestigt binnen 8 weken.<br><br>
+        <strong style="color:var(--accent)">Let op:</strong> Begin vroeg — je hebt 3 jaar maar DUO-upload duurt weken!
+      </div>
+    </div>
+    <div style="background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.7">
+      💡 <strong style="color:var(--blue)">Tip voor IT-professionals:</strong> Taalvrijwilligerswerk bij de Bibliotheek telt mee én verbetert je Nederlands — ideaal om te combineren!
+    </div>`;
+}
+
+function showPVInfo(){
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr">
+      <div><div class="exam-section-title">📜 Participatieverklaring (PVT)</div></div>
+      <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">Wat is de PVT?</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.8">
+        De <strong style="color:var(--text)">Participatieverklaring Traject (PVT)</strong> is een verplicht onderdeel van inburgering. Je leert over Nederlandse waarden, rechten en plichten, en ondertekent daarna een verklaring dat je deze accepteert.
+      </div>
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">📅 Hoe werkt het traject?</div>
+      ${[
+        ['Uitnodiging gemeente','Je krijgt een brief of email van de gemeente met datum en locatie. Reageer op tijd!'],
+        ['Dagprogramma','Meestal een dag of halve dag. Groepsactiviteiten + presentaties over NL waarden, democratie, vrijheid, gelijkheid.'],
+        ['Nederlandse waarden','Vrijheid van meningsuiting · Gelijkheid man/vrouw · LHBTQ+ rechten · Scheiding kerk en staat · Democratie'],
+        ['Ondertekening','Aan het einde onderteken je de Participatieverklaring. Dit bevestigt dat je NL waarden kent en respecteert.'],
+        ['Bewijs naar DUO','De gemeente stuurt het bewijs direct naar DUO — jij hoeft niets te uploaden!'],
+      ].map(([t,d])=>`<div style="padding:9px 0;border-bottom:1px solid var(--border)">
+        <div style="font-size:12px;font-weight:700;color:var(--violet)">${t}</div>
+        <div style="font-size:12px;color:var(--text2);margin-top:2px">${d}</div>
+      </div>`).join('')}
+    </div>
+    <div class="card" style="margin-bottom:12px">
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px">🎒 Wat meenemen?</div>
+      ${['Geldig ID (paspoort of verblijfsvergunning)','Brief/uitnodiging van de gemeente','V-nummer of BSN (bij de hand)','Pen (voor ondertekening)','Je telefoon — soms QR-code scannen'].map(item=>`
+        <div style="display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--border)">
+          <span style="color:var(--green);font-size:14px">✓</span>
+          <span style="font-size:13px;color:var(--text2)">${item}</span>
+        </div>`).join('')}
+    </div>
+    <div style="background:rgba(155,114,207,0.08);border:1px solid rgba(155,114,207,0.2);border-radius:12px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.7">
+      ⚠️ <strong style="color:var(--violet)">Niet verschijnen?</strong> Je wordt opnieuw uitgenodigd maar dit kan je inburgeringsdossier vertragen. De gemeente kan ook een boete opleggen. Ga altijd op tijd!
     </div>`;
 }
 </script>

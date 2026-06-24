@@ -7,6 +7,31 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.8.0] — 2026-06-24
+
+### Added
+- **Phase 3 — Full Mock Inburgeringsexamen** (replaces stub)
+  - Sequential 5-module flow: KNM (35 min) → Lezen (35 min) → Luisteren (25 min) → Schrijven (60 min) → OGO (15 min)
+  - Per-module countdown timer (turns orange <5 min, red <2 min); auto-advances when time runs out
+  - KNM: 40 random questions, instant MCQ flow
+  - Lezen: all 5 passages scrollable, question by question
+  - Luisteren: TTS playback (normal + slow) + MCQ per fragment
+  - Schrijven: free-text with live word count, AI scored (taakvoltooiing/grammatica/woordenschat/structuur)
+  - OGO: 3 random scenarios, free-text, AI pass/fail per scenario
+  - Final report: per-module score bars, pass/fail (70% threshold), XP reward (100 XP all-pass, 40 XP otherwise)
+  - Last 5 attempts saved to localStorage, shown on mock exam home screen
+  - Updates `readiness` score and `mock_exam` in exam scores
+- **Phase 4 — MAP info card** (Maatschappelijke Participatie)
+  - What counts (vrijwilligerswerk, taalmaatje, stage, cursussen, sport)
+  - Step-by-step DUO upload guide (urenstaat → MijnDUO → bevestiging)
+  - IT-professional tip: taalvrijwilligerswerk bij Bibliotheek
+- **Phase 4 — Participatieverklaring (PVT) info card**
+  - What the PVT traject is, Nederlandse waarden covered
+  - What to bring to gemeente
+  - Warning: absence causes dossier delays + possible boete
+
+---
+
 ## [1.7.5] — 2026-06-24
 
 ### Fixed
