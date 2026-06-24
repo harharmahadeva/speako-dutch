@@ -49,7 +49,7 @@
   --gold:#f0b429;
   /* ── Text: off-white reduces eye strain vs pure white ── */
   --text:#dde4f0;
-  --text2:#8a96aa;
+  --text2:#b2bccc;
   --text3:#5e6c82;
   --r:14px;
   /* ── Legacy aliases ── */
@@ -507,11 +507,12 @@ body{background:var(--bg);}
   box-shadow:0 8px 26px rgba(240,112,10,0.4)!important;
 }
 
-/* ── Exam grid: 3 columns ── */
+/* ── Exam grid: 3 columns on tablet+, 2 on mobile ── */
 .exam-modules-grid{
-  grid-template-columns:1fr 1fr 1fr!important;
+  grid-template-columns:1fr 1fr!important;
   gap:8px!important;
 }
+@media(min-width:520px){.exam-modules-grid{grid-template-columns:1fr 1fr 1fr!important;}}
 .exam-grid-card{
   border-radius:16px;padding:12px 10px;
 }
@@ -1235,7 +1236,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.7.3';
+const APP_VERSION='1.7.4';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1797,32 +1798,30 @@ function startVoiceValidation(sid, targetText, type){
   btn.classList.add('listening');
   resultEl.innerHTML='<div class="mic-result heard">🎤 Speak now...</div>';
 
-  setTimeout(()=>{
-    const r = new SR();
-    r.lang='nl-NL';
-    r.continuous=false;
-    r.interimResults=false;
-    r.maxAlternatives=3;
-    recognition=r;
+  const r = new SR();
+  r.lang='nl-NL';
+  r.continuous=false;
+  r.interimResults=false;
+  r.maxAlternatives=3;
+  recognition=r;
 
-    r.onresult=(e)=>{
-      const heard=e.results[0][0].transcript.trim();
-      const score=similarityScore(heard, targetText);
-      btn.textContent='🎤 Say it';
-      btn.classList.remove('listening');
-      validatePronunciationWithAI(sid, targetText, heard, score, resultEl);
-    };
-    r.onerror=(e)=>{
-      btn.textContent='🎤 Say it';
-      btn.classList.remove('listening');
-      resultEl.innerHTML=`<div class="mic-result heard">⚠️ ${e.error==='no-speech'?'Nothing heard — try again!':'Mic error: '+e.error}</div>`;
-    };
-    r.onend=()=>{
-      btn.textContent='🎤 Say it';
-      btn.classList.remove('listening');
-    };
-    r.start();
-  }, delay);
+  r.onresult=(e)=>{
+    const heard=e.results[0][0].transcript.trim();
+    const score=similarityScore(heard, targetText);
+    btn.textContent='🎤 Say it';
+    btn.classList.remove('listening');
+    validatePronunciationWithAI(sid, targetText, heard, score, resultEl);
+  };
+  r.onerror=(e)=>{
+    btn.textContent='🎤 Say it';
+    btn.classList.remove('listening');
+    resultEl.innerHTML=`<div class="mic-result heard" style="font-size:12px">⚠️ ${e.error==='no-speech'?'Nothing heard — tap again and speak clearly':'Mic error: '+e.error+'. Check mic permissions in Settings.'}</div>`;
+  };
+  r.onend=()=>{
+    btn.textContent='🎤 Say it';
+    btn.classList.remove('listening');
+  };
+  r.start();
 }
 
 async function validatePronunciationWithAI(sid, target, heard, score, resultEl){

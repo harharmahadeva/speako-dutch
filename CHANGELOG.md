@@ -7,6 +7,15 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.7.4] — 2026-06-24
+
+### Fixed
+- **iPhone overflow (root cause)** — exam grid had `grid-template-columns:1fr 1fr 1fr!important` overriding the responsive media query; now defaults to 2 columns on mobile (<520px), 3 on tablet+
+- **Text too dark** — raised `--text2` from `#8a96aa` to `#b2bccc` for all body text, translations, explanations
+- **Speech recognition on iOS** — removed `setTimeout(fn, delay)` wrapper around `r.start()`; iOS Safari requires mic to be started synchronously within the user gesture event, not deferred via timeout
+
+---
+
 ## [1.7.3] — 2026-06-24
 
 ### Fixed
