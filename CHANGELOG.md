@@ -2,6 +2,48 @@
 
 ---
 
+## [2.1.0] — 2026-06-24
+
+### Added — DUO A2 Audit Sync (aligned with Android app v1.6.2)
+
+**KNM — expanded to 55+ questions (sample test uses random 40)**
+- New category: **Onderwijs** (5 vragen) — leerplicht leeftijd, VMBO/HAVO/VWO, MBO, inburgeringscursus, B1 voor naturalisatie
+- New category: **Geschiedenis** (4 vragen) — 4 mei Dodenherdenking, 5 mei Bevrijdingsdag, Anne Frank, Holocaust
+- New category: **Geografie** (3 vragen) — Den Haag als regeringszetel, Nederland onder zeeniveau, Rijn-Maas-Scheldedelta
+- New category: **Waarden 2025** (4 vragen) — zelfbeschikking, gelijkwaardigheid man/vrouw, godsdienstvrijheid, scheiding kerk/staat
+- Naturalisatie vereisten question added (5 jaar, inburgering, geen strafblad)
+- Sample test now uses exactly **40 random questions** (was: all questions)
+- Card label updated: "50 vragen" → "40 vragen · 70% slagen"
+
+**Lezen — expanded to 8 passages (~24 questions)**
+- New passage: **Inschrijfformulier taalcursus** — kosten, gratis eerste les, dag/tijd
+- New passage: **Albert Heijn weekaanbieding** — kortingsprijs, geldigheid, Bonus-kaart vereist
+- New passage: **Cursusrooster Talencentrum Utrecht** — tentamenweek, aanwezigheidseis 80%, cursusboekkosten
+- Pass threshold updated: **70% → 76%** (real DUO: 19/25)
+- Card label: "5 teksten" → "8 teksten · 76% slagen"
+
+**Luisteren — expanded to 8 fragmenten (~24 questions)**
+- New fragment: **NS treininfo Amsterdam–Den Haag** — seinstoring, 20 min vertraging, omroute via Leiden
+- New fragment: **Telefoonbericht werkgever** — functie, dag en tijd sollicitatiegesprek
+- New fragment: **Gemeentelijke Open Dag Utrecht** — datum, diensten, meenemen identiteitsbewijs
+- Pass threshold updated: **70% → 72%** (real DUO: 18/25)
+- Card label: "Audio MCQ" → "8 fragmenten · 72% slagen"
+
+**Mock exam — real DUO timers**
+- KNM: 35 → **45 min**
+- Lezen: 35 → **65 min**
+- Luisteren: 25 → **45 min**
+- Schrijven: 60 → **40 min**
+- Spreken: 35 min (unchanged)
+
+**Weakness report — per-module thresholds**
+- Shows "Vereist: X%" under each module name (KNM 70%, Lezen 76%, Luisteren 72%)
+- Schrijven/Spreken shown as pass/fail (no percentage threshold)
+- Weak/strong split now uses module-specific threshold, not flat 70%
+- UI text translated to Dutch
+
+---
+
 ## [2.0.1] — 2026-06-24
 
 ### Added

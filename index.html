@@ -1240,7 +1240,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.0.1';
+const APP_VERSION='2.1.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -2622,6 +2622,33 @@ const KNM_QUESTIONS=[
   {cat:'Wonen',q:'Wat is de Huurcommissie?',opts:['Een commissie die huurprijzen vaststelt voor luxe woningen','Een onafhankelijke instantie die geschillen tussen huurders en verhuurders behandelt','Een onderdeel van de gemeente','Een bank voor hypotheken'],ans:1,explain:'De <strong>Huurcommissie</strong> lost geschillen op tussen huurders en verhuurders over huurprijs, servicekosten of onderhoud. Als je verhuurder te veel rekent voor een sociale huurwoning, kun je naar de Huurcommissie.'},
   {cat:'Wonen',q:'Wat is een hypotheek?',opts:['Een huurcontract','Een lening van de bank om een huis te kopen, met het huis als onderpand','Een subsidie voor koopwoningen','Een belasting op woningen'],ans:1,explain:'Een <strong>hypotheek</strong> is een lening waarmee je een huis koopt. Je betaalt maandelijks rente en aflossing. In Nederland is hypotheekrente gedeeltelijk aftrekbaar van de belasting (hypotheekrenteaftrek).'},
   {cat:'Wonen',q:'Wat is een VvE bij appartementen?',opts:['Vrijwillige Verhuizing Eis','Vereniging van Eigenaren — beheer van gemeenschappelijke ruimtes','Vereiste Veiligheids Eisen','Verplichte Verzekering Eigen risico'],ans:1,explain:'Een <strong>VvE (Vereniging van Eigenaren)</strong> beheert gemeenschappelijke ruimtes in een appartementencomplex, zoals het dak, de lift en de entree. Als je een appartement koopt, word je automatisch lid.'},
+
+  // ONDERWIJS
+  {cat:'Onderwijs',q:'Vanaf welke leeftijd is onderwijs verplicht in Nederland?',opts:['4 jaar','5 jaar','6 jaar','7 jaar'],ans:1,explain:'In Nederland geldt de <strong>leerplicht vanaf 5 jaar</strong>. Kinderen gaan naar de basisschool (groep 1–8). Veel kinderen beginnen al vrijwillig op 4-jarige leeftijd.'},
+  {cat:'Onderwijs',q:'Wat is de volgorde van voortgezet onderwijs in Nederland?',opts:['VMBO, HAVO, VWO','MBO, HBO, WO','LBO, MBO, HO','Basisschool, Lyceum, Universiteit'],ans:0,explain:'Na de basisschool ga je naar het voortgezet onderwijs: <strong>VMBO</strong> (4 jaar, beroepsgericht), <strong>HAVO</strong> (5 jaar) of <strong>VWO</strong> (6 jaar). VWO geeft toegang tot de universiteit.'},
+  {cat:'Onderwijs',q:'Wat is een MBO?',opts:['Middelbaar Bijzonder Onderwijs','Middelbaar Beroepsonderwijs — beroepsopleidingen na VMBO','Maximaal Basis Opleiding','Maatschappelijk Beroepsonderwijs'],ans:1,explain:'Het <strong>MBO (Middelbaar Beroepsonderwijs)</strong> biedt praktische beroepsopleidingen op niveau 1 t/m 4. MBO-studenten leren een vak, zoals kok, verpleegkundige of ICT-medewerker. Duurt 1–4 jaar.'},
+  {cat:'Onderwijs',q:'Wat is een inburgeringscursus?',opts:['Een cursus voor Nederlandse kinderen','Een verplichte cursus voor nieuwkomers om Nederlands te leren en de samenleving te begrijpen','Een cursus voor werklozen','Een universiteitscursus over integratie'],ans:1,explain:'Een <strong>inburgeringscursus</strong> helpt nieuwkomers Nederlands te leren en de Nederlandse samenleving te begrijpen. De cursus bereidt voor op het inburgeringsexamen (KNM, Lezen, Luisteren, Schrijven, Spreken).'},
+  {cat:'Onderwijs',q:'Welk taalniveau is nodig voor naturalisatie (Nederlander worden)?',opts:['A1','A2','B1','B2'],ans:2,explain:'Voor naturalisatie moet je <strong>minimaal B1</strong> Nederlands spreken. Het inburgeringsexamen test A2-niveau — maar voor de Nederlandse nationaliteit is B1 vereist. Dat is het volgende niveau na het examen.'},
+
+  // GESCHIEDENIS
+  {cat:'Geschiedenis',q:'Wat herdenken Nederlanders op 4 mei?',opts:['De bevrijding van Nederland','De gevallenen van de Tweede Wereldoorlog','De verjaardag van de koning','Het begin van de lente'],ans:1,explain:'Op <strong>4 mei (Nationale Dodenherdenking)</strong> herdenken Nederlanders alle slachtoffers van de Tweede Wereldoorlog. Om 20:00 uur is er 2 minuten stilte in het hele land. Op Dam Square is een nationale herdenking.'},
+  {cat:'Geschiedenis',q:'Wat viert Nederland op 5 mei?',opts:['Koningsdag','De val van de Berlijnse Muur','Bevrijdingsdag — het einde van de Tweede Wereldoorlog','Nationale Dodenherdenking'],ans:2,explain:'Op <strong>5 mei (Bevrijdingsdag)</strong> viert Nederland de bevrijding van de nazi-bezetting in 1945. Er zijn festivals en evenementen door het hele land. Elk vijf jaar is het een nationale feestdag.'},
+  {cat:'Geschiedenis',q:'Wie was Anne Frank?',opts:['Een Nederlandse koningin','Een joods meisje dat zich verstopte tijdens de Tweede Wereldoorlog en een dagboek schreef','Een bekende Nederlandse schrijfster uit de 19e eeuw','Een verzetsstrijdster die de bevrijding leidde'],ans:1,explain:'<strong>Anne Frank</strong> was een joods meisje dat zich met haar familie twee jaar verstopte voor de nazi\'s in Amsterdam. Haar dagboek, gepubliceerd na haar dood, is een van de meest gelezen boeken ter wereld. Het Anne Frank Huis in Amsterdam is een museum.'},
+  {cat:'Geschiedenis',q:'Wat was de Holocaust?',opts:['Een natuurramp in Nederland','De systematische vervolging en moord op Joden en andere groepen door de nazi\'s','Een oorlog tussen Nederland en Duitsland','Een economische crisis in de Tweede Wereldoorlog'],ans:1,explain:'De <strong>Holocaust</strong> was de systematische vervolging en moord op circa 6 miljoen Joden door de nazi\'s tijdens de Tweede Wereldoorlog (1939–1945). In Nederland werden ongeveer 102.000 Joden vermoord, waaronder Anne Frank.'},
+
+  // GEOGRAFIE
+  {cat:'Geografie',q:'Wat is de regeringszetel van Nederland?',opts:['Amsterdam','Rotterdam','Den Haag','Utrecht'],ans:2,explain:'De Nederlandse regering en het parlement (Staten-Generaal) zijn gevestigd in <strong>Den Haag</strong>. Amsterdam is de officiële hoofdstad, maar Den Haag is het politieke centrum. Veel ambassades en ministeries zijn er ook gevestigd.'},
+  {cat:'Geografie',q:'Waarom is waterbeheer zo belangrijk voor Nederland?',opts:['Omdat Nederland veel regen heeft','Omdat een groot deel van Nederland onder zeeniveau ligt','Omdat Nederland veel rivieren heeft','Omdat Nederland een eiland is'],ans:1,explain:'Ongeveer <strong>26% van Nederland ligt onder zeeniveau</strong>. Zonder dijken, sluizen en gemalen zou een groot deel van het land onder water staan. Rijkswaterstaat beheert dit waternetwerk. Nederland is wereldleider in watermanagement.'},
+  {cat:'Geografie',q:'In welk delta ligt Nederland?',opts:['De Nijl-delta','De Donau-delta','De Rijn-Maas-Scheldedelta','De Theems-delta'],ans:2,explain:'Nederland ligt in de <strong>Rijn-Maas-Scheldedelta</strong>. De rivieren de Rijn, Maas en Schelde stromen door Nederland naar de Noordzee. Dit verklaart ook waarom Nederland zo vruchtbaar is en waarom waterbeheer zo cruciaal is.'},
+
+  // WAARDEN 2025
+  {cat:'Nederlandse Waarden',q:'Wat betekent zelfbeschikking in Nederland?',opts:['De overheid beslist wat goed voor u is','Iedereen heeft het recht om eigen keuzes te maken over zijn eigen leven','Gemeenschappen bepalen de regels voor hun leden','Werkgevers mogen werknemers vrijelijk ontslaan'],ans:1,explain:'<strong>Zelfbeschikking</strong> is een kernwaarde in Nederland: ieder persoon heeft het recht om zelf keuzes te maken over zijn leven, lichaam, relaties en geloof — zolang je anderen geen schade berokkent. De overheid mag hier in principe niet in treden.'},
+  {cat:'Nederlandse Waarden',q:'Hoe is de verhouding tussen man en vrouw in Nederland?',opts:['Mannen hebben meer rechten dan vrouwen','Vrouwen zijn verantwoordelijk voor het huishouden','Man en vrouw zijn gelijkwaardig — dit is vastgelegd in de wet','Vrouwen mogen niet werken zonder toestemming van hun partner'],ans:2,explain:'In Nederland is <strong>gelijkwaardigheid van man en vrouw</strong> een grondrecht. Vrouwen hebben dezelfde rechten als mannen op het gebied van werk, stemrecht, onderwijs en eigendom. Discriminatie op basis van geslacht is verboden (Artikel 1 Grondwet).'},
+  {cat:'Nederlandse Waarden',q:'Wat is godsdienstvrijheid in Nederland?',opts:['Iedereen moet een religie hebben','Je mag geloven wat je wilt — of helemaal niet geloven','De overheid bepaalt welke religies zijn toegestaan','Alleen christendom en islam zijn toegestaan'],ans:1,explain:'<strong>Godsdienstvrijheid</strong> (artikel 6 Grondwet) betekent dat iedereen in Nederland vrij is om te geloven wat hij wil — of helemaal niet te geloven. Je mag je geloof privé of openbaar uiten, zolang dit de vrijheid van anderen niet schaadt.'},
+  {cat:'Nederlandse Waarden',q:'Wat is de scheiding van kerk en staat?',opts:['Kerken betalen geen belasting in Nederland','De overheid bemoeit zich niet met religie en religies niet met bestuur','Politici mogen geen religieuze uitspraken doen','Kerkgebouwen zijn eigendom van de staat'],ans:1,explain:'<strong>Scheiding van kerk en staat</strong> betekent dat de Nederlandse overheid neutraal is ten opzichte van religie. De staat bemoeit zich niet met geloofszaken en religieuze instellingen bemoeien zich niet met bestuur. Iedereen wordt gelijk behandeld, ongeacht geloof.'},
+
+  // NATURALISATIE & RECHTEN/WERK
+  {cat:'Rechten & Plichten',q:'Wat zijn de vereisten voor naturalisatie (Nederlander worden)?',opts:['3 jaar verblijf en basiskennis Nederlands','5 jaar verblijf, inburgering geslaagd en geen strafblad','2 jaar verblijf en werk hebben','10 jaar verblijf en belastingen betaald'],ans:1,explain:'Voor <strong>naturalisatie</strong> moet je minimaal <strong>5 jaar</strong> legaal in Nederland wonen, het inburgeringsexamen hebben gehaald, geen recent strafblad hebben en je vorige nationaliteit (in principe) opgeven. Je vraagt naturalisatie aan bij de gemeente.'},
 ];
 
 const LEZEN_PASSAGES=[
@@ -2713,6 +2740,66 @@ HR Afdeling, TechCorp Nederland`,
       {q:'Wanneer begint het dienstverband?',opts:['1 augustus','1 september','1 oktober','Direct'],ans:1,explain:'De brief zegt: "uw indiensttreding per <strong>1 september</strong>." Indiensttreding betekent: het begin van je baan.'},
       {q:'Wat moet je sturen naar hr@techcorp.nl?',opts:['Je CV en motivatiebrief','Een kopie van je paspoort en BSN','Je zorgverzekeringspas','Je arbeidscontract'],ans:1,explain:'De brief vraagt om "een kopie van uw <strong>paspoort en BSN</strong>." Dit heeft HR nodig voor de loonadministratie en belastingaangifte.'},
       {q:'Hoeveel verdien je bruto per maand?',opts:['€ 3.500','€ 4.000','€ 4.200','€ 4.800'],ans:2,explain:'De brief zegt: "Salaris: <strong>€ 4.200 bruto per maand</strong>." Bruto is voor belasting. Netto (na belasting) is wat je daadwerkelijk ontvangt — meestal zo\'n 30-35% minder.'},
+    ]
+  },
+  {
+    id:'lezen6',
+    label:'Tekst 6 — Inschrijfformulier taalcursus',
+    difficulty:'A2',
+    text:`<strong>Talencentrum Utrecht — Inschrijfformulier</strong><br><br>
+Cursus: <strong>Nederlands voor beginners (A1–A2)</strong><br>
+Cursusduur: 12 weken<br>
+Dag en tijd: <strong>woensdag van 19:00 tot 21:00 uur</strong><br>
+Kosten: <strong>€ 95,- per maand</strong><br><br>
+<strong>Aanbieding:</strong> De eerste les is gratis. U kunt vrijblijvend kennismaken zonder verplichtingen.<br><br>
+<strong>Inschrijven:</strong> Stuur een e-mail naar info@talencentrum-utrecht.nl of bel 030-123 45 67.<br><br>
+<strong>Betaling:</strong> Automatische incasso per maand. Opzeggen kan elke maand met één maand opzegtermijn.<br><br>
+Locatie: Lange Viestraat 2B, Utrecht (5 min. lopen van Utrecht Centraal)`,
+    questions:[
+      {q:'Hoeveel kost de cursus per maand?',opts:['€ 75,-','€ 85,-','€ 95,-','€ 105,-'],ans:2,explain:'Het formulier zegt: "Kosten: <strong>€ 95,- per maand</strong>." Dit is het maandelijkse cursusgeld voor de A1–A2 cursus.'},
+      {q:'Wanneer is de eerste les gratis?',opts:['Nooit — je betaalt altijd','De eerste les van de hele cursus is gratis','Alleen als je je online inschrijft','Alleen voor studenten'],ans:1,explain:'Het formulier zegt: "<strong>De eerste les is gratis</strong>." Je kunt kennismaken zonder verplichtingen voordat je je definitief inschrijft.'},
+      {q:'Op welke dag en tijd is de cursus?',opts:['Dinsdag 18:00–20:00','Woensdag 19:00–21:00','Donderdag 19:00–21:00','Vrijdag 17:00–19:00'],ans:1,explain:'Het formulier zegt duidelijk: "<strong>woensdag van 19:00 tot 21:00 uur</strong>." De les duurt twee uur per week.'},
+    ]
+  },
+  {
+    id:'lezen7',
+    label:'Tekst 7 — Albert Heijn weekaanbieding',
+    difficulty:'A2',
+    text:`<strong>Albert Heijn — Weekaanbieding</strong><br><br>
+🥛 <strong>Melk (1 liter, halfvol)</strong><br>
+Nu: <strong>€ 0,79</strong> (was € 1,09)<br>
+Bespaar: € 0,30 per pak<br><br>
+⚠️ <strong>Let op:</strong> Alleen geldig met de <strong>Bonus-kaart</strong>.<br>
+Zonder Bonus-kaart betaalt u de normale prijs van € 1,09.<br><br>
+🗓️ <strong>Aanbieding geldig t/m zondag</strong><br><br>
+🕐 Openingstijden zondag: <strong>10:00 – 18:00 uur</strong><br><br>
+Vraag gratis een Bonus-kaart aan bij de klantenservice of via de Albert Heijn app.`,
+    questions:[
+      {q:'Wat is de aanbiedingsprijs van de melk?',opts:['€ 0,59','€ 0,79','€ 0,99','€ 1,09'],ans:1,explain:'De aanbieding zegt: "Nu: <strong>€ 0,79</strong>" — dat is de prijs met de Bonus-kaart. Zonder kaart betaal je € 1,09.'},
+      {q:'Tot wanneer is de aanbieding geldig?',opts:['Tot en met vrijdag','Tot en met zaterdag','Tot en met zondag','Tot en met maandag'],ans:2,explain:'De folder zegt: "Aanbieding geldig <strong>t/m zondag</strong>." Na zondag vervalt de korting.'},
+      {q:'Wat heb je nodig om de kortingsprijs te betalen?',opts:['Een creditcard','Een Bonus-kaart','Een Albert Heijn app','Een coupon uit de krant'],ans:1,explain:'De folder zegt: "Alleen geldig met de <strong>Bonus-kaart</strong>." Zonder kaart betaal je de volle prijs van € 1,09.'},
+    ]
+  },
+  {
+    id:'lezen8',
+    label:'Tekst 8 — Cursusrooster Talencentrum',
+    difficulty:'A2+',
+    text:`<strong>Talencentrum Utrecht — Cursusrooster Lente 2025</strong><br><br>
+Cursus: <strong>Nederlands A2 — Schrijven en Lezen</strong><br><br>
+<strong>Weekrooster:</strong><br>
+Donderdag: schrijven en lezen (19:00–21:00)<br><br>
+<strong>Belangrijk:</strong><br>
+• <strong>Week 13 (27 maart): Tentamen</strong> — aanwezig zijn is verplicht<br>
+• Minimale aanwezigheid: <strong>80%</strong> van alle lessen<br>
+• Wie minder dan 80% aanwezig is, krijgt geen certificaat<br><br>
+<strong>Cursusmateriaal:</strong><br>
+• Cursusboek: <strong>€ 22,50</strong> (éénmalig, te koop bij het centrum)<br>
+• Aanvullend materiaal: gratis via de digitale leeromgeving<br><br>
+Bij vragen: info@talencentrum-utrecht.nl`,
+    questions:[
+      {q:'Wanneer is het tentamen?',opts:['Week 10','Week 12','Week 13 (27 maart)','Week 15'],ans:2,explain:'Het rooster zegt: "<strong>Week 13 (27 maart): Tentamen</strong>." Aanwezigheid bij het tentamen is verplicht.'},
+      {q:'Hoeveel procent aanwezigheid is minimaal vereist?',opts:['60%','70%','80%','90%'],ans:2,explain:'Het rooster zegt: "Minimale aanwezigheid: <strong>80%</strong> van alle lessen." Wie minder aanwezig is, krijgt geen certificaat.'},
+      {q:'Wat kost het cursusboek?',opts:['€ 15,00','€ 19,95','€ 22,50','€ 29,95'],ans:2,explain:'Het rooster zegt: "Cursusboek: <strong>€ 22,50</strong> (éénmalig)." Aanvullend materiaal is gratis via de digitale leeromgeving.'},
     ]
   },
   {
@@ -2868,11 +2955,11 @@ function renderExamHome(){
 
     <!-- 3×2 module grid -->
     <div class="exam-modules-grid">
-      ${moduleCard('🏛️','KNM','50 vragen','startKNMPractice()','startKNMSampleTest()','knm','egc-knm')}
-      ${moduleCard('📖','Lezen','5 teksten','startLezenMenu()','startLezenSampleTest()','lezen1','egc-lezen')}
+      ${moduleCard('🏛️','KNM','40 vragen · 70% slagen','startKNMPractice()','startKNMSampleTest()','knm','egc-knm')}
+      ${moduleCard('📖','Lezen','8 teksten · 76% slagen','startLezenMenu()','startLezenSampleTest()','lezen1','egc-lezen')}
       ${moduleCard('✍️','Schrijven','AI beoordeeld','startSchrijvenMenu()','startSchrijvenSampleTest()','schrijven','egc-schrijven')}
       ${moduleCard('🎤','Spreken','Foto & video taken','startOGO()','startOGOSampleTest()','ogo','egc-ogo')}
-      ${moduleCard('🎧','Luisteren','Audio MCQ','startLuisterenMenu()','startLuisterenSampleTest()','luisteren','egc-luisteren')}
+      ${moduleCard('🎧','Luisteren','8 fragmenten · 72% slagen','startLuisterenMenu()','startLuisterenSampleTest()','luisteren','egc-luisteren')}
       <div class="exam-grid-card egc-mock" style="display:flex;flex-direction:column;justify-content:space-between">
         <div>
           <div class="egc-icon">⏱️</div>
@@ -2937,10 +3024,10 @@ function startKNMPractice(){
 }
 
 function startKNMSampleTest(){
-  // All 50 questions shuffled, timed
-  knmQueue=shuffleArray(KNM_QUESTIONS);
+  // 40 random questions (real DUO exam has 40 questions)
+  knmQueue=shuffleArray(KNM_QUESTIONS).slice(0,40);
   knmWrongAnswers=[];
-  examState={...examState,mode:'knm-test',knmCurrent:0,knmScore:0,knmAnswered:false,knmTotal:KNM_QUESTIONS.length};
+  examState={...examState,mode:'knm-test',knmCurrent:0,knmScore:0,knmAnswered:false,knmTotal:40};
   knmSeconds=0;
   knmTimer=setInterval(()=>{
     knmSeconds++;
@@ -3173,7 +3260,7 @@ function showLezenPracticeResult(){
   const total=examState.lezenPracticeTotal;
   const correct=examState.lezenPracticeCorrect;
   const pct=Math.round(correct/total*100);
-  const passed=pct>=70;
+  const passed=pct>=76;
   addExamXP(passed?40:15);
   if(passed)sfxCongrats();else sfxTap();
   const col=passed?'var(--green)':'var(--orange)';
@@ -3368,7 +3455,7 @@ function showLezenSampleResult(){
   const total=examState.lezenTotalQ;
   const score=examState.lezenScore;
   const pct=Math.round(score/total*100);
-  const passed=pct>=70;
+  const passed=pct>=76;
   saveExamScore('lezen_sample',score,total);
   addExamXP(passed?60:25);
   if(passed)sfxCongrats();else sfxWrong();
@@ -3563,44 +3650,56 @@ function showWeaknessReport(){
     return;
   }
   const modules=[
-    {key:'knm',label:'🏛️ KNM',action:'startKNMPractice()'},
-    {key:'lezen1',label:'📖 Lezen',action:'startLezenMenu()'},
-    {key:'lezen_sample',label:'📖 Lezen (Sample Test)',action:'startLezenSampleTest()'},
-    {key:'schrijven',label:'✍️ Schrijven',action:'startSchrijvenMenu()'},
-    {key:'ogo',label:'🎭 Spreken OGO',action:'startOGO()'},
+    {key:'knm',       label:'🏛️ KNM',          action:'startKNMPractice()',      pass:70},
+    {key:'lezen1',    label:'📖 Lezen',          action:'startLezenMenu()',         pass:76},
+    {key:'lezen_sample',label:'📖 Lezen (Test)', action:'startLezenSampleTest()',  pass:76},
+    {key:'luisteren', label:'🎧 Luisteren',      action:'startLuisterenMenu()',     pass:72},
+    {key:'schrijven', label:'✍️ Schrijven',      action:'startSchrijvenMenu()',     pass:null},
+    {key:'ogo',       label:'🎤 Spreken',        action:'startOGO()',              pass:null},
   ];
   const attempted=modules.filter(m=>scores[m.key]);
-  const weak=attempted.filter(m=>scores[m.key].pct<70).sort((a,b)=>scores[a.key].pct-scores[b.key].pct);
-  const strong=attempted.filter(m=>scores[m.key].pct>=70);
+  const weak=attempted.filter(m=>m.pass!=null&&scores[m.key].pct<m.pass).sort((a,b)=>scores[a.key].pct-scores[b.key].pct);
+  const strong=attempted.filter(m=>m.pass==null||scores[m.key].pct>=m.pass);
 
   document.getElementById('examContent').innerHTML=`
     <div class="exam-section-hdr">
-      <div><div class="exam-section-title">📊 Weakness Report</div><div class="exam-section-sub">Based on your best scores</div></div>
+      <div><div class="exam-section-title">📊 Zwaktes & Sterkes</div><div class="exam-section-sub">Gebaseerd op uw beste scores</div></div>
       <button class="exam-back-btn" onclick="renderExamHome()">← Terug</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;font-size:11px;text-align:center">
+      <div style="background:rgba(91,141,238,0.08);border-radius:10px;padding:8px"><div style="font-weight:700;color:var(--blue)">KNM</div><div style="color:var(--text3)">Vereist 70%</div></div>
+      <div style="background:rgba(91,141,238,0.08);border-radius:10px;padding:8px"><div style="font-weight:700;color:var(--blue)">Lezen</div><div style="color:var(--text3)">Vereist 76%</div></div>
+      <div style="background:rgba(91,141,238,0.08);border-radius:10px;padding:8px"><div style="font-weight:700;color:var(--blue)">Luisteren</div><div style="color:var(--text3)">Vereist 72%</div></div>
     </div>
     ${weak.length?`
     <div class="card" style="border-color:rgba(240,180,41,0.3)">
-      <div class="card-title" style="color:var(--orange)">⚠️ Focus here — below 70%</div>
+      <div class="card-title" style="color:var(--orange)">⚠️ Verbetering nodig</div>
       ${weak.map(m=>`
         <div style="padding:10px 0;border-bottom:1px solid var(--border)">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-            <span style="font-size:14px;font-weight:600;color:var(--text)">${m.label}</span>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+            <div>
+              <span style="font-size:14px;font-weight:600;color:var(--text)">${m.label}</span>
+              ${m.pass!=null?`<span style="font-size:10px;color:var(--text3);margin-left:6px">Vereist: ${m.pass}%</span>`:''}
+            </div>
             <span style="font-size:14px;font-weight:800;color:var(--red)">${scores[m.key].pct}%</span>
           </div>
           <div class="bar-track" style="margin-bottom:8px"><div class="bar-fill" style="width:${scores[m.key].pct}%;background:linear-gradient(90deg,var(--red),var(--orange))"></div></div>
-          <button class="btn btn-outline btn-sm" onclick="${m.action}">Practice now</button>
+          <button class="btn btn-outline btn-sm" onclick="${m.action}">Nu oefenen</button>
         </div>`).join('')}
     </div>`:''}
     ${strong.length?`
     <div class="card" style="border-color:rgba(52,201,122,0.25)">
-      <div class="card-title" style="color:var(--green)">✅ Looking good — above 70%</div>
+      <div class="card-title" style="color:var(--green)">✅ Goed bezig!</div>
       ${strong.map(m=>`
         <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)">
-          <span style="font-size:13px;color:var(--text2)">${m.label}</span>
+          <div>
+            <span style="font-size:13px;color:var(--text2)">${m.label}</span>
+            ${m.pass!=null?`<span style="font-size:10px;color:var(--text3);margin-left:6px">Vereist: ${m.pass}%</span>`:''}
+          </div>
           <span style="font-size:13px;font-weight:700;color:var(--green)">${scores[m.key].pct}% ✅</span>
         </div>`).join('')}
     </div>`:''}
-    ${!attempted.length?'<div class="card"><p style="color:var(--text3)">Complete some practice sessions to see your report.</p></div>':''}`;
+    ${!attempted.length?'<div class="card"><p style="color:var(--text3)">Maak eerst een oefening om uw rapport te zien.</p></div>':''}`;
 }
 
 // ── OGO SPREKEN ──
@@ -4081,6 +4180,47 @@ Met pin graag.`,
   }
 ];
 
+  {
+    id:'luis6',
+    context:'Op het NS-station',
+    label:'Fragment 6 — NS treininfo Amsterdam–Den Haag',
+    difficulty:'A2',
+    speakers:'Omroep',
+    script:`Dames en heren, uw aandacht alstublieft. Er is een seinstoring tussen Utrecht en Den Haag. Hierdoor rijden alle treinen richting Den Haag met twintig minuten vertraging. Wij bieden onze excuses aan voor het ongemak. Reizigers naar Den Haag Centraal kunnen ook reizen via Leiden Centraal. Via Leiden rijden de treinen wel op tijd. Neemt u dan de trein richting Rotterdam en stap over in Leiden. Voor meer informatie, raadpleeg de NS-app of vraag een medewerker op het perron.`,
+    questions:[
+      {q:'Waarom rijden de treinen met vertraging?',opts:['Werkzaamheden aan het spoor','Een seinstoring tussen Utrecht en Den Haag','Slecht weer','Een staking van het personeel'],ans:1,explain:'De omroep zegt: "Er is een <strong>seinstoring tussen Utrecht en Den Haag</strong>." Een seinstoring betekent dat de verkeerssignalen voor de treinen niet goed werken.'},
+      {q:'Hoe lang is de vertraging?',opts:['10 minuten','15 minuten','20 minuten','30 minuten'],ans:2,explain:'De omroep meldt: "treinen rijden met <strong>twintig minuten vertraging</strong>." Plan je reis dus ruimer in.'},
+      {q:'Via welke stad kunnen reizigers naar Den Haag omrijden?',opts:['Rotterdam','Amsterdam','Utrecht','Leiden'],ans:3,explain:'De omroep zegt: "Reizigers naar Den Haag kunnen ook reizen via <strong>Leiden Centraal</strong>." Via Leiden rijden de treinen wel op tijd.'},
+    ]
+  },
+  {
+    id:'luis7',
+    context:'Op het werk',
+    label:'Fragment 7 — Telefoonbericht werkgever',
+    difficulty:'A2',
+    speakers:'Voicemail',
+    script:`Goedemiddag, u spreekt met mevrouw De Vries van administratiekantoor Bosman. Ik bel in verband met uw sollicitatie voor de functie van administratief medewerker. Wij hebben uw brief en CV goed ontvangen en zijn onder de indruk van uw ervaring. Wij willen u graag uitnodigen voor een gesprek. Het gesprek vindt plaats op donderdag acht november om tien uur hier op ons kantoor. Wilt u dit bevestigen door terug te bellen op nul twee zero, drie vier vijf zes zeven? Of u kunt ook een e-mail sturen naar info@bosman.nl. Wij hopen u snel te spreken. Dank u wel en een fijne dag.`,
+    questions:[
+      {q:'Voor welke functie heeft de persoon gesolliciteerd?',opts:['IT-medewerker','Administratief medewerker','Klantenservice medewerker','HR-medewerker'],ans:1,explain:'Mevrouw De Vries zegt: "uw sollicitatie voor de functie van <strong>administratief medewerker</strong>." Dit is een kantoorfunctie waarbij je administratieve taken uitvoert.'},
+      {q:'Op welke dag is het sollicitatiegesprek?',opts:['Maandag','Woensdag','Donderdag','Vrijdag'],ans:2,explain:'Het bericht zegt: "Het gesprek vindt plaats op <strong>donderdag</strong> acht november." Donderdag is de dag van het gesprek.'},
+      {q:'Hoe laat is het gesprek?',opts:['9 uur','10 uur','11 uur','14 uur'],ans:1,explain:'Mevrouw De Vries zegt: "op donderdag acht november om <strong>tien uur</strong>." Je moet om 10:00 uur aanwezig zijn op het kantoor.'},
+    ]
+  },
+  {
+    id:'luis8',
+    context:'Gemeente informatie',
+    label:'Fragment 8 — Gemeentelijke Open Dag Utrecht',
+    difficulty:'A2',
+    speakers:'Gemeentelijke aankondiging',
+    script:`De gemeente Utrecht organiseert een open dag op zaterdag vierentwintig september, van tien uur tot zestien uur. Tijdens de open dag kunt u informatie krijgen over verschillende gemeentelijke diensten, zoals het aanvragen van een paspoort of rijbewijs, informatie over uw uitkering of toeslagen, en vragen stellen over uw inschrijving in de gemeente. Er zijn medewerkers aanwezig die u in verschillende talen kunnen helpen, waaronder Engels, Arabisch en Turks. Neem uw identiteitsbewijs mee. De open dag vindt plaats in het Stadskantoor, Stadsplateau één in Utrecht. Parkeren is gratis op die dag. Voor meer informatie, kijk op gemeente.utrecht.nl.`,
+    questions:[
+      {q:'Wanneer is de open dag?',opts:['Vrijdag 24 september','Zaterdag 24 september','Zondag 24 september','Maandag 24 september'],ans:1,explain:'De aankondiging zegt: "een open dag op <strong>zaterdag vierentwintig september</strong>." Let op: het is een zaterdag, van 10:00 tot 16:00 uur.'},
+      {q:'Waarover kunt u informatie krijgen tijdens de open dag?',opts:['Alleen over uitkeringen','Belastingaangifte en hypotheken','Paspoort, rijbewijs, uitkering en gemeentelijke inschrijving','Alleen over paspoorten en rijbewijzen'],ans:2,explain:'De aankondiging noemt meerdere diensten: "<strong>paspoort, rijbewijs, uitkering en inschrijving</strong> in de gemeente." Er is brede hulp beschikbaar voor verschillende vragen.'},
+      {q:'Wat moet u meenemen naar de open dag?',opts:['Uw DigiD inloggegevens','Uw identiteitsbewijs','Uw belastingaangifte','Uw zorgverzekeringspas'],ans:1,explain:'De aankondiging zegt: "Neem uw <strong>identiteitsbewijs</strong> mee." Dit kan een paspoort, ID-kaart of verblijfsdocument zijn.'},
+    ]
+  },
+];
+
 // TTS playback state
 let luisterenSpeaking=false;
 let luisterenSpeechObj=null;
@@ -4263,7 +4403,7 @@ function showLuisterenPracticeResult(){
   const total=examState.luisTotalQ;
   const correct=examState.luisPracticeCorrect;
   const pct=Math.round(correct/total*100);
-  const passed=pct>=70;
+  const passed=pct>=72;
   addExamXP(passed?40:15);
   if(passed)sfxCongrats();else sfxTap();
   const col=passed?'var(--green)':'var(--orange)';
@@ -4319,7 +4459,7 @@ function showLuisterenSampleResult(){
   const total=examState.luisTotalQ;
   const correct=examState.luisPracticeCorrect;
   const pct=Math.round(correct/total*100);
-  const passed=pct>=70;
+  const passed=pct>=72;
   saveExamScore('luisteren',correct,total);
   addExamXP(passed?60:25);
   if(passed)sfxCongrats();else sfxTap();
@@ -4372,11 +4512,11 @@ function showLuisterenSampleResult(){
 let mockTimer=null;
 let mockState={};
 const MOCK_PHASES=[
-  {id:'knm',      icon:'🏛️',label:'KNM',        mins:35,desc:'50 vragen — Kennis van de Nederlandse Maatschappij'},
-  {id:'lezen',    icon:'📖',label:'Lezen',       mins:35,desc:'5 teksten met meerkeuze'},
-  {id:'luisteren',icon:'🎧',label:'Luisteren',   mins:25,desc:'5 audiofragmenten met MCQ'},
-  {id:'schrijven',icon:'✍️',label:'Schrijven',   mins:60,desc:'1 schrijfopdracht — AI-beoordeling'},
-  {id:'ogo',      icon:'🎤',label:'Spreken',        mins:35,desc:'16 foto/video taken — beschrijven en vergelijken'},
+  {id:'knm',      icon:'🏛️',label:'KNM',        mins:45,desc:'40 vragen — Kennis van de Nederlandse Maatschappij'},
+  {id:'lezen',    icon:'📖',label:'Lezen',       mins:65,desc:'8 teksten met meerkeuze'},
+  {id:'luisteren',icon:'🎧',label:'Luisteren',   mins:45,desc:'8 audiofragmenten met MCQ'},
+  {id:'schrijven',icon:'✍️',label:'Schrijven',   mins:40,desc:'1 schrijfopdracht — AI-beoordeling'},
+  {id:'ogo',      icon:'🎤',label:'Spreken',     mins:35,desc:'16 foto/video taken — beschrijven en vergelijken'},
 ];
 
 function getMockHistory(){
