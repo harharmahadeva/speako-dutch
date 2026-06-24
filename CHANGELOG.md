@@ -2,6 +2,17 @@
 
 ---
 
+## [2.3.1] — 2026-06-24
+
+### Added
+- **Bilingual sentence scaffold for Days 1–10** — sentence card now shows English translation below the Dutch sentence for the first 10 lesson days only
+- `sentenceEn` field added to word schema (`safeParseLesson` + AI prompt)
+- AI prompt requests `sentenceEn` (English translation of the `sentence` field) only when `day <= 10`
+- Word card renders `🇬🇧 [English]` in grey below the italic Dutch sentence — only if `day <= 10` and `sentenceEn` is non-empty
+- Days 11+ unchanged — Dutch sentence only (gradual immersion; by Day 15 reading cards begin)
+
+---
+
 ## [2.3.0] — 2026-06-24
 
 ### Added — Vocabulary → Exam bridge (synced with Android v1.6.5)

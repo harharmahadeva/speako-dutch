@@ -1114,7 +1114,7 @@ function safeParseLesson(raw){
     de:esc(w.de||''), pron:esc(w.pron||''), en:esc(w.en||''),
     example_de:esc(w.example_de||''), example_en:esc(w.example_en||''),
     funny:esc(w.funny||''), exam:esc(w.exam||''),
-    sentence:esc(w.sentence||'')
+    sentence:esc(w.sentence||''), sentenceEn:esc(w.sentenceEn||'')
   }));
   obj.phrases=obj.phrases.slice(0,10).map(p=>({
     de:esc(p.de||''), en:esc(p.en||''),
@@ -1242,7 +1242,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.3.0';
+const APP_VERSION='2.3.1';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1563,7 +1563,7 @@ PHRASES — 6 phrases you WILL need in real inburgering life. For each:
 TONE: Warm, encouraging, never boring. Like a good friend who already passed their inburgering. Use humour about real Dutch life — stroopwafels, cycling in rain, direct Dutch people, NS delays.
 
 Return ONLY valid JSON (no markdown, no backticks, no extra text):
-{"day":${day},"topic":"${topic}","funnyIntro":"1 punchy sentence — funny NL observation that sets up WHY today's topic matters for the exam","examHook":"Which specific inburgering exam module(s) today's lesson directly helps with, and how","grammar":{"rule":"One rule in plain English — max 15 words","examples":["Dutch (max 6 words) — English","Dutch — English","Dutch — English"],"mistake":"Common mistake learners make — and the fix in 1 sentence"},"words":[{"de":"word (de/het if noun)","pron":"[english-sounds]","en":"meaning","sentence":"one short real-life Dutch sentence using this word (exam context — gemeente/dokter/NS/werk/school)","example_de":"short Dutch sentence","example_en":"translation","funny":"vivid NL memory hook (Albert Heijn/NS/gemeente/fiets/stroopwafel etc)","exam":"KNM|Lezen|Luisteren|Schrijven|OGO"}],"phrases":[{"de":"Dutch phrase","en":"English meaning","use":"exact situation — gemeente/dokter/NS/schrijven/OGO etc"}],"survivalTip":"1 practical NL tip — gemeente/zorgverzekering/OV/BSN/DigiD/DUO related","jobTip":"1 IT job tip for NL — LinkedIn NL / Dutch workplace / salary negotiation"}
+{"day":${day},"topic":"${topic}","funnyIntro":"1 punchy sentence — funny NL observation that sets up WHY today's topic matters for the exam","examHook":"Which specific inburgering exam module(s) today's lesson directly helps with, and how","grammar":{"rule":"One rule in plain English — max 15 words","examples":["Dutch (max 6 words) — English","Dutch — English","Dutch — English"],"mistake":"Common mistake learners make — and the fix in 1 sentence"},"words":[{"de":"word (de/het if noun)","pron":"[english-sounds]","en":"meaning","sentence":"one short real-life Dutch sentence using this word (exam context — gemeente/dokter/NS/werk/school)${day<=10?'","sentenceEn":"English translation of the sentence field':''}","example_de":"short Dutch sentence","example_en":"translation","funny":"vivid NL memory hook (Albert Heijn/NS/gemeente/fiets/stroopwafel etc)","exam":"KNM|Lezen|Luisteren|Schrijven|OGO"}],"phrases":[{"de":"Dutch phrase","en":"English meaning","use":"exact situation — gemeente/dokter/NS/schrijven/OGO etc"}],"survivalTip":"1 practical NL tip — gemeente/zorgverzekering/OV/BSN/DigiD/DUO related","jobTip":"1 IT job tip for NL — LinkedIn NL / Dutch workplace / salary negotiation"}
 
 RULES:
 - Exactly 8 words, exactly 6 phrases
@@ -1663,7 +1663,7 @@ function renderLesson(lesson){
               <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:5px 10px" onclick="speakDutch('${safeEx}')">🔊</button>
             </div>
           </div>
-          ${w.sentence?`<div style="background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:9px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px"><span style="font-size:14px;flex-shrink:0">💬</span><span style="font-size:12px;color:var(--text2);line-height:1.6;font-style:italic">${w.sentence}</span></div>`:''}
+          ${w.sentence?`<div style="background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:9px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px"><span style="font-size:14px;flex-shrink:0">💬</span><div><span style="font-size:12px;color:var(--text2);line-height:1.6;font-style:italic">${w.sentence}</span>${(userProgress?.day||1)<=10&&w.sentenceEn?`<div style="font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5">🇬🇧 ${w.sentenceEn}</div>`:''}</div></div>`:''}
           <div class="wc-tip">💡 ${w.funny}</div>
           ${w.exam?`<div style="display:inline-block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:99px;background:rgba(240,112,10,0.12);color:var(--accent);border:1px solid rgba(240,112,10,0.25)">🎯 ${w.exam}</div>`:''}
           <div class="wc-actions">
