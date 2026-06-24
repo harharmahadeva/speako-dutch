@@ -7,6 +7,13 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.7.3] — 2026-06-24
+
+### Fixed
+- **Say it on iOS** — removed incorrect "not supported on iOS" message; iOS Safari 14.5+ supports `webkitSpeechRecognition`; now shows generic update prompt only if API is truly absent
+
+---
+
 ## [1.7.2] — 2026-06-24
 
 ### Fixed

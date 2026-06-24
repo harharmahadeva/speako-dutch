@@ -1235,7 +1235,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.7.2';
+const APP_VERSION='1.7.3';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1782,8 +1782,7 @@ function startVoiceValidation(sid, targetText, type){
 
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){
-    const isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
-    resultEl.innerHTML=`<div class="mic-result heard" style="font-size:12px">⚠️ ${isIOS?'Speech recognition is not supported on iOS Safari. Use Chrome on desktop to practice speaking.':'Speech recognition needs Chrome or Edge.'}</div>`;
+    resultEl.innerHTML='<div class="mic-result heard" style="font-size:12px">⚠️ Speech recognition is not available. Try updating Safari or use Chrome.</div>';
     return;
   }
 
