@@ -7,6 +7,16 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.7.2] — 2026-06-24
+
+### Fixed
+- **iPhone layout overflow** — added `overflow-x:hidden` to `.main` and `word-break:break-word` to `.wc-nl` so long Dutch words don't push cards off-screen
+- **TTS (Listen button) on iOS** — `getVoices()` returns empty array on first call on iOS Safari; rewrote `speakGerman()` to call `speak()` immediately if voices loaded, else wait for `onvoiceschanged` callback
+- **Say it on iOS** — `SpeechRecognition` is not supported on iOS Safari; now shows clear message "not supported on iOS Safari — use Chrome on desktop" instead of generic error
+- **Nav button arrows** — removed `←` from Back and `→` from Next
+
+---
+
 ## [1.7.1] — 2026-06-24
 
 ### Fixed

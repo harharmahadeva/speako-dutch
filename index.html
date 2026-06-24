@@ -148,7 +148,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .logout-btn{padding:6px 13px;background:transparent;border:1px solid var(--border2);border-radius:99px;font-size:12px;font-weight:600;color:var(--text3);cursor:pointer;transition:all 0.2s;font-family:"Space Grotesk",sans-serif;}
 .logout-btn:hover{border-color:var(--red);color:var(--red);background:var(--red-g);}
 
-.main{max-width:880px;margin:0 auto;padding:18px 20px 90px;width:100%;}
+.main{max-width:880px;margin:0 auto;padding:18px 20px 90px;width:100%;overflow-x:hidden;}
 
 .mot-banner{background:linear-gradient(135deg,rgba(59,130,246,0.1),rgba(139,92,246,0.06));border:1px solid rgba(59,130,246,0.2);border-radius:var(--r);padding:16px 20px;margin-bottom:16px;position:relative;overflow:hidden;font-size:13px;color:var(--text2);line-height:1.7;}
 .mot-banner::after{content:"🎯";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:40px;opacity:0.1;}
@@ -331,7 +331,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 
 /* ── Word flashcard ── */
 .wc-head{background:linear-gradient(135deg,rgba(59,130,246,.1),rgba(139,92,246,.08));padding:28px 20px 20px;text-align:center;border-bottom:1px solid rgba(255,255,255,0.05);}
-.wc-nl{font-size:38px;font-weight:900;background:linear-gradient(135deg,#93C5FD,#C084FC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;margin-bottom:6px;}
+.wc-nl{font-size:38px;font-weight:900;background:linear-gradient(135deg,#93C5FD,#C084FC);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.1;margin-bottom:6px;word-break:break-word;}
 .wc-pron{font-size:13px;color:var(--text3);font-style:italic;margin-bottom:10px;}
 .wc-en{display:inline-block;font-size:16px;font-weight:700;color:var(--text);background:rgba(255,255,255,0.07);border-radius:99px;padding:5px 18px;}
 .wc-body{padding:16px 18px;}
@@ -1235,7 +1235,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.7.1';
+const APP_VERSION='1.7.2';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1734,9 +1734,9 @@ function renderLessonPage(){
       </div>
       ${page.html}
       <div class="lesson-nav">
-        <button class="btn btn-outline" onclick="prevLessonPage()" ${isFirst?'disabled style="opacity:0.3;cursor:not-allowed"':''}>← Back</button>
+        <button class="btn btn-outline" onclick="prevLessonPage()" ${isFirst?'disabled style="opacity:0.3;cursor:not-allowed"':''}>Back</button>
         <span style="font-size:12px;color:var(--text3)">${lessonPage+1} / ${total}</span>
-        <button class="btn btn-gold" onclick="${isLast?'showLessonComplete()':'nextLessonPage()'}">${isLast?'✅ Finish':'Next →'}</button>
+        <button class="btn btn-gold" onclick="${isLast?'showLessonComplete()':'nextLessonPage()'}">${isLast?'✅ Finish':'Next'}</button>
       </div>
     </div>`;
 
@@ -1782,7 +1782,8 @@ function startVoiceValidation(sid, targetText, type){
 
   const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
   if(!SR){
-    resultEl.innerHTML='<div class="mic-result heard">⚠️ Speech recognition needs Chrome or Edge.</div>';
+    const isIOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
+    resultEl.innerHTML=`<div class="mic-result heard" style="font-size:12px">⚠️ ${isIOS?'Speech recognition is not supported on iOS Safari. Use Chrome on desktop to practice speaking.':'Speech recognition needs Chrome or Edge.'}</div>`;
     return;
   }
 
@@ -2483,12 +2484,17 @@ function speakGerman(text){
   window.speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang='nl-NL';u.rate=0.85;
-  const v=window.speechSynthesis.getVoices();
-  const dv=v.find(x=>x.lang.startsWith('nl'));if(dv)u.voice=dv;
-  window.speechSynthesis.speak(u);
+  const doSpeak=()=>{
+    const v=window.speechSynthesis.getVoices();
+    const dv=v.find(x=>x.lang==='nl-NL')||v.find(x=>x.lang.startsWith('nl'));
+    if(dv)u.voice=dv;
+    window.speechSynthesis.speak(u);
+  };
+  const voices=window.speechSynthesis.getVoices();
+  if(voices.length>0)doSpeak();
+  else{window.speechSynthesis.onvoiceschanged=doSpeak;}
 }
 function speakWord(text){speakGerman(text);}
-window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
 
 async function saveProgress(){
   if(!currentUser)return;
