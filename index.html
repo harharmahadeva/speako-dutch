@@ -366,7 +366,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .hidden{display:none!important;}
 
 @media(max-width:480px){.test-options{grid-template-columns:1fr;}.word-de{font-size:42px;}.word-en{font-size:18px;}.word-pron{font-size:15px;}.phrase-de{font-size:21px;}.header{padding:10px 14px;}.main{padding:14px 12px 80px;}.tabs{gap:3px;}.tab{font-size:12px;padding:10px 6px;}.logout-btn .lbl{display:none;}.exercise-input,.drill-input{font-size:16px;}}
-@media(min-width:1024px){.main{padding:24px calc(50% - 340px) 90px;}.card{padding:22px;}}
+@media(min-width:1024px){.main{padding:24px 20px 90px;}.card{padding:22px;}.lesson-wrap{max-width:640px;margin:0 auto;}}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:99px;}
@@ -1235,7 +1235,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.7.0';
+const APP_VERSION='1.7.1';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════

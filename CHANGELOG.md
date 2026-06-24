@@ -7,6 +7,13 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.7.1] — 2026-06-24
+
+### Fixed
+- **Layout broken** — `calc(50% - 340px)` side padding on `.main` crushed all content into a narrow column; reverted to normal `20px` padding; lesson width now constrained via `.lesson-wrap{max-width:640px;margin:0 auto}` on desktop only
+
+---
+
 ## [1.7.0] — 2026-06-24
 
 ### Changed
