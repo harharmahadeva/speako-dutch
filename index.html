@@ -1240,7 +1240,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.0.0';
+const APP_VERSION='2.0.1';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -3681,13 +3681,66 @@ function startSprekenPractice(){
   renderSprekenTask();
 }
 
+// Word-overlap match score (filters words >2 chars to skip Dutch articles)
+function scoreMatch(spoken,expected){
+  const sw=new Set(spoken.toLowerCase().split(/\W+/).filter(w=>w.length>2));
+  const ew=new Set(expected.toLowerCase().split(/\W+/).filter(w=>w.length>2));
+  if(ew.size===0)return 0;
+  const matches=[...sw].filter(w=>ew.has(w)).length;
+  return Math.min(100,Math.round(matches*100/ew.size));
+}
+
+let sprekenRecognition=null;
+
+function stopSprekenRecognition(){
+  if(sprekenRecognition){
+    try{sprekenRecognition.stop();}catch(e){}
+    sprekenRecognition=null;
+  }
+}
+
+function startSprekenRecognition(){
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(!SR)return;
+  stopSprekenRecognition();
+  const r=new SR();
+  r.lang='nl-NL';
+  r.continuous=true;
+  r.interimResults=true;
+  r.maxAlternatives=1;
+  sprekenRecognition=r;
+  r.onresult=(e)=>{
+    let interim='',final='';
+    for(let i=e.resultIndex;i<e.results.length;i++){
+      const t=e.results[i][0].transcript;
+      if(e.results[i].isFinal)final+=t+' ';
+      else interim+=t;
+    }
+    sprekenState.transcript=(sprekenState.transcript||'')+final;
+    const liveEl=document.getElementById('sprekenLive');
+    if(liveEl)liveEl.textContent=(sprekenState.transcript+interim).trim();
+  };
+  r.onerror=(e)=>{
+    if(e.error==='no-speech'||e.error==='aborted')return;
+  };
+  r.onend=()=>{
+    // Auto-restart while timer is still running
+    if(sprekenState.started&&sprekenState.secondsLeft>0){
+      try{r.start();}catch(e){}
+    }
+  };
+  r.start();
+}
+
 function renderSprekenTask(){
   clearInterval(sprekenTimer);
+  stopSprekenRecognition();
   const{queue,idx,mode,timePerTask}=sprekenState;
   if(idx>=queue.length){showSprekenResult();return;}
   const task=queue[idx];
   sprekenState.secondsLeft=timePerTask||60;
   sprekenState.started=false;
+  sprekenState.transcript='';
   const typeCols={video:'var(--blue)','1foto':'var(--green)','2fotos':'var(--violet)','3fotos':'var(--accent)'};
   document.getElementById('examContent').innerHTML=`
     <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--card);border:1px solid var(--border2);border-radius:14px;margin-bottom:12px">
@@ -3708,36 +3761,68 @@ function renderSprekenTask(){
       <button class="btn btn-gold" style="width:100%;padding:16px;font-size:15px" onclick="startSprekenTimer()">BEGIN — Spreek nu 🎤</button>
       <div style="font-size:12px;color:var(--text3);text-align:center;margin-top:8px">Druk op BEGIN en spreek uw antwoord in het Nederlands</div>
     </div>
+    <div id="sprekenLiveWrap" class="hidden" style="margin-top:10px;background:rgba(91,141,238,0.07);border:1px solid rgba(91,141,238,0.2);border-radius:12px;padding:12px 14px">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+        <span style="width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:pulse 1s infinite"></span>
+        <span style="font-size:11px;font-weight:700;color:var(--red);text-transform:uppercase;letter-spacing:.5px">Live</span>
+      </div>
+      <div id="sprekenLive" style="font-size:13px;color:var(--text2);min-height:40px;line-height:1.7;font-style:italic">U spreekt nu...</div>
+    </div>
     <div id="sprekenAnswer" class="hidden"></div>`;
 }
 
 function startSprekenTimer(){
   sprekenState.started=true;
   document.getElementById('sprekenControls').innerHTML=`
-    <button class="btn" style="width:100%;padding:14px;background:var(--red);color:#fff;font-size:14px" onclick="stopSprekenTimer()">Klaar 🛑</button>`;
+    <button class="btn" style="width:100%;padding:14px;background:var(--red);color:#fff;font-size:14px" onclick="stopSprekenTimer()">⏹ Klaar met spreken</button>`;
+  document.getElementById('sprekenLiveWrap').classList.remove('hidden');
+  // Start mic synchronously within user gesture (iOS requirement)
+  startSprekenRecognition();
   sprekenTimer=setInterval(()=>{
     sprekenState.secondsLeft--;
     const el=document.getElementById('sprekenTimerEl');
     if(el){
       el.textContent=sprekenState.secondsLeft+'s';
-      el.style.color=sprekenState.secondsLeft<15?'var(--red)':sprekenState.secondsLeft<30?'var(--orange)':'var(--green)';
+      el.style.color=sprekenState.secondsLeft<=10?'var(--red)':sprekenState.secondsLeft<30?'var(--orange)':'var(--green)';
     }
-    if(sprekenState.secondsLeft<=0){clearInterval(sprekenTimer);showSprekenExample();}
+    if(sprekenState.secondsLeft<=0){clearInterval(sprekenTimer);sprekenState.started=false;stopSprekenRecognition();showSprekenExample();}
   },1000);
   sfxTap();
 }
 
 function stopSprekenTimer(){
   clearInterval(sprekenTimer);
+  sprekenState.started=false;
+  stopSprekenRecognition();
   showSprekenExample();
 }
 
 function showSprekenExample(){
   const task=sprekenState.queue[sprekenState.idx];
+  const spoken=(sprekenState.transcript||'').trim();
+  const pct=scoreMatch(spoken,task.example);
+  const scoreCol=pct>=60?'var(--green)':pct>=30?'var(--orange)':'var(--red)';
+  const scoreLabel=pct>=60?'Uitstekend! 🌟':pct>=30?'Redelijk goed 👍':'Blijf oefenen 💪';
   document.getElementById('sprekenControls').innerHTML='';
+  document.getElementById('sprekenLiveWrap').classList.add('hidden');
   const ansEl=document.getElementById('sprekenAnswer');
   ansEl.classList.remove('hidden');
   ansEl.innerHTML=`
+    ${spoken?`
+    <div style="background:var(--card);border:1px solid var(--border2);border-radius:12px;padding:12px 14px;margin-bottom:10px">
+      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px">U zei:</div>
+      <div style="font-size:13px;color:var(--text2);line-height:1.7;font-style:italic">${esc(spoken)}</div>
+      <div style="margin-top:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+          <span style="font-size:11px;font-weight:700;color:${scoreCol}">${scoreLabel}</span>
+          <span style="font-size:13px;font-weight:900;color:${scoreCol}">${pct}%</span>
+        </div>
+        <div style="height:6px;background:var(--border2);border-radius:99px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${scoreCol};border-radius:99px;transition:width .6s ease"></div>
+        </div>
+        <div style="font-size:10px;color:var(--text3);margin-top:4px">Woordovereenkomst met voorbeeldantwoord</div>
+      </div>
+    </div>`:''}
     <div style="background:rgba(52,201,122,0.07);border:1px solid rgba(52,201,122,0.2);border-radius:12px;padding:14px 16px;margin-bottom:12px">
       <div style="font-size:11px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px">✅ Voorbeeldantwoord</div>
       <div style="font-size:13px;color:var(--text2);line-height:1.8">${esc(task.example)}</div>
@@ -3746,7 +3831,7 @@ function showSprekenExample(){
     <button class="btn btn-gold" style="width:100%;padding:14px" onclick="nextSprekenTask()">
       ${sprekenState.idx+1<sprekenState.queue.length?'Volgende vraag →':'Resultaten bekijken →'}
     </button>`;
-  sprekenState.score++;
+  sprekenState.score=(sprekenState.score||0)+1;
 }
 
 function nextSprekenTask(){
@@ -3756,6 +3841,7 @@ function nextSprekenTask(){
 
 function showSprekenResult(){
   clearInterval(sprekenTimer);
+  stopSprekenRecognition();
   saveExamScore('ogo',sprekenState.score,sprekenState.queue.length);
   addExamXP(sprekenState.mode==='test'?60:30);
   sfxCorrect();
@@ -3768,7 +3854,7 @@ function showSprekenResult(){
       <div style="font-size:48px;margin-bottom:8px">🎤</div>
       <div style="font-size:28px;font-weight:900;color:var(--green)">${sprekenState.queue.length}/${sprekenState.queue.length}</div>
       <div style="font-size:14px;color:var(--text2);margin-top:6px">Alle ${sprekenState.queue.length} taken voltooid!</div>
-      <div style="font-size:12px;color:var(--text3);margin-top:4px">Vergelijk steeds uw antwoord met het voorbeeldantwoord</div>
+      <div style="font-size:12px;color:var(--text3);margin-top:4px">Vergelijk uw antwoorden met de voorbeelden voor verbetering</div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
       <button class="btn btn-outline" style="padding:14px" onclick="startSprekenPractice()">Opnieuw oefenen</button>

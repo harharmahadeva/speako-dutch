@@ -2,6 +2,22 @@
 
 ---
 
+## [2.0.1] — 2026-06-24
+
+### Added
+- **Live speech recognition in Spreken** — mic activates immediately on BEGIN (synchronous call, satisfies iOS user-gesture requirement)
+- Interim transcript shown in real time with 🔴 Live badge while speaking
+- Auto-restart recognition on `onend` so the 60s window stays open (Web Speech API stops on silence — restarted automatically while timer runs)
+- **Word-overlap match score** after each task — compares spoken words against example answer (filters words ≤2 chars to skip Dutch articles); score shown as coloured progress bar
+  - ≥60% → Uitstekend! (green)
+  - 30–59% → Redelijk goed (amber)
+  - <30% → Blijf oefenen (red)
+- "U zei:" transcript block shown below score so user can review what was captured
+- Volgende button only appears after timer ends or Klaar is tapped (enforced by flow)
+- Uses `webkitSpeechRecognition` fallback for iOS Safari
+
+---
+
 ## [2.0.0] — 2026-06-24
 
 ### Changed
