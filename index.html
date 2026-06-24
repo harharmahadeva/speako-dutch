@@ -1190,7 +1190,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='1.6.1';
+const APP_VERSION='1.6.2';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1417,7 +1417,8 @@ function renderDayDots(){
     html+=`<div class="${cls}" title="Dag ${i}: ${DAY_TOPICS_NL[i-1]||'Advanced'}">${label}</div>`;
   }
   if(show<TOTAL_DAYS())html+=`<div style="font-size:12px;color:var(--muted);display:flex;align-items:center;padding:0 6px">...${TOTAL_DAYS()-show} more</div>`;
-  document.getElementById('dayDots').innerHTML=html;
+  const dotEl=document.getElementById('dayDots');
+  if(dotEl)dotEl.innerHTML=html;
 }
 
 function startTimer(){

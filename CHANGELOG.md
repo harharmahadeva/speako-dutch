@@ -7,6 +7,13 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.6.2] — 2026-06-24
+
+### Fixed
+- **Lesson never loaded** — `renderDayDots()` crashed with `TypeError: Cannot set innerHTML of null` because `#dayDots` element was removed in the UI redesign but the function still referenced it; added null guard so crash no longer blocks `loadLesson()`
+
+---
+
 ## [1.6.1] — 2026-06-24
 
 ### Fixed
