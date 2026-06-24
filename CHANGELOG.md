@@ -1,5 +1,25 @@
 # Speako Dutch PWA — Changelog
 
+---
+
+## [2.0.0] — 2026-06-24
+
+### Changed
+- **Spreken module completely redesigned** — replaced roleplay text scenarios with the real DUO computer-based exam format
+- 16 tasks across 4 real task types: 📹 Video (4), 🖼️ 1 Foto (4), 🖼️🖼️ 2 Foto's (4), 🖼️🖼️🖼️ 3 Foto's (4)
+- Each task shows: task type badge + scene description (what appears on the DUO computer screen) + the exam question
+- 60-second countdown timer per task (practice) / 90 seconds (full exam); color shifts orange <30s, red <15s
+- User taps **BEGIN** to start the timer, **Klaar** to stop early
+- Example answer shown after timer ends with TTS "Beluister voorbeeld" option
+- **Volgende** only enabled after timer completes (enforced by timer flow)
+- Practice mode: 4 tasks (one of each type, randomly selected)
+- Full exam (Sample Test): all 16 tasks in fixed order, 90s each
+- Exam module card renamed from "OGO / Rollenspel" → **Spreken · Foto & video taken**
+- Mock exam OGO phase updated: 35 min · 16 foto/video taken
+- `startOGO()` → opens new `renderSprekenHome()` with type overview grid
+
+---
+
 All notable changes are documented here. Version follows [Semantic Versioning](https://semver.org/):
 - **MAJOR** — breaking change or full redesign
 - **MINOR** — new feature or module
