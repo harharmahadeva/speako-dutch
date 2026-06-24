@@ -7,6 +7,13 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 
 ---
 
+## [1.6.3] — 2026-06-24
+
+### Fixed
+- **Lesson text too dark** — `--muted` was aliased to `--text3` (`#5e6c82`) making grammar explanations, translations, and body text hard to read; raised to `--text2` (`#8a96aa`) for better contrast
+
+---
+
 ## [1.6.2] — 2026-06-24
 
 ### Fixed
