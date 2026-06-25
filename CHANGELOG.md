@@ -2,6 +2,18 @@
 
 ---
 
+## [2.5.1] — 2026-06-26
+
+### Added — Android v1.6.20 sync
+
+**Dutch pronunciation tips** — `dutchPronTips(word)` detects tricky phonetic patterns and returns up to 2 amber chips (💡) shown below the pronunciation guide on both Daily Words cards and daily lesson word cards. Patterns detected: `tie`→tsee, `sch`/`ch`→keelklank, `ij`/`ei`→ay, `ui`, `oe`, `eu`, `au`/`ou`, `aa`/`ee`/`oo`/`uu` vowels, `g`→keelklank, `w`, `v` at start.
+
+**Quiz Stop button** — "← Stop" button already present on all Daily Words quiz screens (chunk quizzes + mix quizzes); not shown on timed auto-dismiss transition screens.
+
+**Mic feedback colors** — pronunciation result now uses solid light backgrounds: green `#DCFCE7` (score ≥80%), yellow `#FEF9C3` (50–79%), red `#FFE4E6` (<50%). "U zei:" transcript shown in grey `#6B7280` below the message. Result stays inside the word card, always visible without scrolling.
+
+---
+
 ## [2.5.0] — 2026-06-26
 
 ### Added — 30-word topics + chunked adaptive quiz

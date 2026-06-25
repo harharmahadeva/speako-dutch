@@ -1270,7 +1270,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.5.0';
+const APP_VERSION='2.5.1';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1698,6 +1698,7 @@ function renderLesson(lesson){
           <div style="font-size:10px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;color:rgba(147,197,253,.6);margin-bottom:10px">Word ${i+1} of ${lesson.words.length}</div>
           <div class="wc-nl">${w.de}</div>
           <div class="wc-pron">${w.pron}</div>
+          ${pronTipsHtml(w.de)}
           <div class="wc-en">${w.en}</div>
         </div>
         <div class="wc-body">
@@ -2795,6 +2796,7 @@ function showDailyWordCard(){
     <div class="dw-word-card">
       <div class="dw-nl">${w.nl}</div>
       <div class="dw-pron">[ ${w.pron} ]</div>
+      ${pronTipsHtml(w.nl)}
       <div class="dw-en">${w.en}</div>
       <div class="dw-ex">💬 <span style="color:var(--blue);font-style:italic">${w.ex}</span>${w.exEn?`<div style="font-size:12px;color:var(--text3);margin-top:4px">🇬🇧 ${w.exEn}</div>`:''}</div>
 
@@ -2873,14 +2875,14 @@ function startDWRecognition(targetWord){
     dwRecognition=null;
 
     let bg,col,msg;
-    if(score>=0.80){bg='rgba(52,201,122,.1)';col='var(--green)';msg='✅ Uitstekend! Perfect uitgesproken.';}
-    else if(score>=0.50){bg='rgba(245,158,11,.1)';col='var(--orange)';msg='🟡 Bijna goed! Probeer nog een keer.';}
-    else{bg='rgba(224,92,92,.1)';col='var(--red)';msg='❌ Probeer opnieuw — luister eerst naar het voorbeeld.';}
+    if(score>=0.80){bg='#DCFCE7';col='#166534';msg='✅ Uitstekend! Perfect uitgesproken.';}
+    else if(score>=0.50){bg='#FEF9C3';col='#854D0E';msg='🟡 Bijna goed! Probeer nog een keer.';}
+    else{bg='#FFE4E6';col='#9F1239';msg='❌ Probeer opnieuw — luister eerst naar het voorbeeld.';}
 
     result.innerHTML=`
       <div class="dw-mic-result" style="background:${bg};color:${col}">
         ${msg}<br>
-        <span style="font-size:11px;color:var(--text3);margin-top:4px;display:block">U zei: "${heard}"</span>
+        <span style="font-size:11px;color:#6B7280;margin-top:4px;display:block">U zei: "${heard}"</span>
       </div>`;
   };
 
@@ -3974,6 +3976,36 @@ function renderExamHome(){
 // ── KNM TEST ──
 let knmTimer=null, knmSeconds=0;
 let knmQueue=[], knmWrongAnswers=[];
+
+function dutchPronTips(word){
+  const w=(word||'').toLowerCase();
+  const tips=[];
+  if(w.includes('tie'))                             tips.push("'tie' klinkt als 'tsee'");
+  if(w.includes('sch'))                             tips.push("'sch' → 's' + keelklank");
+  else if(w.includes('ch'))                         tips.push("'ch' → keelklank (zoals 'loch')");
+  if(w.includes('ij')||w.includes('ei'))            tips.push("'ij'/'ei' klinkt als 'ay'");
+  if(w.includes('ui'))                              tips.push("'ui' → ronde lippen, zeg 'ow'+'ie'");
+  if(w.includes('oe'))                              tips.push("'oe' klinkt als 'oo'");
+  if(w.includes('eu'))                              tips.push("'eu' → ronde 'uh' (zoals Frans 'eu')");
+  if(w.includes('au')||w.includes('ou'))            tips.push("'au'/'ou' klinkt als 'ow'");
+  if(w.includes('aa'))                              tips.push("'aa' → lange 'a' klank");
+  if(w.includes('ee'))                              tips.push("'ee' → lange 'e' klank");
+  if(w.includes('oo'))                              tips.push("'oo' → lange 'o' klank");
+  if(w.includes('uu'))                              tips.push("'uu' → lange 'u' klank");
+  if(!w.includes('tie')&&!w.includes('sch')&&!w.includes('ch')&&w.includes('g'))
+                                                    tips.push("'g' → keelklank (zoals 'loch')");
+  if(w.includes('w'))                               tips.push("'w' → zachter dan Engels 'w'");
+  if(w.startsWith('v'))                             tips.push("'v' aan begin → klinkt als 'f'");
+  return tips.slice(0,2);
+}
+
+function pronTipsHtml(word){
+  const tips=dutchPronTips(word);
+  if(!tips.length)return'';
+  return`<div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:8px">${
+    tips.map(t=>`<span style="background:#FFFBEB;color:#92400E;font-size:11px;font-weight:500;border-radius:999px;padding:4px 10px">💡 ${t}</span>`).join('')
+  }</div>`;
+}
 
 function shuffleArray(arr){
   const a=[...arr];
