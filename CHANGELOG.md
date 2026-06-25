@@ -2,6 +2,20 @@
 
 ---
 
+## [2.4.2] — 2026-06-25
+
+### Improved — Android sync (v1.6.16 parity)
+
+**Logout button** — `⏻ Logout` icon button replaced with plain "Uitloggen" text button (Dutch, consistent with app language).
+
+**Dagelijkse Woorden bilingual examples** — all 120 words now show the Dutch example sentence in blue italic AND the English translation below in grey (`exEn` field added to every word across all 10 topic packs).
+
+**Daily Words back buttons** — already use `.exam-back-btn` outlined style from v2.4.1.
+
+**Week strip + outlined back buttons** — already shipped in v2.4.1.
+
+---
+
 ## [2.4.1] — 2026-06-25
 
 ### Improved — UI polish
