@@ -1270,7 +1270,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.4.2';
+const APP_VERSION='2.4.3';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -2893,21 +2893,178 @@ function startDWRecognition(targetWord){
   r.start();
 }
 
+// ── Daily Words Adaptive Quiz ────────────────────────────────────────────────
+let dwQuiz={phase:0,q:[],idx:0,mastered:new Set(),correct:0,total:0,qStart:0,attempts:{}};
+
 function showDWComplete(){
   window.speechSynthesis.cancel();
+  startDWQuiz();
+}
+
+function startDWQuiz(){
   const topic=DAILY_WORDS[dwState.topic];
+  dwQuiz={phase:1,q:shuffleArray([...topic.words]),idx:0,mastered:new Set(),correct:0,total:0,qStart:0,attempts:{}};
+  showDWQuizQuestion();
+}
+
+function showDWQuizQuestion(){
+  const topic=DAILY_WORDS[dwState.topic];
+  const words=topic.words;
+  if(dwQuiz.idx>=dwQuiz.q.length){
+    if(dwQuiz.phase===1){
+      const phase2q=dwQuiz.q.filter(w=>!dwQuiz.mastered.has(w.nl));
+      if(phase2q.length===0){showDWQuizFinal();return;}
+      showDWQuizTransition(phase2q);
+    } else {
+      showDWQuizFinal();
+    }
+    return;
+  }
+
+  const w=dwQuiz.q[dwQuiz.idx];
+  const allNl=words.map(x=>x.nl);
+  const distractors=shuffleArray(allNl.filter(nl=>nl!==w.nl)).slice(0,3);
+  while(distractors.length<3){distractors.push(allNl[distractors.length%allNl.length]);}
+  const opts=shuffleArray([w.nl,...distractors]);
+  const correctIdx=opts.indexOf(w.nl);
+  dwQuiz.qStart=Date.now();
+
+  const total=dwQuiz.q.length;
+  const pct=Math.round(dwQuiz.idx/total*100);
+  const phase=dwQuiz.phase;
+
+  // Phase 1: "Wat is het Nederlandse woord voor: {english}?"
+  // Phase 2: sentence with blank + pron hint
+  let questionHtml;
+  if(phase===1){
+    questionHtml=`
+      <div style="font-size:13px;color:var(--text3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.6px;font-weight:700">Wat is het Nederlandse woord voor:</div>
+      <div style="font-size:26px;font-weight:900;color:#fff;margin-bottom:4px">${w.en}</div>`;
+  } else {
+    const blank=w.ex.replace(new RegExp('\\b'+w.nl.replace(/[-\/\\^$*+?.()|[\]{}]/g,'\\$&')+'\\b','i'),'___');
+    questionHtml=`
+      <div style="font-size:13px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.6px;font-weight:700">Kies het juiste woord:</div>
+      <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:6px;line-height:1.5">${blank}</div>
+      <div style="font-size:12px;color:var(--violet);font-style:italic;margin-bottom:4px">(${w.pron})</div>`;
+  }
+
+  document.getElementById('examContent').innerHTML=`
+    <div class="exam-section-hdr" style="margin-bottom:8px">
+      <div><div class="exam-section-title">${topic.label}</div><div class="exam-section-sub">Fase ${phase} · Vraag ${dwQuiz.idx+1}/${total}</div></div>
+      <button class="exam-back-btn" onclick="showDailyWordsHome()">← Stop</button>
+    </div>
+
+    <!-- Speed bar -->
+    <div style="height:5px;background:var(--border2);border-radius:99px;margin-bottom:16px;overflow:hidden">
+      <div id="dwSpeedBar" style="height:100%;width:100%;background:var(--green);border-radius:99px;transition:width 3s linear,background 3s linear"></div>
+    </div>
+
+    <!-- Progress -->
+    <div style="height:4px;background:var(--border2);border-radius:99px;margin-bottom:16px;overflow:hidden">
+      <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:99px"></div>
+    </div>
+
+    <!-- Question -->
+    <div class="card" style="padding:20px;margin-bottom:14px;text-align:center">
+      ${questionHtml}
+    </div>
+
+    <!-- Options -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px" id="dwOpts">
+      ${opts.map((o,i)=>`
+        <button onclick="dwAnswer(${i},${correctIdx})" style="background:rgba(255,255,255,0.06);border:1px solid var(--border2);border-radius:12px;padding:14px 10px;font-size:15px;font-weight:700;color:#fff;cursor:pointer;font-family:'Space Grotesk',sans-serif;transition:all 0.15s" id="dwOpt${i}">${o}</button>
+      `).join('')}
+    </div>
+
+    <div id="dwFeedback" style="margin-top:12px;min-height:40px"></div>`;
+
+  // Animate speed bar
+  requestAnimationFrame(()=>{
+    const bar=document.getElementById('dwSpeedBar');
+    if(bar){bar.style.width='0%';bar.style.background='var(--red)';}
+  });
+}
+
+function dwAnswer(chosen,correct){
+  const elapsed=Date.now()-dwQuiz.qStart;
+  const w=dwQuiz.q[dwQuiz.idx];
+  const isCorrect=chosen===correct;
+  const isFast=elapsed<2000;
+
+  // Disable all buttons
+  for(let i=0;i<4;i++){
+    const b=document.getElementById('dwOpt'+i);
+    if(b)b.onclick=null;
+  }
+
+  // Colour correct/wrong
+  const cb=document.getElementById('dwOpt'+correct);
+  const wb=document.getElementById('dwOpt'+chosen);
+  if(cb)cb.style.background='rgba(52,201,122,0.25)';cb&&(cb.style.borderColor='var(--green)');
+  if(!isCorrect&&wb){wb.style.background='rgba(224,92,92,0.2)';wb.style.borderColor='var(--red)';}
+
+  let feedbackHtml,delay;
+  if(isCorrect){
+    if(isFast){
+      dwQuiz.mastered.add(w.nl);
+      feedbackHtml=`<div style="text-align:center;padding:10px;background:rgba(52,201,122,.12);border-radius:10px;color:var(--green);font-weight:700">⚡ Snel! Gemeisterd!</div>`;
+    } else {
+      feedbackHtml=`<div style="text-align:center;padding:10px;background:rgba(52,201,122,.08);border-radius:10px;color:var(--green);font-weight:700">✓ Goed! Nog een keer oefenen</div>`;
+    }
+    dwQuiz.correct++;
+    delay=800;
+  } else {
+    dwQuiz.attempts[w.nl]=(dwQuiz.attempts[w.nl]||0)+1;
+    feedbackHtml=`<div style="text-align:center;padding:10px;background:rgba(224,92,92,.1);border-radius:10px;color:var(--red);font-weight:700">✗ Het is: <span style="color:#fff">${w.nl}</span></div>`;
+    delay=1400;
+  }
+  dwQuiz.total++;
+
+  const fb=document.getElementById('dwFeedback');
+  if(fb)fb.innerHTML=feedbackHtml;
+
+  setTimeout(()=>{
+    dwQuiz.idx++;
+    showDWQuizQuestion();
+  },delay);
+}
+
+function showDWQuizTransition(phase2words){
+  document.getElementById('examContent').innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px">
+      <div style="font-size:56px">🇳🇱</div>
+      <div style="font-size:28px;font-weight:900;color:#fff">Nu in het Nederlands!</div>
+      <div style="font-size:14px;color:var(--text2)">Begrijp de zin — kies het juiste woord</div>
+      <div style="width:60px;height:4px;background:linear-gradient(90deg,var(--blue),var(--violet));border-radius:99px;margin-top:8px"></div>
+    </div>`;
+  setTimeout(()=>{
+    dwQuiz.phase=2;
+    dwQuiz.q=shuffleArray(phase2words);
+    dwQuiz.idx=0;
+    showDWQuizQuestion();
+  },2200);
+}
+
+function showDWQuizFinal(){
+  const topic=DAILY_WORDS[dwState.topic];
+  const pct=dwQuiz.total>0?Math.round(dwQuiz.correct/dwQuiz.total*100):100;
+  const medal=pct>=90?'🥇':pct>=70?'🥈':'🥉';
+  const barColor=pct>=70?'var(--green)':pct>=40?'var(--orange)':'var(--red)';
   document.getElementById('examContent').innerHTML=`
     <div class="exam-section-hdr">
       <div><div class="exam-section-title">${topic.label}</div></div>
       <button class="exam-back-btn" onclick="showDailyWordsHome()">← Terug</button>
     </div>
     <div class="card" style="text-align:center;padding:32px 20px">
-      <div style="font-size:48px;margin-bottom:10px">🎉</div>
-      <div style="font-size:22px;font-weight:900;color:var(--green);margin-bottom:6px">Goed gedaan!</div>
-      <div style="font-size:14px;color:var(--text2);margin-bottom:20px">Je hebt alle ${topic.words.length} woorden geoefend van ${topic.label}.</div>
+      <div style="font-size:52px;margin-bottom:8px">${medal}</div>
+      <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:4px">${dwQuiz.correct} / ${dwQuiz.total} goed</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">${dwQuiz.mastered.size} van ${topic.words.length} woorden gemeisterd ⚡</div>
+      <div style="height:8px;background:var(--border2);border-radius:99px;margin-bottom:20px;overflow:hidden">
+        <div style="height:100%;width:${pct}%;background:${barColor};border-radius:99px;transition:width .8s ease"></div>
+      </div>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-outline" onclick="dwState.idx=0;showDailyWordCard()">🔄 Herhalen</button>
-        <button class="btn btn-gold" onclick="showDailyWordsHome()">Ander onderwerp →</button>
+        <button class="btn btn-outline" onclick="startDWQuiz()">🔁 Opnieuw oefenen</button>
+        <button class="btn btn-gold" onclick="showDailyWordsHome()">📚 Ander onderwerp</button>
       </div>
     </div>`;
 }

@@ -2,6 +2,36 @@
 
 ---
 
+## [2.4.3] — 2026-06-25
+
+### Added — Dagelijkse Woorden Adaptive Quiz (Android v1.6.17 parity)
+
+After completing all 12 words in a topic, users now enter a two-phase MCQ quiz instead of the plain completion screen.
+
+**Phase 1 — English → Dutch**
+- All 12 words in randomised order
+- "Wat is het Nederlandse woord voor: *meeting*?" with 4 Dutch options
+- Speed tracking: correct + <2 seconds = ⚡ mastered (skips Phase 2)
+- Instant feedback: green flash + auto-advance (800ms correct / 1400ms wrong)
+- 3-second countdown speed bar (green → orange → red)
+
+**Transition screen (2.2s)**
+- 🇳🇱 "Nu in het Nederlands!" full-screen prompt before Phase 2
+
+**Phase 2 — Dutch context (fill-in-the-blank)**
+- Only words not mastered in Phase 1
+- Example sentence with Dutch word blanked out + pronunciation hint in italics
+- Same 4-option MCQ + speed/feedback logic
+- If all words mastered in Phase 1 → skip Phase 2 entirely
+
+**Complete screen**
+- Medal: 🥇 ≥90% / 🥈 ≥70% / 🥉 below
+- Score: "X / Y goed" + mastered count
+- Score-coloured progress bar
+- Buttons: "🔁 Opnieuw oefenen" and "📚 Ander onderwerp"
+
+---
+
 ## [2.4.2] — 2026-06-25
 
 ### Improved — Android sync (v1.6.16 parity)
