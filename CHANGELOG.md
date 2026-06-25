@@ -2,6 +2,16 @@
 
 ---
 
+## [2.5.2] — 2026-06-26
+
+### Added — Full responsive layout (iPhone · iPad · MacBook)
+
+**iPad breakpoint (768–1023px)** — new `@media(min-width:768px) and (max-width:1023px)` rule: word cards and quiz options capped at 520–560px and centred, base font sizes bumped (+10%), buttons taller (50px), exam grid switches to 3 columns.
+
+**MacBook sidebar nav (1024px+)** — bottom tab bar transforms into a 210px fixed left sidebar; nav items display horizontally (icon + label); active item gets an orange-tinted background chip instead of the underline bar; `.header` and `.main` offset right by 210px; home action cards switch to 3-column grid; lesson/quiz content centred at 680px max-width inside the wider canvas.
+
+---
+
 ## [2.5.1] — 2026-06-26
 
 ### Added — Android v1.6.20 sync
