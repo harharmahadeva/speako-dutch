@@ -1270,7 +1270,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.4.3';
+const APP_VERSION='2.5.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -2727,7 +2727,7 @@ function speakDutchSlow(text){
 }
 
 // ── DAILY WORDS MODULE ──
-let dwState={topic:null,idx:0};
+let dwState={topic:null,idx:0,chunk:1,isMixing:false,cumCorrect:0,cumTotal:0};
 let dwRecognition=null;
 
 function openDailyWords(){
@@ -2759,23 +2759,29 @@ function showDailyWordsHome(){
 }
 
 function showDailyWordsTopic(topicKey){
-  dwState={topic:topicKey,idx:0};
+  dwState={topic:topicKey,idx:0,chunk:1,isMixing:false,cumCorrect:0,cumTotal:0};
   showDailyWordCard();
 }
 
 function showDailyWordCard(){
   const topic=DAILY_WORDS[dwState.topic];
   const words=topic.words;
+  const chunk=dwState.chunk;
+  const chunkStart=(chunk-1)*10;
+  const chunkEnd=Math.min(chunkStart+10,words.length);
   const idx=dwState.idx;
   const w=words[idx];
   const safNL=w.nl.replace(/'/g,"\\'");
-  const pct=Math.round((idx+1)/words.length*100);
+  const localPos=idx-chunkStart+1;
+  const pct=Math.round(localPos/10*100);
+  const isFirst=idx<=chunkStart;
+  const isLastInChunk=idx>=chunkEnd-1;
 
   document.getElementById('examContent').innerHTML=`
     <div class="exam-section-hdr" style="margin-bottom:10px">
       <div>
         <div class="exam-section-title">${topic.label}</div>
-        <div class="exam-section-sub">Woord ${idx+1} van ${words.length}</div>
+        <div class="exam-section-sub">Deel ${chunk} van 3 · woord ${localPos} / 10</div>
       </div>
       <button class="exam-back-btn" onclick="showDailyWordsHome()">← Terug</button>
     </div>
@@ -2809,21 +2815,23 @@ function showDailyWordCard(){
 
     <!-- Nav row -->
     <div class="dw-nav">
-      <button class="btn btn-outline" style="padding:12px" ${idx===0?'disabled':''} onclick="dwNav(-1)">← Vorige</button>
-      <div style="font-size:12px;color:var(--text3);text-align:center">${idx+1} / ${words.length}</div>
-      ${idx<words.length-1
-        ? `<button class="btn btn-gold" style="padding:12px" onclick="dwNav(1)">Volgende →</button>`
-        : `<button class="btn btn-gold" style="padding:12px" onclick="showDWComplete()">Klaar ✅</button>`}
+      <button class="btn btn-outline" style="padding:12px" ${isFirst?'disabled':''} onclick="dwNav(-1)">← Vorige</button>
+      <div style="font-size:12px;color:var(--text3);text-align:center">${localPos} / 10</div>
+      ${isLastInChunk
+        ? `<button class="btn btn-gold" style="padding:12px" onclick="showDWComplete()">Quiz →</button>`
+        : `<button class="btn btn-gold" style="padding:12px" onclick="dwNav(1)">Volgende →</button>`}
     </div>`;
 
-  // Auto-play on load (slight delay so DOM is ready)
   setTimeout(()=>speakDutch(w.nl), 400);
 }
 
 function dwNav(dir){
   window.speechSynthesis.cancel();
   if(dwRecognition){try{dwRecognition.stop();}catch(e){} dwRecognition=null;}
-  dwState.idx+=dir;
+  const chunkStart=(dwState.chunk-1)*10;
+  const chunkEnd=chunkStart+10;
+  const newIdx=dwState.idx+dir;
+  if(newIdx>=chunkStart&&newIdx<chunkEnd) dwState.idx=newIdx;
   showDailyWordCard();
 }
 
@@ -2894,35 +2902,71 @@ function startDWRecognition(targetWord){
 }
 
 // ── Daily Words Adaptive Quiz ────────────────────────────────────────────────
-let dwQuiz={phase:0,q:[],idx:0,mastered:new Set(),correct:0,total:0,qStart:0,attempts:{}};
+let dwQuiz={phase:0,q:[],pool:[],idx:0,mastered:new Set(),correct:0,total:0,qStart:0,attempts:{}};
 
 function showDWComplete(){
   window.speechSynthesis.cancel();
-  startDWQuiz();
+  const topic=DAILY_WORDS[dwState.topic];
+  const chunkStart=(dwState.chunk-1)*10;
+  const chunkWords=topic.words.slice(chunkStart,chunkStart+10);
+  startDWAdaptiveQuiz(chunkWords);
 }
 
-function startDWQuiz(){
-  const topic=DAILY_WORDS[dwState.topic];
-  dwQuiz={phase:1,q:shuffleArray([...topic.words]),idx:0,mastered:new Set(),correct:0,total:0,qStart:0,attempts:{}};
+function startDWAdaptiveQuiz(wordList){
+  dwQuiz={phase:1,q:shuffleArray([...wordList]),pool:wordList,idx:0,mastered:new Set(),correct:0,total:0,qStart:0,attempts:{}};
   showDWQuizQuestion();
+}
+
+function onDWQuizComplete(){
+  dwState.cumCorrect+=dwQuiz.correct;
+  dwState.cumTotal+=dwQuiz.total;
+  const topic=DAILY_WORDS[dwState.topic];
+  const {chunk,isMixing}=dwState;
+
+  if(chunk===1&&!isMixing){
+    dwState.chunk=2; dwState.idx=10;
+    showDailyWordCard();
+  } else if(chunk===2&&!isMixing){
+    dwState.isMixing=true;
+    showDWMixTransition(topic.words.slice(0,20));
+  } else if(chunk===2&&isMixing){
+    dwState.chunk=3; dwState.isMixing=false; dwState.idx=20;
+    showDailyWordCard();
+  } else if(chunk===3&&!isMixing){
+    dwState.isMixing=true;
+    showDWMixTransition(topic.words);
+  } else {
+    showDWFinalComplete();
+  }
+}
+
+function showDWMixTransition(wordList){
+  document.getElementById('examContent').innerHTML=`
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;gap:16px">
+      <div style="font-size:52px">🔀</div>
+      <div style="font-size:26px;font-weight:900;color:#fff">Nu oefenen we alles samen!</div>
+      <div style="font-size:14px;color:var(--text2)">${wordList.length} woorden — mixed review</div>
+      <div style="width:60px;height:4px;background:linear-gradient(90deg,var(--green),var(--blue));border-radius:99px;margin-top:8px"></div>
+    </div>`;
+  setTimeout(()=>startDWAdaptiveQuiz(wordList),2200);
 }
 
 function showDWQuizQuestion(){
   const topic=DAILY_WORDS[dwState.topic];
-  const words=topic.words;
   if(dwQuiz.idx>=dwQuiz.q.length){
     if(dwQuiz.phase===1){
       const phase2q=dwQuiz.q.filter(w=>!dwQuiz.mastered.has(w.nl));
-      if(phase2q.length===0){showDWQuizFinal();return;}
+      if(phase2q.length===0){onDWQuizComplete();return;}
       showDWQuizTransition(phase2q);
     } else {
-      showDWQuizFinal();
+      onDWQuizComplete();
     }
     return;
   }
 
   const w=dwQuiz.q[dwQuiz.idx];
-  const allNl=words.map(x=>x.nl);
+  const pool=dwQuiz.pool;
+  const allNl=pool.map(x=>x.nl);
   const distractors=shuffleArray(allNl.filter(nl=>nl!==w.nl)).slice(0,3);
   while(distractors.length<3){distractors.push(allNl[distractors.length%allNl.length]);}
   const opts=shuffleArray([w.nl,...distractors]);
@@ -3046,8 +3090,15 @@ function showDWQuizTransition(phase2words){
 }
 
 function showDWQuizFinal(){
+  // Called only from showDWQuizTransition phase2 end — now routes via onDWQuizComplete
+  onDWQuizComplete();
+}
+
+function showDWFinalComplete(){
   const topic=DAILY_WORDS[dwState.topic];
-  const pct=dwQuiz.total>0?Math.round(dwQuiz.correct/dwQuiz.total*100):100;
+  const tot=dwState.cumTotal;
+  const cor=dwState.cumCorrect;
+  const pct=tot>0?Math.round(cor/tot*100):100;
   const medal=pct>=90?'🥇':pct>=70?'🥈':'🥉';
   const barColor=pct>=70?'var(--green)':pct>=40?'var(--orange)':'var(--red)';
   document.getElementById('examContent').innerHTML=`
@@ -3057,13 +3108,14 @@ function showDWQuizFinal(){
     </div>
     <div class="card" style="text-align:center;padding:32px 20px">
       <div style="font-size:52px;margin-bottom:8px">${medal}</div>
-      <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:4px">${dwQuiz.correct} / ${dwQuiz.total} goed</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">${dwQuiz.mastered.size} van ${topic.words.length} woorden gemeisterd ⚡</div>
+      <div style="font-size:22px;font-weight:900;color:#fff;margin-bottom:4px">${cor} / ${tot} goed</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:4px">Alle 30 woorden voltooid! 🎉</div>
+      <div style="font-size:12px;color:var(--text3);margin-bottom:16px">3 chunks + 2 mix quizzen</div>
       <div style="height:8px;background:var(--border2);border-radius:99px;margin-bottom:20px;overflow:hidden">
         <div style="height:100%;width:${pct}%;background:${barColor};border-radius:99px;transition:width .8s ease"></div>
       </div>
       <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">
-        <button class="btn btn-outline" onclick="startDWQuiz()">🔁 Opnieuw oefenen</button>
+        <button class="btn btn-outline" onclick="showDailyWordsTopic(dwState.topic)">🔁 Opnieuw oefenen</button>
         <button class="btn btn-gold" onclick="showDailyWordsHome()">📚 Ander onderwerp</button>
       </div>
     </div>`;
@@ -3413,6 +3465,24 @@ const DAILY_WORDS={
     {nl:'proeftijd',pron:'PROEF-tait',en:'probation period',ex:'De proeftijd duurt twee maanden.',exEn:'The probation period lasts two months.'},
     {nl:'loonstrook',pron:'LOON-strook',en:'payslip',ex:'De loonstrook komt elke maand per e-mail.',exEn:'The payslip arrives by email every month.'},
     {nl:'dienst',pron:'DEENST',en:'shift / service',ex:'Ik werk de vroege dienst vandaag.',exEn:'I\'m working the early shift today.'},
+    {nl:'leidinggevende',pron:'LAI-ding-heh-fen-deh',en:'manager / supervisor',ex:'Mijn leidinggevende is tevreden met mijn werk.',exEn:'My manager is satisfied with my work.'},
+    {nl:'pauze',pron:'POW-zeh',en:'break',ex:'Ik neem om twaalf uur mijn pauze.',exEn:'I take my break at twelve o\'clock.'},
+    {nl:'thuiswerken',pron:'HUIS-wer-ken',en:'working from home',ex:'Op vrijdag mag ik thuiswerken.',exEn:'On Friday I\'m allowed to work from home.'},
+    {nl:'uitzendbureau',pron:'OIT-zend-buu-roh',en:'temp agency',ex:'Ik heb werk gevonden via een uitzendbureau.',exEn:'I found work through a temp agency.'},
+    {nl:'pensioen',pron:'pen-SOEN',en:'pension',ex:'Mijn werkgever draagt bij aan mijn pensioen.',exEn:'My employer contributes to my pension.'},
+    {nl:'functie',pron:'FUNK-tsee',en:'job role / function',ex:'Mijn functie is administratief medewerker.',exEn:'My job role is administrative employee.'},
+    {nl:'werktijden',pron:'WERK-tai-den',en:'working hours',ex:'Mijn werktijden zijn van negen tot vijf.',exEn:'My working hours are from nine to five.'},
+    {nl:'bonus',pron:'BOH-nus',en:'bonus',ex:'Ik heb dit jaar een bonus gekregen.',exEn:'I received a bonus this year.'},
+    {nl:'beoordelingsgesprek',pron:'beh-OOR-day-lings-hes-prek',en:'appraisal',ex:'Het beoordelingsgesprek is eind van het jaar.',exEn:'The appraisal is at the end of the year.'},
+    {nl:'onkostenvergoeding',pron:'ON-kos-ten-fer-hoo-ding',en:'expense reimbursement',ex:'Bewaar uw bonnetjes voor de onkostenvergoeding.',exEn:'Keep your receipts for the expense reimbursement.'},
+    {nl:'inwerken',pron:'IN-wer-ken',en:'to be onboarded',ex:'De eerste week ben ik aan het inwerken.',exEn:'The first week I am being onboarded.'},
+    {nl:'personeelsafdeling',pron:'per-so-NEELS-af-day-ling',en:'HR department',ex:'De personeelsafdeling regelt uw verlof.',exEn:'The HR department manages your leave.'},
+    {nl:'cao',pron:'say-ay-OH',en:'collective labour agreement',ex:'Mijn loon staat in de cao beschreven.',exEn:'My wage is described in the collective agreement.'},
+    {nl:'ziektebriefje',pron:'ZEEK-teh-breef-yuh',en:'sick note',ex:'De dokter heeft een ziektebriefje geschreven.',exEn:'The doctor wrote a sick note.'},
+    {nl:'arbeidsmarkt',pron:'AR-baids-markt',en:'labour market',ex:'De arbeidsmarkt vraagt nu veel technici.',exEn:'The labour market now needs many technicians.'},
+    {nl:'vergaderruimte',pron:'fer-HA-der-roim-teh',en:'meeting room',ex:'De vergaderruimte is gereserveerd tot drie uur.',exEn:'The meeting room is reserved until three o\'clock.'},
+    {nl:'flextijd',pron:'FLEX-tait',en:'flexible working hours',ex:'Met flextijd kies ik mijn eigen begintijd.',exEn:'With flexible hours I choose my own start time.'},
+    {nl:'stageplek',pron:'STAA-heh-plek',en:'internship place',ex:'Ik zoek een stageplek voor mijn opleiding.',exEn:'I\'m looking for an internship for my training.'},
   ]},
   ziekenhuis:{label:'🏥 Ziekenhuis',sub:'Hospital & health',words:[
     {nl:'afspraak',pron:'AF-spraak',en:'appointment',ex:'Ik heb een afspraak om tien uur bij de dokter.',exEn:'I have an appointment at ten o\'clock with the doctor.'},
@@ -3427,6 +3497,24 @@ const DAILY_WORDS={
     {nl:'verzekerd',pron:'fer-ZEE-kerd',en:'insured',ex:'Bent u verzekerd bij Zilveren Kruis?',exEn:'Are you insured with Zilveren Kruis?'},
     {nl:'eigen risico',pron:'AI-hen REE-zi-ko',en:'personal excess / deductible',ex:'Het eigen risico is €385 per jaar.',exEn:'The personal excess is €385 per year.'},
     {nl:'bloedonderzoek',pron:'BLOOD-on-der-zook',en:'blood test',ex:'De dokter vraagt een bloedonderzoek aan.',exEn:'The doctor requests a blood test.'},
+    {nl:'huisarts',pron:'HUIS-arts',en:'GP / family doctor',ex:'Ik ga morgen naar de huisarts voor mijn knie.',exEn:'I\'m going to the GP tomorrow for my knee.'},
+    {nl:'specialist',pron:'speh-sya-LIST',en:'specialist',ex:'De huisarts heeft mij doorverwezen naar een specialist.',exEn:'The GP has referred me to a specialist.'},
+    {nl:'apotheek',pron:'ah-po-TAYK',en:'pharmacy',ex:'Het recept kan ik ophalen bij de apotheek.',exEn:'I can pick up the prescription at the pharmacy.'},
+    {nl:'operatie',pron:'oh-peh-RAH-tsee',en:'operation / surgery',ex:'De operatie duurt ongeveer twee uur.',exEn:'The operation lasts about two hours.'},
+    {nl:'verpleegkundige',pron:'fer-PLAYCH-kun-di-heh',en:'nurse',ex:'De verpleegkundige controleert mijn temperatuur.',exEn:'The nurse checks my temperature.'},
+    {nl:'medicijn',pron:'meh-di-SEIN',en:'medicine',ex:'Ik neem het medicijn drie keer per dag in.',exEn:'I take the medicine three times a day.'},
+    {nl:'temperatuur',pron:'tem-peh-ra-TUUR',en:'temperature',ex:'Mijn temperatuur is 38 graden.',exEn:'My temperature is 38 degrees.'},
+    {nl:'allergie',pron:'ah-ler-HEE',en:'allergy',ex:'Ik heb een allergie voor penicilline.',exEn:'I have an allergy to penicillin.'},
+    {nl:'fysiotherapeut',pron:'fee-zyo-teh-rah-PEUT',en:'physiotherapist',ex:'De fysiotherapeut geeft mij oefeningen voor mijn rug.',exEn:'The physiotherapist gives me exercises for my back.'},
+    {nl:'zorgverzekering',pron:'ZORH-fer-zeh-ke-ring',en:'health insurance',ex:'Mijn zorgverzekering dekt de kosten van de operatie.',exEn:'My health insurance covers the costs of the operation.'},
+    {nl:'ambulance',pron:'am-buu-LAN-seh',en:'ambulance',ex:'Bel 112 voor een ambulance bij noodgevallen.',exEn:'Call 112 for an ambulance in emergencies.'},
+    {nl:'doorverwijzing',pron:'DOHR-fer-wai-zing',en:'referral letter',ex:'U heeft een doorverwijzing nodig van de huisarts.',exEn:'You need a referral letter from the GP.'},
+    {nl:'röntgenfoto',pron:'RENT-hen-foh-toh',en:'X-ray',ex:'De dokter vraagt een röntgenfoto van mijn enkel.',exEn:'The doctor requests an X-ray of my ankle.'},
+    {nl:'bloedgroep',pron:'BLOOD-hroop',en:'blood type',ex:'Mijn bloedgroep is O positief.',exEn:'My blood type is O positive.'},
+    {nl:'kraamzorg',pron:'KRAAM-zorh',en:'maternity care',ex:'Kraamzorg helpt u de eerste dagen na de bevalling.',exEn:'Maternity care helps you in the first days after delivery.'},
+    {nl:'revalidatie',pron:'reh-va-li-DAH-tsee',en:'rehabilitation',ex:'Na de operatie volg ik een revalidatie programma.',exEn:'After the operation I follow a rehabilitation programme.'},
+    {nl:'injectie',pron:'in-YEK-tsee',en:'injection',ex:'De verpleegkundige geeft mij een injectie.',exEn:'The nurse gives me an injection.'},
+    {nl:'spoedafdeling',pron:'SPOOD-af-day-ling',en:'emergency department',ex:'Op de spoedafdeling wacht ik twee uur.',exEn:'I wait two hours in the emergency department.'},
   ]},
   station:{label:'🚂 Station & Trein',sub:'Train & station',words:[
     {nl:'perron',pron:'peh-RON',en:'platform',ex:'De trein naar Amsterdam vertrekt van perron zeven.',exEn:'The train to Amsterdam departs from platform seven.'},
@@ -3441,6 +3529,24 @@ const DAILY_WORDS={
     {nl:'conducteur',pron:'kon-duk-TEUR',en:'train conductor',ex:'De conducteur controleert uw kaartje.',exEn:'The conductor checks your ticket.'},
     {nl:'seinstoring',pron:'SAIN-sto-ring',en:'signal failure',ex:'Door een seinstoring rijden treinen met vertraging.',exEn:'Due to a signal failure, trains are running late.'},
     {nl:'reisplanner',pron:'RAIS-plan-ner',en:'journey planner',ex:'Gebruik de NS reisplanner voor de beste route.',exEn:'Use the NS journey planner for the best route.'},
+    {nl:'treinkaart',pron:'TRAIN-kaart',en:'train ticket',ex:'Ik koop een treinkaart via de NS-app.',exEn:'I buy a train ticket via the NS app.'},
+    {nl:'abonnement',pron:'ah-bo-neh-MENT',en:'season ticket / subscription',ex:'Met een abonnement reis ik elke dag goedkoper.',exEn:'With a season ticket I travel more cheaply every day.'},
+    {nl:'daluren',pron:'DAL-uu-ren',en:'off-peak hours',ex:'In de daluren zijn treinen minder druk.',exEn:'During off-peak hours trains are less busy.'},
+    {nl:'spitsuur',pron:'SPITS-uur',en:'rush hour',ex:'Tijdens het spitsuur zijn de treinen overvol.',exEn:'During rush hour the trains are overcrowded.'},
+    {nl:'stationshal',pron:'STAA-tions-hal',en:'station concourse',ex:'We spreken af in de stationshal bij de uitgang.',exEn:'We meet in the station concourse at the exit.'},
+    {nl:'vertrekbord',pron:'fer-TREK-bort',en:'departures board',ex:'Kijk op het vertrekbord voor uw trein.',exEn:'Check the departures board for your train.'},
+    {nl:'intercity',pron:'IN-ter-si-tee',en:'intercity train',ex:'De intercity naar Rotterdam vertrekt elk half uur.',exEn:'The intercity to Rotterdam departs every half hour.'},
+    {nl:'dagkaart',pron:'DAH-kaart',en:'day ticket',ex:'Met een dagkaart reist u de hele dag voor één prijs.',exEn:'With a day ticket you travel all day for one price.'},
+    {nl:'reiskosten',pron:'RAIS-kos-ten',en:'travel costs',ex:'Mijn werkgever vergoedt de reiskosten.',exEn:'My employer reimburses the travel costs.'},
+    {nl:'locker',pron:'LOK-er',en:'locker',ex:'Ik leg mijn tas in een locker op het station.',exEn:'I put my bag in a locker at the station.'},
+    {nl:'storingsbericht',pron:'sto-RINGS-beh-richt',en:'disruption message',ex:'Er is een storingsbericht over de lijn naar Utrecht.',exEn:'There is a disruption message about the Utrecht line.'},
+    {nl:'reiziger',pron:'RAI-zi-cher',en:'passenger / traveller',ex:'Reizigers worden gevraagd hun kaartje te tonen.',exEn:'Passengers are asked to show their ticket.'},
+    {nl:'noodstop',pron:'NOOD-stop',en:'emergency stop',ex:'De trein maakte een noodstop bij Leiden.',exEn:'The train made an emergency stop at Leiden.'},
+    {nl:'vertrektijd',pron:'fer-TREK-tait',en:'departure time',ex:'De vertrektijd staat op uw treinkaart.',exEn:'The departure time is on your train ticket.'},
+    {nl:'aankomsttijd',pron:'AAN-komst-tait',en:'arrival time',ex:'De aankomsttijd in Amsterdam is 14:32.',exEn:'The arrival time in Amsterdam is 14:32.'},
+    {nl:'reisapp',pron:'RAIS-ap',en:'travel app',ex:'De reisapp geeft live-informatie over vertrekken.',exEn:'The travel app gives live information about departures.'},
+    {nl:'aankomstbord',pron:'AAN-komst-bort',en:'arrivals board',ex:'Op het aankomstbord ziet u wanneer de trein aankomt.',exEn:'On the arrivals board you can see when the train arrives.'},
+    {nl:'sprinter',pron:'SPRIN-ter',en:'stopping train',ex:'De sprinter stopt op elk klein station.',exEn:'The stopping train stops at every small station.'},
   ]},
   bus:{label:'🚌 Bus & Tram',sub:'Bus, tram & metro',words:[
     {nl:'halte',pron:'HAL-teh',en:'stop (bus/tram)',ex:'De bushalte is aan de overkant van de straat.',exEn:'The bus stop is on the other side of the street.'},
@@ -3449,12 +3555,30 @@ const DAILY_WORDS={
     {nl:'lijn',pron:'LAIN',en:'line (bus/tram number)',ex:'Lijn 12 rijdt naar het Centraal Station.',exEn:'Line 12 goes to the Central Station.'},
     {nl:'dienstregeling',pron:'DEENST-ray-he-ling',en:'timetable',ex:'De dienstregeling hangt bij de halte.',exEn:'The timetable is posted at the stop.'},
     {nl:'eindhalte',pron:'AIND-hal-teh',en:'terminus / last stop',ex:'Utrecht is de eindhalte van deze lijn.',exEn:'Utrecht is the last stop on this line.'},
-    {nl:'aansluting',pron:'AAN-sloi-ting',en:'connection',ex:'Er is een aansluiting op de metro om tien over.',exEn:'There is a connection to the metro at ten past.'},
-    {nl:'vervangend vervoer',pron:'fer-VAN-hend fer-VOOR',en:'replacement transport',ex:'Er rijdt vervangend busvervoer dit weekend.',exEn:'There will be replacement bus transport this weekend.'},
+    {nl:'aansluiting',pron:'AAN-sloi-ting',en:'connection',ex:'Er is een aansluiting op de metro om tien over.',exEn:'There is a connection to the metro at ten past.'},
+    {nl:'vervangend vervoer',pron:'fer-VAN-hend fer-VOOR',en:'replacement transport',ex:'Er rijdt vervangend vervoer dit weekend.',exEn:'There will be replacement transport this weekend.'},
     {nl:'instappen',pron:'IN-stap-pen',en:'to board / get on',ex:'Stap in via de voordeur.',exEn:'Board through the front door.'},
     {nl:'uitstappen',pron:'OIT-stap-pen',en:'to get off',ex:'Ik moet hier uitstappen.',exEn:'I need to get off here.'},
     {nl:'reisinformatie',pron:'RAIS-in-for-MAA-tsee',en:'travel information',ex:'Bel 0900-9292 voor reisinformatie.',exEn:'Call 0900-9292 for travel information.'},
     {nl:'maandabonnement',pron:'MAAND-a-bo-neh-MENT',en:'monthly pass',ex:'Een maandabonnement is goedkoper dan losse kaartjes.',exEn:'A monthly pass is cheaper than individual tickets.'},
+    {nl:'chauffeur',pron:'shoh-FEUR',en:'driver',ex:'De chauffeur vraagt of u een kaartje heeft.',exEn:'The driver asks if you have a ticket.'},
+    {nl:'saldo',pron:'SAL-doh',en:'balance (chip card)',ex:'Mijn saldo is te laag om in te checken.',exEn:'My balance is too low to check in.'},
+    {nl:'opladen',pron:'OP-lah-den',en:'to top up',ex:'Ik ga mijn chipkaart opladen bij de automaat.',exEn:'I\'m going to top up my chip card at the machine.'},
+    {nl:'metro',pron:'MEH-troh',en:'metro / underground',ex:'De metro in Amsterdam rijdt elke vijf minuten.',exEn:'The metro in Amsterdam runs every five minutes.'},
+    {nl:'tram',pron:'TRAM',en:'tram',ex:'De tram stopt vlak bij mijn appartement.',exEn:'The tram stops right near my apartment.'},
+    {nl:'nachtbus',pron:'NACHT-bus',en:'night bus',ex:'De nachtbus rijdt tot twee uur \'s nachts.',exEn:'The night bus runs until two in the morning.'},
+    {nl:'buslijn',pron:'BUS-lain',en:'bus route',ex:'Welke buslijn rijdt naar het ziekenhuis?',exEn:'Which bus route goes to the hospital?'},
+    {nl:'stopknop',pron:'STOP-knop',en:'stop button',ex:'Druk op de stopknop als u wilt uitstappen.',exEn:'Press the stop button when you want to get off.'},
+    {nl:'aankondiging',pron:'AAN-kon-di-hing',en:'announcement',ex:'Er is een aankondiging over een vertraging op lijn 9.',exEn:'There is an announcement about a delay on line 9.'},
+    {nl:'pendelbus',pron:'PEN-del-bus',en:'shuttle bus',ex:'Er rijdt een pendelbus van het station naar het ziekenhuis.',exEn:'A shuttle bus runs from the station to the hospital.'},
+    {nl:'reishistorie',pron:'RAIS-his-to-ree',en:'travel history',ex:'U kunt uw reishistorie online bekijken.',exEn:'You can view your travel history online.'},
+    {nl:'busstation',pron:'BUS-staa-tsion',en:'bus station',ex:'Het busstation is naast het treinstation.',exEn:'The bus station is next to the train station.'},
+    {nl:'dagretour',pron:'DAH-reh-toor',en:'day return',ex:'Een dagretour is goedkoper dan twee enkeltjes.',exEn:'A day return is cheaper than two singles.'},
+    {nl:'knooppunt',pron:'KNOHP-punt',en:'interchange / hub',ex:'Utrecht Centraal is een groot knooppunt.',exEn:'Utrecht Centraal is a major interchange.'},
+    {nl:'ov-fiets',pron:'oh-vay FEETS',en:'OV hire bike',ex:'Bij het station huur ik een ov-fiets voor twee euro.',exEn:'At the station I hire an OV bike for two euros.'},
+    {nl:'ritprijs',pron:'RIT-prais',en:'fare / trip price',ex:'De ritprijs hangt af van het aantal zones.',exEn:'The fare depends on the number of zones.'},
+    {nl:'voertuig',pron:'FOOR-toikh',en:'vehicle',ex:'Dit voertuig is toegankelijk voor rolstoelen.',exEn:'This vehicle is accessible for wheelchairs.'},
+    {nl:'vervoersbewijs',pron:'fer-VOORS-beh-wais',en:'travel document / ticket',ex:'Toon uw vervoersbewijs aan de controleur.',exEn:'Show your travel document to the inspector.'},
   ]},
   luchthaven:{label:'✈️ Luchthaven',sub:'Airport',words:[
     {nl:'vertrekhal',pron:'fer-TREK-hal',en:'departure hall',ex:'Ga naar de vertrekhal voor uw vlucht.',exEn:'Go to the departure hall for your flight.'},
@@ -3469,6 +3593,24 @@ const DAILY_WORDS={
     {nl:'boarding pass',pron:'BOR-ding pas',en:'boarding pass',ex:'Laat uw boarding pass zien bij de gate.',exEn:'Show your boarding pass at the gate.'},
     {nl:'handbagage',pron:'HAND-ba-haa-zhuh',en:'hand luggage / carry-on',ex:'Handbagage mag maximaal 10 kilo zijn.',exEn:'Hand luggage may be a maximum of 10 kilos.'},
     {nl:'verbinding',pron:'fer-BIN-ding',en:'connecting flight',ex:'Ik heb een verbinding in Frankfurt.',exEn:'I have a connecting flight in Frankfurt.'},
+    {nl:'incheckbalie',pron:'IN-chek-bah-lee',en:'check-in desk',ex:'Ga naar de incheckbalie twee uur voor vertrek.',exEn:'Go to the check-in desk two hours before departure.'},
+    {nl:'veiligheidscontrole',pron:'VAI-likh-haids-kon-tro-leh',en:'security check',ex:'Bij de veiligheidscontrole moet u uw laptop uitpakken.',exEn:'At the security check you must take out your laptop.'},
+    {nl:'vluchtnummer',pron:'VLUKHT-num-mer',en:'flight number',ex:'Mijn vluchtnummer is KL0456.',exEn:'My flight number is KL0456.'},
+    {nl:'vliegtuig',pron:'VLIKH-toikh',en:'aeroplane',ex:'Het vliegtuig vertrekt over twintig minuten.',exEn:'The aeroplane departs in twenty minutes.'},
+    {nl:'bagageband',pron:'ba-HAA-zheh-band',en:'baggage carousel',ex:'Uw koffer komt op bagageband vijf.',exEn:'Your suitcase arrives on baggage carousel five.'},
+    {nl:'overgewicht',pron:'oh-fer-HEH-wicht',en:'excess weight',ex:'Mijn koffer heeft overgewicht — ik moet bijbetalen.',exEn:'My suitcase is overweight — I have to pay extra.'},
+    {nl:'duty-free',pron:'DUU-tee-free',en:'duty-free',ex:'In de duty-free winkel koop ik parfum.',exEn:'In the duty-free shop I buy perfume.'},
+    {nl:'reisdocument',pron:'RAIS-do-kuu-ment',en:'travel document',ex:'Zorg dat uw reisdocument geldig is.',exEn:'Make sure your travel document is valid.'},
+    {nl:'vertreklounge',pron:'fer-TREK-lounzj',en:'departure lounge',ex:'In de vertreklounge kunt u wachten en winkelen.',exEn:'In the departure lounge you can wait and shop.'},
+    {nl:'instapkaart',pron:'IN-stap-kaart',en:'boarding card',ex:'Uw instapkaart kunt u online printen.',exEn:'You can print your boarding card online.'},
+    {nl:'koffer',pron:'KOF-fer',en:'suitcase',ex:'Mijn koffer weegt exact 23 kilo.',exEn:'My suitcase weighs exactly 23 kilos.'},
+    {nl:'zitplaats',pron:'ZIT-plaats',en:'seat',ex:'Mijn zitplaats is 24A bij het raam.',exEn:'My seat is 24A by the window.'},
+    {nl:'piloot',pron:'pi-LOHT',en:'pilot',ex:'De piloot meldt dat de vlucht vertraging heeft.',exEn:'The pilot announces that the flight is delayed.'},
+    {nl:'stewardess',pron:'STUU-ar-des',en:'flight attendant',ex:'De stewardess legt de veiligheidsregels uit.',exEn:'The flight attendant explains the safety rules.'},
+    {nl:'transferpassagier',pron:'trans-FER-pas-sa-zheer',en:'transit passenger',ex:'Als transferpassagier hoeft u niet opnieuw in te checken.',exEn:'As a transit passenger you don\'t need to check in again.'},
+    {nl:'vluchtschema',pron:'VLUKHT-skay-mah',en:'flight schedule',ex:'Controleer het vluchtschema op de website.',exEn:'Check the flight schedule on the website.'},
+    {nl:'landingskaart',pron:'LAN-dings-kaart',en:'landing card',ex:'Vul de landingskaart in voor aankomst.',exEn:'Fill in the landing card before arrival.'},
+    {nl:'bagagekluis',pron:'ba-HAA-zheh-klois',en:'luggage locker',ex:'Ik leg mijn koffer in een bagagekluis.',exEn:'I put my suitcase in a luggage locker.'},
   ]},
   supermarkt:{label:'🛒 Supermarkt',sub:'Supermarket & shopping',words:[
     {nl:'kassa',pron:'KAS-sa',en:'checkout / till',ex:'U kunt betalen bij kassa drie.',exEn:'You can pay at checkout three.'},
@@ -3483,6 +3625,24 @@ const DAILY_WORDS={
     {nl:'biologisch',pron:'bee-oh-LOH-his',en:'organic',ex:'Dit is biologisch fruit zonder bestrijdingsmiddelen.',exEn:'This is organic fruit without pesticides.'},
     {nl:'zelfscankassa',pron:'ZELF-skan-kas-sa',en:'self-checkout',ex:'De zelfscankassa is sneller als u weinig artikelen heeft.',exEn:'The self-checkout is faster if you have few items.'},
     {nl:'boodschappentas',pron:'BOOD-schap-pen-tas',en:'shopping bag',ex:'Wilt u een boodschappentas voor vijftien cent?',exEn:'Would you like a shopping bag for fifteen cents?'},
+    {nl:'korting',pron:'KOR-ting',en:'discount',ex:'Er is twintig procent korting op alle vlees.',exEn:'There is twenty percent discount on all meat.'},
+    {nl:'huismerk',pron:'HUIS-merk',en:'own brand / store brand',ex:'Het huismerk is vaak goedkoper dan het A-merk.',exEn:'The own brand is often cheaper than the name brand.'},
+    {nl:'verpakking',pron:'fer-PAK-king',en:'packaging',ex:'Lees altijd de informatie op de verpakking.',exEn:'Always read the information on the packaging.'},
+    {nl:'boodschappenlijst',pron:'BOOD-schap-pen-laist',en:'shopping list',ex:'Ik heb de boodschappenlijst thuis vergeten.',exEn:'I forgot the shopping list at home.'},
+    {nl:'bezorging',pron:'beh-ZOR-hing',en:'home delivery',ex:'Thuisbezorging is gratis bij een bestelling boven 30 euro.',exEn:'Home delivery is free for orders over 30 euros.'},
+    {nl:'bestellen',pron:'beh-STEL-len',en:'to order',ex:'Ik kan boodschappen online bestellen via de app.',exEn:'I can order groceries online via the app.'},
+    {nl:'contant',pron:'kon-TANT',en:'cash',ex:'Hier kunt u niet contant betalen.',exEn:'Here you cannot pay cash.'},
+    {nl:'rek',pron:'REK',en:'shelf / rack',ex:'De suiker staat op het rek naast het meel.',exEn:'The sugar is on the shelf next to the flour.'},
+    {nl:'gewicht',pron:'heh-WICHT',en:'weight',ex:'Het gewicht van de kaas is 250 gram.',exEn:'The weight of the cheese is 250 grams.'},
+    {nl:'terugbrengen',pron:'teh-RUKH-bren-hen',en:'to return (goods)',ex:'Dit product wil ik terugbrengen — het is beschadigd.',exEn:'I want to return this product — it\'s damaged.'},
+    {nl:'gratis',pron:'HRAA-tis',en:'free (no cost)',ex:'Bij twee pakken koffie krijg ik er één gratis.',exEn:'When buying two packs of coffee I get one free.'},
+    {nl:'assortiment',pron:'as-sor-ti-MENT',en:'range / assortment',ex:'Het assortiment biologische producten is uitgebreid.',exEn:'The range of organic products is extensive.'},
+    {nl:'vers',pron:'FERS',en:'fresh',ex:'De groenten op de markt zijn vers geplukt.',exEn:'The vegetables at the market are freshly picked.'},
+    {nl:'contactloos',pron:'kon-TAKT-lohs',en:'contactless',ex:'U kunt contactloos betalen met uw telefoon.',exEn:'You can pay contactlessly with your phone.'},
+    {nl:'wachtrij',pron:'WACHT-rai',en:'queue',ex:'Er is een lange wachtrij bij de kassa.',exEn:'There is a long queue at the checkout.'},
+    {nl:'kassière',pron:'kas-ee-AY-reh',en:'cashier',ex:'De kassière scant snel alle producten.',exEn:'The cashier scans all the products quickly.'},
+    {nl:'diepvries',pron:'DEEP-vrees',en:'frozen / freezer section',ex:'Diepvries groenten zijn goedkoper dan vers.',exEn:'Frozen vegetables are cheaper than fresh.'},
+    {nl:'afrekenen',pron:'AF-ray-ke-nen',en:'to pay / check out',ex:'Ik ga afrekenen bij de kassa.',exEn:'I\'m going to pay at the checkout.'},
   ]},
   gemeente:{label:'🏛️ Gemeente',sub:'Municipality & government',words:[
     {nl:'loket',pron:'lo-KET',en:'counter / desk',ex:'Ga naar loket drie voor uw paspoort.',exEn:'Go to counter three for your passport.'},
@@ -3497,6 +3657,24 @@ const DAILY_WORDS={
     {nl:'belastingaangifte',pron:'beh-LAS-ting-aan-hif-teh',en:'tax return',ex:'De belastingaangifte moet voor 1 mei ingediend zijn.',exEn:'The tax return must be submitted before 1 May.'},
     {nl:'toeslagen',pron:'TOO-slaa-hen',en:'allowances / benefits',ex:'Vraag zorgtoeslag aan via de Belastingdienst.',exEn:'Apply for healthcare benefit via the Tax Authority.'},
     {nl:'paspoort',pron:'PAS-poort',en:'passport',ex:'Een nieuw paspoort kost 73 euro en duurt vijf werkdagen.',exEn:'A new passport costs 73 euros and takes five working days.'},
+    {nl:'BSN',pron:'bay-es-EN',en:'citizen service number',ex:'Uw BSN heeft u nodig bij de bank en gemeente.',exEn:'You need your BSN at the bank and municipality.'},
+    {nl:'rijbewijs',pron:'RAI-beh-wais',en:'driving licence',ex:'Ik wil mijn rijbewijs omwisselen voor een Nederlands rijbewijs.',exEn:'I want to exchange my driving licence for a Dutch one.'},
+    {nl:'verhuizing',pron:'fer-HWIZING',en:'moving house',ex:'Geef uw verhuizing door aan de gemeente.',exEn:'Notify the municipality of your move.'},
+    {nl:'naturalisatie',pron:'na-tuu-ra-li-ZAA-tsee',en:'naturalisation',ex:'Na vijf jaar kan ik naturalisatie aanvragen.',exEn:'After five years I can apply for naturalisation.'},
+    {nl:'inburgeringscursus',pron:'IN-bur-heh-rings-kur-sus',en:'integration course',ex:'Ik volg een inburgeringscursus van twee jaar.',exEn:'I\'m following a two-year integration course.'},
+    {nl:'uitkering',pron:'OIT-kay-ring',en:'benefit / allowance',ex:'Ik vraag een uitkering aan bij het UWV.',exEn:'I apply for a benefit at the UWV.'},
+    {nl:'handtekening',pron:'HAND-teh-ke-ning',en:'signature',ex:'Zet uw handtekening op de aanvraag.',exEn:'Put your signature on the application.'},
+    {nl:'formulier',pron:'for-muu-LEER',en:'form',ex:'Vul het formulier in met uw gegevens.',exEn:'Fill in the form with your details.'},
+    {nl:'kopie',pron:'KOH-pee',en:'photocopy',ex:'De gemeente vraagt een kopie van uw paspoort.',exEn:'The municipality asks for a copy of your passport.'},
+    {nl:'origineel',pron:'oh-ri-zhih-NEEL',en:'original document',ex:'Neem het origineel en een kopie mee.',exEn:'Bring the original and a copy.'},
+    {nl:'openingstijden',pron:'OH-pe-nings-tai-den',en:'opening hours',ex:'De openingstijden van het gemeentehuis zijn 9 tot 5.',exEn:'The opening hours of the town hall are 9 to 5.'},
+    {nl:'afspraakbevestiging',pron:'AF-spraak-beh-fes-ti-hing',en:'appointment confirmation',ex:'U ontvangt een afspraakbevestiging per e-mail.',exEn:'You will receive an appointment confirmation by email.'},
+    {nl:'wijkbureau',pron:'WAIK-buu-roh',en:'neighbourhood office',ex:'Het wijkbureau is elke ochtend open.',exEn:'The neighbourhood office is open every morning.'},
+    {nl:'meldplicht',pron:'MELD-plicht',en:'duty to report',ex:'U heeft een meldplicht als u verhuist.',exEn:'You have a duty to report when you move home.'},
+    {nl:'gemeentebelasting',pron:'heh-MEEN-teh-beh-las-ting',en:'municipal tax',ex:'De gemeentebelasting betaal ik elk jaar in maart.',exEn:'I pay the municipal tax every year in March.'},
+    {nl:'stempelen',pron:'STEM-peh-len',en:'to stamp (documents)',ex:'Laat uw document stempelen bij het loket.',exEn:'Have your document stamped at the counter.'},
+    {nl:'briefadres',pron:'BREEF-ad-res',en:'postal address',ex:'Als u geen vaste woning heeft kunt u een briefadres gebruiken.',exEn:'If you have no fixed home you can use a postal address.'},
+    {nl:'inlichtingen',pron:'IN-likh-ting-en',en:'information / enquiries',ex:'Voor inlichtingen belt u naar de gemeente.',exEn:'For enquiries you call the municipality.'},
   ]},
   school:{label:'🏫 School & Onderwijs',sub:'School & education',words:[
     {nl:'basisschool',pron:'BAA-sis-school',en:'primary school',ex:'Kinderen gaan vanaf vier jaar naar de basisschool.',exEn:'Children go to primary school from the age of four.'},
@@ -3511,11 +3689,29 @@ const DAILY_WORDS={
     {nl:'absentie',pron:'ab-SEN-tsee',en:'absence',ex:'Meld absentie voor acht uur bij de school.',exEn:'Report absences before eight o\'clock to the school.'},
     {nl:'schoolgids',pron:'SCHOOL-hits',en:'school prospectus / guide',ex:'De schoolgids staat op de website van de school.',exEn:'The school prospectus is on the school\'s website.'},
     {nl:'gymles',pron:'HIM-les',en:'PE / gym class',ex:'Gymles is elke dinsdag — neem sportschoenen mee.',exEn:'PE is every Tuesday — bring your sports shoes.'},
+    {nl:'leerling',pron:'LEER-ling',en:'pupil / student',ex:'De leerling krijgt extra hulp van de juf.',exEn:'The pupil receives extra help from the teacher.'},
+    {nl:'cijfer',pron:'SAI-fer',en:'grade / mark',ex:'Ik heb een zeven als cijfer voor wiskunde.',exEn:'I got a seven as my grade for maths.'},
+    {nl:'examen',pron:'ex-AA-men',en:'exam',ex:'Het eindexamen is in mei en juni.',exEn:'The final exam is in May and June.'},
+    {nl:'toets',pron:'TOOTS',en:'test / quiz',ex:'Morgen heb ik een toets voor geschiedenis.',exEn:'Tomorrow I have a test for history.'},
+    {nl:'vak',pron:'FAK',en:'subject',ex:'Mijn lievelingsvak is wiskunde.',exEn:'My favourite subject is maths.'},
+    {nl:'klas',pron:'KLAS',en:'class / classroom',ex:'Mijn klas heeft 28 leerlingen.',exEn:'My class has 28 pupils.'},
+    {nl:'rooster',pron:'ROOS-ter',en:'timetable / schedule',ex:'Het rooster hangt aan de deur van de klas.',exEn:'The timetable hangs on the classroom door.'},
+    {nl:'mentor',pron:'MEN-tor',en:'form tutor',ex:'Mijn mentor bespreekt mijn voortgang met mijn ouders.',exEn:'My form tutor discusses my progress with my parents.'},
+    {nl:'schoolplein',pron:'SCHOOL-plain',en:'school playground',ex:'De kinderen spelen tijdens de pauze op het schoolplein.',exEn:'The children play on the playground during break.'},
+    {nl:'directeur',pron:'di-REK-teur',en:'head teacher',ex:'De directeur spreekt elke maandagochtend de leerlingen toe.',exEn:'The head teacher addresses the pupils every Monday morning.'},
+    {nl:'stage',pron:'STAA-zheh',en:'work placement',ex:'In groep 8 doet mijn kind stage bij een bedrijf.',exEn:'In year 6 my child does a work placement at a company.'},
+    {nl:'verzuim',pron:'fer-ZOIM',en:'absence / truancy',ex:'School meldt het verzuim bij de leerplichtambtenaar.',exEn:'School reports the absence to the attendance officer.'},
+    {nl:'basisvaardigheden',pron:'BAA-sis-faar-dikh-hay-den',en:'basic skills',ex:'Lezen, schrijven en rekenen zijn basisvaardigheden.',exEn:'Reading, writing and arithmetic are basic skills.'},
+    {nl:'vmbo',pron:'vay-em-bay-OH',en:'pre-vocational secondary education',ex:'Mijn kind gaat naar het vmbo na de basisschool.',exEn:'My child goes to VMBO after primary school.'},
+    {nl:'havo',pron:'HAH-foh',en:'general secondary education',ex:'Op het havo doe je examen na vijf jaar.',exEn:'At HAVO you sit exams after five years.'},
+    {nl:'buitenschoolse opvang',pron:'BOI-ten-school-seh OP-fang',en:'after-school care',ex:'Ik breng mijn kind naar de buitenschoolse opvang.',exEn:'I take my child to after-school care.'},
+    {nl:'samenwerken',pron:'SAA-men-wer-ken',en:'to work together',ex:'Leerlingen leren samenwerken in groepsopdrachten.',exEn:'Pupils learn to work together in group assignments.'},
+    {nl:'zwemlessen',pron:'ZWEM-les-sen',en:'swimming lessons',ex:'Zwemlessen zijn verplicht op veel basisscholen.',exEn:'Swimming lessons are compulsory at many primary schools.'},
   ]},
   winkelcentrum:{label:'🏪 Winkelcentrum',sub:'Shopping centre',words:[
     {nl:'roltrap',pron:'ROL-trap',en:'escalator',ex:'De roltrap naar de eerste verdieping is rechts.',exEn:'The escalator to the first floor is on the right.'},
     {nl:'lift',pron:'LIFT',en:'lift / elevator',ex:'De lift voor kinderwagens is naast de ingang.',exEn:'The lift for pushchairs is next to the entrance.'},
-    {nl:'garderobe',pron:'har-deh-ROH-beh',en:'cloakroom / wardrobe',ex:'U kunt uw jas ophangen in de garderobe.',exEn:'You can hang your coat in the cloakroom.'},
+    {nl:'garderobe',pron:'har-deh-ROH-beh',en:'cloakroom',ex:'U kunt uw jas ophangen in de garderobe.',exEn:'You can hang your coat in the cloakroom.'},
     {nl:'klantenservice',pron:'KLAN-ten-ser-fees',en:'customer service',ex:'Ga naar de klantenservice op de tweede verdieping.',exEn:'Go to customer service on the second floor.'},
     {nl:'omruilen',pron:'OM-roi-len',en:'to exchange (goods)',ex:'U kunt het artikel omruilen met de kassabon.',exEn:'You can exchange the item with the receipt.'},
     {nl:'korting',pron:'KOR-ting',en:'discount',ex:'Er is dertig procent korting op alle schoenen.',exEn:'There is thirty percent discount on all shoes.'},
@@ -3525,6 +3721,24 @@ const DAILY_WORDS={
     {nl:'openingstijden',pron:'OH-pe-nings-tai-den',en:'opening hours',ex:'De openingstijden zijn maandag tot zaterdag tien tot acht.',exEn:'Opening hours are Monday to Saturday, ten to eight.'},
     {nl:'parkeergarage',pron:'par-KEER-ha-raa-zhuh',en:'car park / parking garage',ex:'Parkeren is gratis de eerste twee uur in de parkeergarage.',exEn:'Parking is free for the first two hours in the car park.'},
     {nl:'bezorgservice',pron:'beh-ZORH-ser-fees',en:'delivery service',ex:'Thuis bezorgd? Gebruik onze bezorgservice voor 5 euro.',exEn:'Home delivery? Use our delivery service for 5 euros.'},
+    {nl:'ingang',pron:'IN-hang',en:'entrance',ex:'De hoofdingang is aan de voorzijde van het gebouw.',exEn:'The main entrance is at the front of the building.'},
+    {nl:'uitgang',pron:'OIT-hang',en:'exit',ex:'De nooduitgang is aan de achterkant.',exEn:'The emergency exit is at the back.'},
+    {nl:'toiletten',pron:'toa-LET-ten',en:'toilets',ex:'De toiletten zijn op de begane grond bij de ingang.',exEn:'The toilets are on the ground floor by the entrance.'},
+    {nl:'winkelkar',pron:'WIN-kel-kar',en:'shopping trolley',ex:'Ik pak een winkelkar bij de ingang.',exEn:'I get a shopping trolley at the entrance.'},
+    {nl:'etalage',pron:'ay-ta-LAA-zheh',en:'shop window',ex:'De etalage is gevuld met de nieuwe lentecollectie.',exEn:'The shop window is filled with the new spring collection.'},
+    {nl:'opruiming',pron:'op-ROIM-ing',en:'clearance sale',ex:'Tijdens de opruiming zijn prijzen tot 70 procent lager.',exEn:'During the clearance sale prices are up to 70 percent lower.'},
+    {nl:'winkelmandje',pron:'WIN-kel-man-yuh',en:'shopping basket',ex:'Voor kleine boodschappen neem ik een winkelmandje.',exEn:'For small purchases I take a shopping basket.'},
+    {nl:'cadeaubon',pron:'ka-doh-BON',en:'gift voucher',ex:'Ik koop een cadeaubon voor het verjaardag van mijn collega.',exEn:'I buy a gift voucher for my colleague\'s birthday.'},
+    {nl:'geldig',pron:'HEL-dikh',en:'valid',ex:'De bon is geldig tot einde van het jaar.',exEn:'The voucher is valid until the end of the year.'},
+    {nl:'betaalautomaat',pron:'beh-TAAL-ow-to-maat',en:'card payment machine',ex:'Hou uw pas bij de betaalautomaat.',exEn:'Hold your card to the payment machine.'},
+    {nl:'contactloos',pron:'kon-TAKT-lohs',en:'contactless',ex:'U kunt contactloos betalen met uw telefoon.',exEn:'You can pay contactlessly with your phone.'},
+    {nl:'retourbeleid',pron:'reh-TOOR-beh-lait',en:'return policy',ex:'Het retourbeleid staat op de website van de winkel.',exEn:'The return policy is on the shop\'s website.'},
+    {nl:'wachtrij',pron:'WACHT-rai',en:'queue',ex:'Er is een lange wachtrij bij de kassa.',exEn:'There is a long queue at the checkout.'},
+    {nl:'koopavond',pron:'KOHP-aa-font',en:'late shopping evening',ex:'Op koopavond zijn de winkels open tot negen uur.',exEn:'On late shopping evening the shops are open until nine.'},
+    {nl:'etage',pron:'ay-TAA-zheh',en:'floor / storey',ex:'De schoenafdeling is op de tweede etage.',exEn:'The shoe department is on the second floor.'},
+    {nl:'informatiepunt',pron:'in-for-MAA-tsee-punt',en:'information point',ex:'Bij het informatiepunt kunt u een plattegrond ophalen.',exEn:'At the information point you can pick up a map.'},
+    {nl:'parkeren',pron:'par-KAY-ren',en:'to park',ex:'U kunt gratis parkeren voor de eerste twee uur.',exEn:'You can park for free for the first two hours.'},
+    {nl:'bon',pron:'BON',en:'receipt / voucher',ex:'Bewaar uw bon als u het artikel wilt omruilen.',exEn:'Keep your receipt if you want to exchange the item.'},
   ]},
   thuis:{label:'🏠 Thuis & Wonen',sub:'Home & housing',words:[
     {nl:'huurcontract',pron:'HUUR-kon-trakt',en:'rental contract',ex:'Lees het huurcontract goed door voor u tekent.',exEn:'Read the rental contract carefully before you sign.'},
@@ -3539,6 +3753,24 @@ const DAILY_WORDS={
     {nl:'buren',pron:'BUU-ren',en:'neighbours',ex:'Mijn buren zijn erg vriendelijk en helpzaam.',exEn:'My neighbours are very friendly and helpful.'},
     {nl:'sleutel',pron:'SLEU-tel',en:'key',ex:'Ik heb de sleutel van de voordeur gekregen.',exEn:'I received the key to the front door.'},
     {nl:'onderhoud',pron:'ON-der-hout',en:'maintenance',ex:'Groot onderhoud is de verantwoordelijkheid van de verhuurder.',exEn:'Major maintenance is the responsibility of the landlord.'},
+    {nl:'huurprijs',pron:'HUUR-prais',en:'rent amount',ex:'De huurprijs stijgt elk jaar met de inflatie.',exEn:'The rent increases every year with inflation.'},
+    {nl:'verwarming',pron:'fer-WAR-ming',en:'heating',ex:'De verwarming doet het niet — ik bel de verhuurder.',exEn:'The heating is not working — I\'m calling the landlord.'},
+    {nl:'energie',pron:'ay-ner-HEE',en:'energy',ex:'Ik betaal elke maand voorschot voor energie.',exEn:'I pay a monthly advance payment for energy.'},
+    {nl:'hypotheek',pron:'hi-po-TAYK',en:'mortgage',ex:'Ik heb een hypotheek voor mijn koopwoning.',exEn:'I have a mortgage for my purchased home.'},
+    {nl:'VvE',pron:'vay-vay-AY',en:'owners association',ex:'De VvE regelt het onderhoud van het gebouw.',exEn:'The owners association manages the maintenance of the building.'},
+    {nl:'klusjesman',pron:'KLUS-yes-man',en:'handyman',ex:'Ik bel een klusjesman voor de kapotte kraan.',exEn:'I call a handyman for the broken tap.'},
+    {nl:'inboedelverzekering',pron:'IN-boo-del-fer-zeh-ke-ring',en:'contents insurance',ex:'Een inboedelverzekering dekt schade aan uw spullen.',exEn:'Contents insurance covers damage to your belongings.'},
+    {nl:'postcode',pron:'POST-koh-deh',en:'postcode',ex:'Mijn postcode is 2514 AB.',exEn:'My postcode is 2514 AB.'},
+    {nl:'gasmeter',pron:'HAS-may-ter',en:'gas meter',ex:'De gasmeter staat in de meterkast.',exEn:'The gas meter is in the meter cupboard.'},
+    {nl:'elektriciteit',pron:'ay-lek-tri-si-TAIT',en:'electricity',ex:'Mijn elektriciteit wordt geleverd door Vattenfall.',exEn:'My electricity is supplied by Vattenfall.'},
+    {nl:'huurverhoging',pron:'HUUR-fer-HOH-hing',en:'rent increase',ex:'De huurverhoging per 1 juli is 3 procent.',exEn:'The rent increase from 1 July is 3 percent.'},
+    {nl:'berging',pron:'BER-hing',en:'storage room',ex:'Mijn fiets staat in de berging.',exEn:'My bicycle is in the storage room.'},
+    {nl:'balkon',pron:'bal-KON',en:'balcony',ex:'We zitten graag op het balkon in de zomer.',exEn:'We like to sit on the balcony in summer.'},
+    {nl:'wachttijd',pron:'WACHT-tait',en:'waiting time',ex:'De wachttijd voor sociale huur is soms tien jaar.',exEn:'The waiting time for social housing can be ten years.'},
+    {nl:'woonplaats',pron:'WOON-plaats',en:'place of residence',ex:'Mijn woonplaats is Eindhoven.',exEn:'My place of residence is Eindhoven.'},
+    {nl:'straatnaam',pron:'STRAAT-naam',en:'street name',ex:'De straatnaam moet u invullen op het formulier.',exEn:'You must fill in the street name on the form.'},
+    {nl:'meterkast',pron:'MAY-ter-kast',en:'meter cupboard',ex:'De meterkast is in de gang naast de voordeur.',exEn:'The meter cupboard is in the hall next to the front door.'},
+    {nl:'huurder',pron:'HUUR-der',en:'tenant',ex:'Als huurder heeft u rechten en plichten.',exEn:'As a tenant you have rights and responsibilities.'},
   ]},
 };
 

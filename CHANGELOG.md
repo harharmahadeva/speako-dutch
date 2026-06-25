@@ -2,6 +2,29 @@
 
 ---
 
+## [2.5.0] — 2026-06-26
+
+### Added — 30-word topics + chunked adaptive quiz
+
+**Dagelijkse Woorden expanded to 30 words per topic** (was 12). All 10 topics updated with 18 new A2-level words each — every word has `nl`, `pron`, `en`, `ex`, `exEn` fields.
+
+**Chunked learning flow** — each topic now splits into 3 chunks of 10 words:
+```
+Learn 1–10  →  Adaptive quiz (chunk 1)
+Learn 11–20 →  Adaptive quiz (chunk 2)  →  Mix quiz (words 1–20)
+Learn 21–30 →  Adaptive quiz (chunk 3)  →  Final mix quiz (all 30)  →  Complete
+```
+
+**Word card header** shows "Deel X van 3 · woord N / 10" and progress bar covers the current chunk only.
+
+**Mix quiz transition screen** — "🔀 Nu oefenen we alles samen!" (2.2s auto-dismiss) before each mix quiz.
+
+**Cumulative score** tracked across all 5 quiz sessions (3 chunk + 2 mix); shown on the final complete screen with medal.
+
+**Quiz pool** — MCQ distractors drawn from the current quiz word pool (not the full 30-word topic), so difficulty scales correctly per chunk.
+
+---
+
 ## [2.4.3] — 2026-06-25
 
 ### Added — Dagelijkse Woorden Adaptive Quiz (Android v1.6.17 parity)
