@@ -2,6 +2,16 @@
 
 ---
 
+## [2.4.1] — 2026-06-25
+
+### Improved — UI polish
+
+**Week strip today indicator** — M T W T F S S circles now appear below the streak card on the home screen. Today's circle is highlighted with a blue border (`#2563EB`) and light blue fill; completed-lesson days fill solid blue. Lesson dates tracked in `userProgress.lessonDates` (ISO date strings).
+
+**Back buttons outlined style** — `.exam-back-btn` updated to a white outlined pill (`transparent` background, `rgba(255,255,255,0.6)` border, `#ffffff` text, `border-radius:8px`) for better visibility on gradient headers.
+
+---
+
 ## [2.4.0] — 2026-06-24
 
 ### Added — Dagelijkse Woorden vocabulary module

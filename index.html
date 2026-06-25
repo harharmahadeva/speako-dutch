@@ -617,8 +617,8 @@ body{background:var(--bg);}
 .exam-section-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
 .exam-section-title{font-family:"Outfit",sans-serif;font-size:20px;font-weight:900;color:#fff;}
 .exam-section-sub{font-size:12px;color:var(--text3);margin-top:2px;}
-.exam-back-btn{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:var(--text2);border-radius:99px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:"Space Grotesk",sans-serif;}
-.exam-back-btn:hover{background:rgba(255,255,255,0.14);}
+.exam-back-btn{background:transparent;border:1px solid rgba(255,255,255,0.6);color:#ffffff;border-radius:8px;padding:6px 16px;font-size:13px;font-weight:600;cursor:pointer;font-family:"Space Grotesk",sans-serif;}
+.exam-back-btn:hover{background:rgba(255,255,255,0.1);}
 
 .knm-q{background:var(--card);border:1px solid var(--border2);border-radius:14px;padding:18px;margin-bottom:12px;}
 .knm-q-cat{font-size:10px;font-weight:700;color:var(--violet);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
@@ -1270,7 +1270,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.4.0';
+const APP_VERSION='2.4.1';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -1460,10 +1460,28 @@ function renderHomeTab(){
     }
   }
 
-  // Stats row — streak card
+  // Stats row — streak card + week strip
   const statsRow=document.getElementById('homeStatsRow');
   if(statsRow){
     const streak=userProgress.streak||1;
+    const lessonDates=userProgress.lessonDates||[];
+    const todayIdx=(new Date().getDay()+6)%7; // 0=Mon…6=Sun
+    const weekLabels=['M','T','W','T','F','S','S'];
+    // get ISO date for each day of current week (Mon=0)
+    const now=new Date();
+    const mondayOffset=(now.getDay()+6)%7;
+    const weekDayCircles=weekLabels.map((lbl,i)=>{
+      const d=new Date(now);
+      d.setDate(now.getDate()-mondayOffset+i);
+      const iso=d.toISOString().slice(0,10);
+      const done=lessonDates.includes(iso);
+      const isToday=i===todayIdx;
+      const bg=done?'#2563EB':isToday?'#EFF6FF':'rgba(255,255,255,0.06)';
+      const col=done?'#fff':isToday?'#2563EB':'rgba(255,255,255,0.3)';
+      const border=isToday&&!done?'2px solid #2563EB':'2px solid transparent';
+      const fw=done||isToday?'700':'400';
+      return `<div style="width:30px;height:30px;border-radius:50%;background:${bg};border:${border};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:${fw};color:${col};flex-shrink:0">${lbl}</div>`;
+    }).join('');
     statsRow.innerHTML=`
       <div class="streak-card">
         <div class="streak-card-flame">🔥</div>
@@ -1476,6 +1494,7 @@ function renderHomeTab(){
           <div class="readiness-pill-new">${readiness}% ready</div>
         </div>
       </div>
+      <div style="display:flex;gap:6px;align-items:center;padding:2px 0">${weekDayCircles}</div>
     `;
   }
 
@@ -2339,6 +2358,8 @@ async function showTestResult(score,total,fromSaved){
     userProgress.testResults[day]={score,total,passed,pct,date:new Date().toISOString()};
     if(passed){
       if(!(userProgress.completedDays||[]).includes(day))userProgress.completedDays=[...(userProgress.completedDays||[]),day];
+      const todayIso=new Date().toISOString().slice(0,10);
+      if(!(userProgress.lessonDates||[]).includes(todayIso))userProgress.lessonDates=[...(userProgress.lessonDates||[]),todayIso];
       if(day<TOTAL_DAYS())userProgress.day=day+1;
     }else{
       if(!(userProgress.failedDays||[]).includes(day))userProgress.failedDays=[...(userProgress.failedDays||[]),day];
