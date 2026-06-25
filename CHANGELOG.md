@@ -2,6 +2,13 @@
 
 ---
 
+## [2.5.3] — 2026-06-26
+
+### Fixed
+- **Loading screen stuck bug** — wrapped `window.onload` in a top-level try/catch with a `_showLoginFallback()` safety function; any unhandled error (e.g. localStorage blocked, unexpected exception) now always hides the loading screen and shows the login page instead of hanging forever
+
+---
+
 ## [2.5.2] — 2026-06-26
 
 ### Added — Full responsive layout (iPhone · iPad · MacBook)

@@ -1299,47 +1299,60 @@ function acceptDisclaimer(){
   document.getElementById('loginScreen').classList.remove('hidden');
 }
 
-window.onload=async()=>{
-  const vEl=document.getElementById('appVersionDisplay');
-  if(vEl)vEl.textContent='v'+APP_VERSION;
-  // Show disclaimer modal on every first visit (or if not yet accepted)
-  if(!localStorage.getItem('dj2_disclaimer')){
-    document.getElementById('demoModal').style.display='flex';
-  } else {
-    document.getElementById('demoModal').style.display='none';
+function _showLoginFallback(){
+  document.getElementById('loadingScreen').style.display='none';
+  try{
+    if(!localStorage.getItem('speako_disc')){
+      document.getElementById('disclaimerScreen').classList.remove('hidden');
+    } else {
+      document.getElementById('loginScreen').classList.remove('hidden');
+    }
+  }catch(e){
+    document.getElementById('loginScreen').classList.remove('hidden');
   }
-  const s=sessionStorage.getItem('dj2_sess');
-  if(s){
+}
+window.onload=async()=>{
+  try{
+    const vEl=document.getElementById('appVersionDisplay');
+    if(vEl)vEl.textContent='v'+APP_VERSION;
+    // Show disclaimer modal on every first visit (or if not yet accepted)
     try{
-      const j=JSON.parse(s);
-      // A02: session stores pinHash only, never raw PIN
-      if(j&&typeof j.name==='string'&&typeof j.pinHash==='string'){
-        const acct=ACCOUNTS.find(a=>a.name.toLowerCase()===j.name.toLowerCase());
-        if(acct){
-          const expectedHash=await hashPin(acct.pin);
-          if(expectedHash===j.pinHash){
-            const prog=await storageGet(await pKey(acct.name,acct.pin));
-            if(prog){
-              currentUser={name:acct.name,pin:acct.pin,displayName:acct.displayName,lang:acct.lang};
-              userProgress=prog;updateStreak();await saveProgress();showApp();return;
+      if(!localStorage.getItem('dj2_disclaimer')){
+        document.getElementById('demoModal').style.display='flex';
+      } else {
+        document.getElementById('demoModal').style.display='none';
+      }
+    }catch(e){}
+    const s=sessionStorage.getItem('dj2_sess');
+    if(s){
+      try{
+        const j=JSON.parse(s);
+        // A02: session stores pinHash only, never raw PIN
+        if(j&&typeof j.name==='string'&&typeof j.pinHash==='string'){
+          const acct=ACCOUNTS.find(a=>a.name.toLowerCase()===j.name.toLowerCase());
+          if(acct){
+            const expectedHash=await hashPin(acct.pin);
+            if(expectedHash===j.pinHash){
+              const prog=await storageGet(await pKey(acct.name,acct.pin));
+              if(prog){
+                currentUser={name:acct.name,pin:acct.pin,displayName:acct.displayName,lang:acct.lang};
+                userProgress=prog;updateStreak();await saveProgress();showApp();return;
+              }
             }
           }
         }
-      }
-    }catch(e){}
-    sessionStorage.removeItem('dj2_sess');
-  }
-  document.getElementById('loadingScreen').style.display='none';
-  if(!localStorage.getItem('speako_disc')){
-    document.getElementById('disclaimerScreen').classList.remove('hidden');
-  } else {
-    document.getElementById('loginScreen').classList.remove('hidden');
+      }catch(e){}
+      sessionStorage.removeItem('dj2_sess');
+    }
+    _showLoginFallback();
+  }catch(e){
+    _showLoginFallback();
   }
 };
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.5.2';
+const APP_VERSION='2.5.3';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
