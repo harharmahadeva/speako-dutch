@@ -2,6 +2,13 @@
 
 ---
 
+## [2.5.4] — 2026-06-26
+
+### Fixed
+- **Loading screen nuclear fallback** — added a separate inline `<script>` block directly after the loading div that runs independently of the main script; if the main script fails for any reason (parse error, runtime error, cache issue), this 3-second timer forces the loading screen to hide and shows the login/disclaimer screen
+
+---
+
 ## [2.5.3] — 2026-06-26
 
 ### Fixed

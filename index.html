@@ -766,6 +766,19 @@ body{background:var(--bg);}
   <div class="spinner"></div>
   <div style="color:var(--text2);font-size:14px">Loading Speako... 🗣️</div>
 </div>
+<script>
+/* Emergency fallback — if main script fails to init, show login after 3s */
+setTimeout(function(){
+  var ls=document.getElementById('loadingScreen');
+  if(ls&&ls.style.display!=='none'){
+    ls.style.display='none';
+    var disc=null;
+    try{disc=localStorage.getItem('speako_disc');}catch(e){}
+    var target=document.getElementById(disc?'loginScreen':'disclaimerScreen');
+    if(target)target.classList.remove('hidden');
+  }
+},3000);
+</script>
 
 <div id="disclaimerScreen" class="hidden">
   <div class="disc-inner">
@@ -1352,7 +1365,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.5.3';
+const APP_VERSION='2.5.4';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
