@@ -2,6 +2,13 @@
 
 ---
 
+## [2.5.6] — 2026-06-26
+
+### Added
+- **New user: Vaidehi** — account `vaid` / PIN `6846` added to Dutch PWA
+
+---
+
 ## [2.5.5] — 2026-06-26
 
 ### Fixed
