@@ -2,6 +2,14 @@
 
 ---
 
+## [2.5.8] — 2026-06-26
+
+### Changed
+- **Lighter color scheme** — backgrounds shifted from near-black to mid-navy (`--bg:#141c2e`, `--surface:#1a2438`, `--card:#1e2b40`, `--card2:#243349`); login/disclaimer gradients updated to match; border opacity raised to 10% for better card definition on iPhone OLED
+- **Mobile lesson card** — `.wc-nl` reduced to 30px on ≤480px screens; `.wc-head` padding tightened; `.wc-en` smaller for better fit on iPhone
+
+---
+
 ## [2.5.7] — 2026-06-26
 
 ### Security
