@@ -22,46 +22,45 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap');
 :root{
-  /* ── Backgrounds: mid-navy, readable on iPhone OLED ── */
-  --bg:#141c2e;
-  --surface:#1a2438;
-  --card:#1e2b40;
-  --card2:#243349;
-  /* ── Borders: slightly more visible on bright screens ── */
-  --border:rgba(255,255,255,0.10);
-  --border2:rgba(100,148,240,0.22);
-  /* ── Blue: softer, less electric ── */
-  --blue:#5b8dee;
-  --blue-b:#8fb3f5;
-  --blue-g:rgba(91,141,238,0.13);
-  --blue-g2:rgba(91,141,238,0.07);
-  /* ── Accents ── */
-  --cyan:#38bdf8;
-  --violet:#9b72cf;
-  --violet-g:rgba(155,114,207,0.11);
+  /* ── Android app indigo palette ── */
+  --bg:#0f0c29;
+  --surface:#1e1b4b;
+  --card:#24243e;
+  --card2:#302b63;
+  --border:rgba(255,255,255,0.12);
+  --border2:rgba(37,99,235,0.35);
+  /* ── Blue: Android royal blue ── */
+  --blue:#2563eb;
+  --blue-b:#93c5fd;
+  --blue-g:rgba(37,99,235,0.15);
+  --blue-g2:rgba(37,99,235,0.08);
+  /* ── Accents: Android teal + violet ── */
+  --cyan:#0d9488;
+  --violet:#4f46e5;
+  --violet-g:rgba(79,70,229,0.14);
   /* ── Status ── */
-  --green:#34c97a;
-  --green-g:rgba(52,201,122,0.11);
-  --orange:#f5923e;
-  --orange-g:rgba(245,146,62,0.11);
-  --red:#e05c5c;
-  --red-g:rgba(224,92,92,0.10);
-  --gold:#f0b429;
-  /* ── Text: off-white reduces eye strain vs pure white ── */
-  --text:#dde4f0;
-  --text2:#b2bccc;
-  --text3:#5e6c82;
+  --green:#10b981;
+  --green-g:rgba(16,185,129,0.12);
+  --orange:#f59e0b;
+  --orange-g:rgba(245,158,11,0.12);
+  --red:#ef4444;
+  --red-g:rgba(239,68,68,0.10);
+  --gold:#f59e0b;
+  /* ── Text ── */
+  --text:#e2e8f0;
+  --text2:#94a3b8;
+  --text3:#475569;
   --r:14px;
   /* ── Legacy aliases ── */
-  --black:var(--bg);--surface2:var(--surface);--primary:var(--blue);--primary-dim:#4a7bd4;
-  --primary-glow:var(--blue-g);--gold-dim:#c9920a;
+  --black:var(--bg);--surface2:var(--surface);--primary:var(--blue);--primary-dim:#1d4ed8;
+  --primary-glow:var(--blue-g);--gold-dim:#d97706;
   --muted:var(--text2);--border-old:var(--border);--radius:var(--r);
   --blue-old:var(--blue);--purple:var(--violet);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
 body{background:var(--bg);color:var(--text);font-family:"Space Grotesk","Inter",sans-serif;min-height:100vh;overflow-x:hidden;font-size:15px;line-height:1.65;}
 body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(ellipse 900px 600px at 0% 0%,rgba(91,141,238,0.07) 0%,transparent 65%);}
+  background:radial-gradient(ellipse 900px 600px at 85% 8%,rgba(79,70,229,0.18) 0%,transparent 60%),radial-gradient(ellipse 600px 500px at 10% 88%,rgba(13,148,136,0.12) 0%,transparent 60%);}
 
 .demo-ribbon{display:none!important;}
 .demo-modal-overlay{display:none!important;}
@@ -78,7 +77,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .demo-modal-accept:hover{transform:translateY(-1px);}
 
 /* ── DISCLAIMER SCREEN ── */
-#disclaimerScreen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:32px 24px 120px;background:linear-gradient(160deg,#141c2e 0%,#1a2d52 55%,#1e4080 100%);position:relative;z-index:1;overflow-y:auto;}
+#disclaimerScreen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:32px 24px 120px;background:linear-gradient(160deg,#0f0c29 0%,#302b63 55%,#1e1b4b 100%);position:relative;z-index:1;overflow-y:auto;}
 #disclaimerScreen::before{content:"";position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,0.04);top:-80px;left:-80px;pointer-events:none;}
 #disclaimerScreen::after{content:"";position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.03);bottom:80px;right:-40px;pointer-events:none;}
 .disc-inner{width:100%;max-width:480px;position:relative;}
@@ -105,7 +104,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .disc-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(91,141,238,0.55);}
 .disc-btn:active{transform:scale(0.98);}
 
-#loginScreen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#141c2e 0%,#1a2d52 50%,#1e4080 100%);position:relative;z-index:1;overflow-y:auto;}
+#loginScreen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(160deg,#0f0c29 0%,#302b63 50%,#1e1b4b 100%);position:relative;z-index:1;overflow-y:auto;}
 #loginScreen::before{content:"";position:fixed;width:300px;height:300px;border-radius:50%;background:rgba(255,255,255,0.04);top:-60px;left:-80px;pointer-events:none;}
 #loginScreen::after{content:"";position:fixed;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03);bottom:40px;right:-40px;pointer-events:none;}
 .login-box{width:100%;max-width:420px;position:relative;}
@@ -1368,7 +1367,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.5.8';
+const APP_VERSION='2.5.9';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════

@@ -2,6 +2,13 @@
 
 ---
 
+## [2.5.9] — 2026-06-26
+
+### Changed
+- **Android app color scheme** — full indigo-purple palette matching the Android app: `--bg:#0f0c29`, `--surface:#1e1b4b`, `--card:#24243e`, `--card2:#302b63`; primary blue `#2563eb`, teal `#0d9488`, amber `#f59e0b`; login/disclaimer gradient `#0f0c29 → #302b63 → #1e1b4b`; dual ambient glow (indigo top-right + teal bottom-left)
+
+---
+
 ## [2.5.8] — 2026-06-26
 
 ### Changed
