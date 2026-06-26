@@ -2,6 +2,13 @@
 
 ---
 
+## [2.6.1] — 2026-06-26
+
+### Fixed
+- **Bottom nav icons too faint** — inactive nav item opacity raised from 0.38 → 0.65; labels darkened to `#475569` for better contrast on white
+
+---
+
 ## [2.6.0] — 2026-06-26
 
 ### Changed

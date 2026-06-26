@@ -778,7 +778,9 @@ body::before{background:radial-gradient(ellipse 700px 400px at 80% 0%,rgba(37,99
   background:rgba(255,255,255,0.97)!important;
   border-top:1px solid rgba(0,0,0,0.08)!important;
 }
-.nav-item-label{color:#94a3b8!important;}
+.nav-item{opacity:0.65!important;}
+.nav-item.active{opacity:1!important;}
+.nav-item-label{color:#475569!important;}
 .nav-item.active .nav-item-label{color:#2563eb!important;}
 .nav-item.active .nav-active-bar{background:#2563eb!important;}
 @media(min-width:1024px){
@@ -1539,7 +1541,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.6.0';
+const APP_VERSION='2.6.1';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
