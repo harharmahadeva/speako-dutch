@@ -1300,6 +1300,7 @@ async function storageSet(k,v){
 
 // OWASP A02 – Keys use hashed PIN, never raw
 async function pKey(n,p){return `dj2_p:${n.toLowerCase().trim()}:${await hashPin(p)}`;}
+function pKeyFromHash(n,h){return `dj2_p:${n.toLowerCase().trim()}:${h}`;}
 
 // ── DEMO DISCLAIMER ──
 function acceptDemo(){
@@ -1347,11 +1348,10 @@ window.onload=async()=>{
         if(j&&typeof j.name==='string'&&typeof j.pinHash==='string'){
           const acct=ACCOUNTS.find(a=>a.name.toLowerCase()===j.name.toLowerCase());
           if(acct){
-            const expectedHash=await hashPin(acct.pin);
-            if(expectedHash===j.pinHash){
-              const prog=await storageGet(await pKey(acct.name,acct.pin));
+            if(acct.pinHash===j.pinHash){
+              const prog=await storageGet(pKeyFromHash(acct.name,acct.pinHash));
               if(prog){
-                currentUser={name:acct.name,pin:acct.pin,displayName:acct.displayName,lang:acct.lang};
+                currentUser={name:acct.name,pinHash:acct.pinHash,displayName:acct.displayName,lang:acct.lang};
                 userProgress=prog;updateStreak();await saveProgress();showApp();return;
               }
             }
@@ -1368,20 +1368,21 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.5.6';
+const APP_VERSION='2.5.7';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
 const ACCOUNTS=[
-  {name:'sharmsa',  pin:'1990', displayName:'Sakshi',   lang:'nl'},
-  {name:'sandy',    pin:'8003', displayName:'Sandeep',  lang:'nl'},
-  {name:'amar',     pin:'2008', displayName:'Amarnath', lang:'nl'},
-  {name:'vaid',     pin:'6846', displayName:'Vaidehi',  lang:'nl'}
+  {name:'sharmsa',  pinHash:'0872c74d34e315d4', displayName:'Sakshi',   lang:'nl'},
+  {name:'sandy',    pinHash:'06028dd723f25e76', displayName:'Sandeep',  lang:'nl'},
+  {name:'amar',     pinHash:'490e08ad526692f1', displayName:'Amarnath', lang:'nl'},
+  {name:'vaid',     pinHash:'2521a2a721bbf575', displayName:'Vaidehi',  lang:'nl'}
 ];
 
 async function isValidAccount(name, pin){
+  const h=await hashPin(pin.trim());
   return ACCOUNTS.some(a=>
-    a.name.toLowerCase()===name.toLowerCase().trim() && a.pin===pin.trim()
+    a.name.toLowerCase()===name.toLowerCase().trim() && a.pinHash===h
   );
 }
 
@@ -1409,7 +1410,9 @@ async function handleLogin(){
 
   const name=nameRaw.toLowerCase().trim();
   const pin=pinRaw;
-  const pk=await pKey(name,pin);
+  const acct=ACCOUNTS.find(a=>a.name.toLowerCase()===name);
+  const ph=await hashPin(pin);
+  const pk=pKeyFromHash(name,ph);
 
   // Load existing progress or create fresh
   let prog=await storageGet(pk);
@@ -1419,10 +1422,8 @@ async function handleLogin(){
   }
   userProgress=prog;
   updateStreak();
-  const acct=ACCOUNTS.find(a=>a.name.toLowerCase()===name);
-  currentUser={name, pin, displayName: acct?.displayName || name, lang: acct?.lang || 'nl'};
+  currentUser={name, pinHash:ph, displayName: acct?.displayName || name, lang: acct?.lang || 'nl'};
   // A02: store only pinHash in sessionStorage, never raw PIN
-  const ph=await hashPin(pin);
   sessionStorage.setItem('dj2_sess',JSON.stringify({name,pinHash:ph}));
   await saveProgress();
   showApp();
@@ -3225,7 +3226,7 @@ function showDWFinalComplete(){
 async function saveProgress(){
   if(!currentUser)return;
   // OWASP A02 – Always use hashed key, never raw PIN
-  await storageSet(await pKey(currentUser.name,currentUser.pin),userProgress);
+  await storageSet(pKeyFromHash(currentUser.name,currentUser.pinHash),userProgress);
 }
 
 function logout(){

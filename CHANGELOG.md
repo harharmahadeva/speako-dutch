@@ -2,6 +2,13 @@
 
 ---
 
+## [2.5.7] — 2026-06-26
+
+### Security
+- **PIN hashing in ACCOUNTS** — raw PINs removed from source code; all accounts now store pre-computed SHA-256 hashes (`dj2_salt_` + pin, first 16 hex chars). `isValidAccount` now compares `await hashPin(input) === acct.pinHash`. `pKeyFromHash()` helper added to build storage keys from hash directly. `currentUser` stores `pinHash` instead of raw `pin`. No raw PIN ever exists in memory after login.
+
+---
+
 ## [2.5.6] — 2026-06-26
 
 ### Added
