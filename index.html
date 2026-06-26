@@ -881,6 +881,7 @@ setTimeout(function(){
     <div style="margin-top:16px;font-size:11px;color:rgba(255,255,255,0.45);text-align:center;line-height:1.7">
       Personal learning app. Progress stored locally.
     </div>
+    <div style="margin-top:8px;font-size:10px;color:rgba(255,255,255,0.25);text-align:center" id="loginVersionDisplay"></div>
   </div>
 </div>
 
@@ -1328,6 +1329,8 @@ window.onload=async()=>{
   try{
     const vEl=document.getElementById('appVersionDisplay');
     if(vEl)vEl.textContent='v'+APP_VERSION;
+    const lvEl=document.getElementById('loginVersionDisplay');
+    if(lvEl)lvEl.textContent='v'+APP_VERSION;
     // Show disclaimer modal on every first visit (or if not yet accepted)
     try{
       if(!localStorage.getItem('dj2_disclaimer')){
@@ -1365,7 +1368,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.5.4';
+const APP_VERSION='2.5.5';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
@@ -5271,9 +5274,7 @@ Met pin graag.`,
       {q:'Hoeveel korting krijgt de klant met de bonuskaart?',opts:['5%','10%','15%','20%'],ans:1,explain:'De kassamedewerker zegt: "Met uw bonuskaart krijgt u tien procent korting op deze producten."'},
       {q:'Hoe betaalt de klant aan de kassa?',opts:['Contant','Met pin','Met de bonusapp','Met creditcard'],ans:1,explain:'De klant zegt: "Met pin graag." Pinnen (debitcard) is de meest gebruikte betaalmethode in Nederland.'},
     ]
-  }
-];
-
+  },
   {
     id:'luis6',
     context:'Op het NS-station',

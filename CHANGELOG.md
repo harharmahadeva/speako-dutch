@@ -2,6 +2,14 @@
 
 ---
 
+## [2.5.5] — 2026-06-26
+
+### Fixed
+- **Critical JS syntax error** — LUISTEREN array was prematurely closed with `];` after fragment `luis5`, leaving `luis6` and `luis7` as orphaned objects outside the array. This caused a `SyntaxError` that prevented the entire script from parsing, making the loading screen hang on all devices
+- **Version number on login screen** — `v2.5.5` now shown in small text below the Sign in button so you always know which build is running
+
+---
+
 ## [2.5.4] — 2026-06-26
 
 ### Fixed
