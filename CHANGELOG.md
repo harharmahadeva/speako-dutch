@@ -2,6 +2,22 @@
 
 ---
 
+## [2.6.0] — 2026-06-26
+
+### Changed
+- **Full light mode — Android home screen design** — complete UI realignment with the Android app:
+  - Login screen: light blue gradient (`#eff6ff → #dbeafe`) with white card form, dark blue button — matches Android login
+  - Header: dark indigo gradient (`#1e1b4b → #1d4ed8`) with white text — matches Android hero header
+  - Main background: `#f8f9fb` off-white with white elevation cards — matches Android home
+  - Bottom nav: white with blue active indicator
+  - All cards: white with subtle shadow (elevation-style, like Android Material cards)
+  - All hardcoded dark `rgba(255,255,255,0.x)` backgrounds flipped to `rgba(0,0,0,0.x)`
+  - Feedback colors darkened for readability on white (green `#059669`, red `#dc2626`, blue `#2563eb`)
+  - Word gradient (`.wc-nl`, `.dw-nl`): `#2563eb → #7c3aed` (visible on white)
+  - Disclaimer screen unchanged (stays dark indigo)
+
+---
+
 ## [2.5.9] — 2026-06-26
 
 ### Changed

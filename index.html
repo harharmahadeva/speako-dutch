@@ -22,38 +22,38 @@
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Outfit:wght@700;800;900&display=swap');
 :root{
-  /* ── Android app indigo palette ── */
-  --bg:#0f0c29;
-  --surface:#1e1b4b;
-  --card:#24243e;
-  --card2:#302b63;
-  --border:rgba(255,255,255,0.12);
-  --border2:rgba(37,99,235,0.35);
+  /* ── Light theme: Android home screen palette ── */
+  --bg:#f8f9fb;
+  --surface:#eff6ff;
+  --card:#ffffff;
+  --card2:#f1f5f9;
+  --border:rgba(0,0,0,0.08);
+  --border2:rgba(37,99,235,0.22);
   /* ── Blue: Android royal blue ── */
   --blue:#2563eb;
-  --blue-b:#93c5fd;
-  --blue-g:rgba(37,99,235,0.15);
-  --blue-g2:rgba(37,99,235,0.08);
+  --blue-b:#1e40af;
+  --blue-g:rgba(37,99,235,0.08);
+  --blue-g2:rgba(37,99,235,0.05);
   /* ── Accents: Android teal + violet ── */
   --cyan:#0d9488;
   --violet:#4f46e5;
-  --violet-g:rgba(79,70,229,0.14);
-  /* ── Status ── */
-  --green:#10b981;
-  --green-g:rgba(16,185,129,0.12);
+  --violet-g:rgba(79,70,229,0.08);
+  /* ── Status: darker for readability on white ── */
+  --green:#059669;
+  --green-g:rgba(5,150,105,0.10);
   --orange:#f59e0b;
-  --orange-g:rgba(245,158,11,0.12);
-  --red:#ef4444;
-  --red-g:rgba(239,68,68,0.10);
-  --gold:#f59e0b;
-  /* ── Text ── */
-  --text:#e2e8f0;
-  --text2:#94a3b8;
-  --text3:#475569;
+  --orange-g:rgba(245,158,11,0.10);
+  --red:#dc2626;
+  --red-g:rgba(220,38,38,0.08);
+  --gold:#d97706;
+  /* ── Text: dark on light ── */
+  --text:#0f172a;
+  --text2:#64748b;
+  --text3:#94a3b8;
   --r:14px;
   /* ── Legacy aliases ── */
   --black:var(--bg);--surface2:var(--surface);--primary:var(--blue);--primary-dim:#1d4ed8;
-  --primary-glow:var(--blue-g);--gold-dim:#d97706;
+  --primary-glow:var(--blue-g);--gold-dim:#b45309;
   --muted:var(--text2);--border-old:var(--border);--radius:var(--r);
   --blue-old:var(--blue);--purple:var(--violet);
 }
@@ -387,21 +387,21 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.12);border-radius:99px;}
 
 /* ══════════════════════════════════════════════
-   SPEAKO v2 — Smooth UI Redesign
+   SPEAKO v2 — Light theme (Android home screen)
    ══════════════════════════════════════════════ */
 :root{
-  --bg:#0d1117;
-  --surface:#131920;
-  --card:#181f2e;
-  --card2:#1e2639;
-  --border:rgba(255,255,255,0.06);
-  --border2:rgba(100,130,220,0.16);
+  --bg:#f8f9fb;
+  --surface:#eff6ff;
+  --card:#ffffff;
+  --card2:#f1f5f9;
+  --border:rgba(0,0,0,0.08);
+  --border2:rgba(37,99,235,0.22);
   --r:16px;
   --ease:cubic-bezier(0.4,0,0.2,1);
-  --accent:#f0700a;
-  --accent-g:rgba(240,112,10,0.11);
+  --accent:#2563eb;
+  --accent-g:rgba(37,99,235,0.08);
 }
-body{background:var(--bg);}
+body{background:var(--bg);color:var(--text);}
 
 /* Smooth micro-interactions on interactive elements only */
 .btn,.home-action-card,.exam-grid-card,.exam-module,.knm-opt,.ogo-scenario[onclick],.nav-item{
@@ -730,6 +730,178 @@ body{background:var(--bg);}
 .achievement-text{text-align:left;}
 .achievement-title{font-size:13px;font-weight:700;color:var(--gold);}
 .achievement-sub{font-size:12px;color:var(--text2);}
+
+/* ══════════════════════════════════════════════
+   LIGHT MODE — Android home screen palette
+   ══════════════════════════════════════════════ */
+
+/* Subtle ambient glow on light bg */
+body::before{background:radial-gradient(ellipse 700px 400px at 80% 0%,rgba(37,99,235,0.05) 0%,transparent 60%)!important;}
+
+/* ── Login screen: light blue (Android login) ── */
+#loginScreen{background:linear-gradient(160deg,#eff6ff 0%,#dbeafe 50%,#eff6ff 100%)!important;}
+#loginScreen .login-inner,#loginScreen .login-box{
+  background:#ffffff;border-radius:24px;padding:28px 24px;
+  box-shadow:0 4px 32px rgba(37,99,235,0.12),0 1px 4px rgba(0,0,0,0.06);
+}
+#loginScreen .login-title,#loginScreen h2,#loginScreen label,
+#loginScreen .login-sub,#loginScreen p{color:#0f172a!important;}
+#loginScreen input{
+  background:#ffffff!important;border:1.5px solid rgba(0,0,0,0.14)!important;
+  color:#0f172a!important;
+}
+#loginScreen input:focus{border-color:#2563eb!important;}
+#loginScreen input::placeholder{color:#94a3b8!important;}
+#loginScreen .btn-gold{
+  background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%)!important;
+  box-shadow:0 4px 16px rgba(37,99,235,0.3)!important;
+}
+#loginScreen .disc-btn,#loginScreen .btn{
+  background:linear-gradient(135deg,#1e3a8a 0%,#2563eb 100%)!important;
+  color:#fff!important;
+}
+#loginVersionDisplay{color:#64748b!important;}
+
+/* ── Header: dark indigo like Android ── */
+.header{
+  background:linear-gradient(135deg,#1e1b4b 0%,#1d4ed8 100%)!important;
+  border-bottom:none!important;
+}
+.logo,.streak,.user-name,.logout-btn,.logout-btn .lbl,.user-display{color:#ffffff!important;}
+.streak{background:rgba(255,255,255,0.15)!important;border-color:rgba(255,255,255,0.22)!important;}
+.user-name{background:rgba(255,255,255,0.12)!important;border-color:rgba(255,255,255,0.18)!important;}
+.logout-btn{background:rgba(239,68,68,0.25)!important;border-color:rgba(239,68,68,0.4)!important;color:#fca5a5!important;}
+.logout-btn .lbl{color:#fca5a5!important;}
+
+/* ── Bottom nav: white ── */
+.bottom-nav{
+  background:rgba(255,255,255,0.97)!important;
+  border-top:1px solid rgba(0,0,0,0.08)!important;
+}
+.nav-item-label{color:#94a3b8!important;}
+.nav-item.active .nav-item-label{color:#2563eb!important;}
+.nav-item.active .nav-active-bar{background:#2563eb!important;}
+@media(min-width:1024px){
+  .bottom-nav{
+    background:rgba(255,255,255,0.97)!important;
+    border-right:1px solid rgba(0,0,0,0.08)!important;
+    border-top:none!important;
+  }
+  .nav-item.active{background:rgba(37,99,235,0.08)!important;border:1px solid rgba(37,99,235,0.18)!important;}
+}
+
+/* ── Cards: white with elevation ── */
+.card{
+  background:#ffffff!important;
+  border:1px solid rgba(0,0,0,0.06)!important;
+  box-shadow:0 1px 4px rgba(0,0,0,0.07),0 1px 2px rgba(0,0,0,0.04)!important;
+}
+.lc{background:#ffffff!important;border:1px solid rgba(0,0,0,0.07)!important;box-shadow:0 1px 4px rgba(0,0,0,0.06)!important;}
+.lc-ex{border-bottom:1px solid rgba(0,0,0,0.06)!important;}
+.lc-rule{background:rgba(79,70,229,0.07)!important;}
+.lc-warn{background:rgba(220,38,38,0.05)!important;}
+.streak-card{background:#ffffff!important;border:1px solid rgba(245,158,11,0.2)!important;box-shadow:0 1px 4px rgba(0,0,0,0.06)!important;}
+.home-stat{background:#ffffff!important;border:1px solid rgba(0,0,0,0.06)!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;}
+.home-stat-val{color:#2563eb!important;}
+.home-action-card{background:#ffffff!important;border:1px solid rgba(0,0,0,0.06)!important;box-shadow:0 1px 4px rgba(0,0,0,0.06)!important;}
+.home-action-card:hover{box-shadow:0 6px 24px rgba(0,0,0,0.10)!important;}
+.session-bar{background:#ffffff!important;border:1px solid rgba(0,0,0,0.07)!important;}
+.dw-word-card,.dw-topic-card{background:#ffffff!important;border:1px solid rgba(0,0,0,0.07)!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;}
+.dw-action{background:#f1f5f9!important;border:1px solid rgba(0,0,0,0.08)!important;}
+.dw-ex{background:rgba(37,99,235,0.05)!important;border:1px solid rgba(37,99,235,0.15)!important;}
+.knm-q{background:#ffffff!important;border:1px solid rgba(0,0,0,0.07)!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;}
+.exam-module{background:#ffffff!important;border:1px solid rgba(0,0,0,0.07)!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;}
+.exam-grid-card{background:#ffffff!important;border:1px solid rgba(0,0,0,0.07)!important;box-shadow:0 1px 3px rgba(0,0,0,0.05)!important;}
+.exam-grid-card:hover{box-shadow:0 6px 20px rgba(0,0,0,0.10)!important;}
+
+/* ── Word flashcard ── */
+.wc-head{background:linear-gradient(135deg,rgba(37,99,235,0.07),rgba(79,70,229,0.04))!important;border-bottom:1px solid rgba(0,0,0,0.06)!important;}
+.wc-nl{background:linear-gradient(135deg,#2563eb,#7c3aed)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;}
+.wc-en{background:rgba(0,0,0,0.05)!important;color:#0f172a!important;}
+.wc-ex{background:rgba(0,0,0,0.03)!important;}
+.wc-tip{background:rgba(245,158,11,0.08)!important;}
+.pc-head{border-bottom:1px solid rgba(0,0,0,0.06)!important;}
+.dw-nl{background:linear-gradient(135deg,#2563eb,#7c3aed)!important;-webkit-background-clip:text!important;-webkit-text-fill-color:transparent!important;}
+
+/* ── Progress bars & dots ── */
+.lesson-prog-bar{background:rgba(0,0,0,0.08)!important;}
+.lesson-dot{background:rgba(0,0,0,0.12)!important;}
+.score-pip{background:rgba(0,0,0,0.10)!important;}
+
+/* ── Buttons ── */
+.btn-outline{background:#ffffff!important;color:#475569!important;border:1.5px solid rgba(0,0,0,0.14)!important;}
+.btn-outline:hover{background:rgba(37,99,235,0.07)!important;border-color:rgba(37,99,235,0.3)!important;color:#2563eb!important;}
+.btn-listen{background:rgba(37,99,235,0.07)!important;border-color:rgba(37,99,235,0.22)!important;color:#2563eb!important;}
+.btn-listen:hover{background:rgba(37,99,235,0.12)!important;}
+.mic-btn{background:rgba(5,150,105,0.08)!important;border-color:rgba(5,150,105,0.25)!important;color:#059669!important;}
+.mic-btn:hover{background:rgba(5,150,105,0.14)!important;}
+
+/* ── Inputs ── */
+.exercise-input,.drill-input,.ogo-input{background:#ffffff!important;border:1.5px solid rgba(0,0,0,0.14)!important;color:#0f172a!important;}
+.exercise-input:focus,.drill-input:focus{border-color:#4f46e5!important;}
+.ogo-input:focus{border-color:#4f46e5!important;background:#fafaff!important;}
+.exercise-input::placeholder,.drill-input::placeholder,.ogo-input::placeholder{color:#94a3b8!important;}
+
+/* ── Test & quiz options ── */
+.test-opt{background:#ffffff!important;border:1.5px solid rgba(0,0,0,0.10)!important;color:#0f172a!important;}
+.test-opt:hover:not(:disabled){border-color:rgba(37,99,235,0.4)!important;background:rgba(37,99,235,0.05)!important;color:#2563eb!important;}
+.test-opt.correct{background:rgba(5,150,105,0.10)!important;border-color:rgba(5,150,105,0.35)!important;color:#059669!important;}
+.test-opt.wrong{background:rgba(220,38,38,0.07)!important;border-color:rgba(220,38,38,0.3)!important;color:#dc2626!important;}
+.knm-opt{background:#ffffff!important;border:1.5px solid rgba(0,0,0,0.10)!important;color:#475569!important;}
+.knm-opt:hover:not(:disabled){border-color:rgba(37,99,235,0.35)!important;color:#2563eb!important;background:rgba(37,99,235,0.05)!important;}
+.knm-opt.correct{background:rgba(5,150,105,0.10)!important;border-color:rgba(5,150,105,0.35)!important;color:#059669!important;font-weight:600!important;}
+.knm-opt.wrong{background:rgba(220,38,38,0.07)!important;border-color:rgba(220,38,38,0.3)!important;color:#dc2626!important;}
+
+/* ── Feedback & result colors (dark for light bg) ── */
+.mic-result.great{background:rgba(5,150,105,0.09)!important;border-color:rgba(5,150,105,0.3)!important;color:#059669!important;}
+.mic-result.close,.mic-result.ok{color:#2563eb!important;}
+.mic-result.wrong{color:#dc2626!important;}
+.mic-result.heard{color:#2563eb!important;}
+.exercise-feedback.good{background:rgba(5,150,105,0.09)!important;border-color:rgba(5,150,105,0.25)!important;color:#059669!important;}
+.exercise-feedback.ok{color:#2563eb!important;}
+.exercise-feedback.retry{background:rgba(220,38,38,0.07)!important;border-color:rgba(220,38,38,0.2)!important;color:#dc2626!important;}
+.exercise-feedback.loading{background:#f1f5f9!important;border-color:rgba(0,0,0,0.08)!important;color:#64748b!important;}
+.drill-result.pass{background:rgba(5,150,105,0.09)!important;border-color:rgba(5,150,105,0.25)!important;color:#059669!important;}
+.drill-result.fail{background:rgba(220,38,38,0.07)!important;border-color:rgba(220,38,38,0.2)!important;color:#dc2626!important;}
+.drill-result.checking{background:#f1f5f9!important;color:#64748b!important;}
+.test-feedback.correct{background:rgba(5,150,105,0.09)!important;border-color:rgba(5,150,105,0.25)!important;color:#059669!important;}
+.test-feedback.wrong{background:rgba(220,38,38,0.07)!important;border-color:rgba(220,38,38,0.2)!important;color:#dc2626!important;}
+.ogo-feedback.pass{background:rgba(5,150,105,0.09)!important;border-color:rgba(5,150,105,0.25)!important;color:#059669!important;}
+.ogo-feedback.partial{color:#2563eb!important;}
+.ogo-feedback.fail{background:rgba(220,38,38,0.07)!important;border-color:rgba(220,38,38,0.2)!important;color:#dc2626!important;}
+.ogo-feedback.checking{background:#f1f5f9!important;color:#64748b!important;border-color:rgba(0,0,0,0.08)!important;}
+.knm-explain{background:rgba(37,99,235,0.06)!important;border-color:rgba(37,99,235,0.18)!important;color:#475569!important;}
+.knm-explain strong{color:#2563eb!important;}
+
+/* ── Section badges and labels ── */
+.section-badge{background:rgba(37,99,235,0.10)!important;color:#1e40af!important;border-color:rgba(37,99,235,0.2)!important;}
+.lc-badge{filter:brightness(0.7);}
+
+/* ── Scenario & passages ── */
+.lezen-passage{background:rgba(37,99,235,0.04)!important;color:#475569!important;}
+.lezen-passage strong{color:#0f172a!important;}
+.ogo-prompt{background:rgba(0,0,0,0.03)!important;color:#475569!important;}
+.scenario-box{background:rgba(0,0,0,0.02)!important;}
+.exercise-box{background:#f8f9fb!important;border-color:rgba(0,0,0,0.08)!important;}
+.drill-scenario{background:#f8f9fb!important;border-color:rgba(0,0,0,0.08)!important;}
+
+/* ── Exam back button ── */
+.exam-back-btn{border-color:rgba(0,0,0,0.2)!important;color:#475569!important;}
+.exam-back-btn:hover{background:rgba(0,0,0,0.05)!important;}
+
+/* ── Exam section title (was hardcoded white) ── */
+.exam-section-title{color:#0f172a!important;}
+
+/* ── XP bar ── */
+.xp-bar-wrap{background:rgba(0,0,0,0.04)!important;}
+.xp-track{background:rgba(0,0,0,0.08)!important;}
+.xp-label{color:#64748b!important;}
+
+/* ── MOT banner ── */
+.mot-banner{background:rgba(37,99,235,0.06)!important;border-color:rgba(37,99,235,0.14)!important;}
+
+/* ── Scrollbar ── */
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.14)!important;border-radius:99px!important;}
 </style>
 </head>
 <body>
@@ -1367,7 +1539,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.5.9';
+const APP_VERSION='2.6.0';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
