@@ -906,6 +906,36 @@ body::before{background:radial-gradient(ellipse 700px 400px at 80% 0%,rgba(37,99
 /* ── Scrollbar ── */
 ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.14)!important;border-radius:99px!important;}
 
+/* ══ Home tab — no scroll, fills screen (iPhone 10+) ══ */
+@media (max-width:767px){
+  body[data-tab="home"] .main{overflow:hidden!important;padding-bottom:0!important;}
+  body[data-tab="home"] #tab-home{
+    height:calc(100dvh - 60px - env(safe-area-inset-bottom,0px) - 70px);
+    display:flex;flex-direction:column;overflow:hidden;
+    gap:8px;padding-bottom:0;
+  }
+  body[data-tab="home"] .home-greeting{padding:2px 0 4px;}
+  body[data-tab="home"] .home-greeting-name{font-size:24px;}
+  body[data-tab="home"] .home-greeting-sub{font-size:13px;}
+  body[data-tab="home"] .home-stats-3{flex-shrink:0;margin-bottom:0;}
+  body[data-tab="home"] .home-stat3{padding:10px 8px;}
+  body[data-tab="home"] .home-stat3-val{font-size:19px;}
+  body[data-tab="home"] .home-lesson-card{flex:1;min-height:0;margin-bottom:0;}
+  body[data-tab="home"] .home-section-title{margin:2px 0 4px;font-size:12px;color:#94a3b8;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;}
+  body[data-tab="home"] .home-dw-card{flex-shrink:0;padding:12px 14px;}
+  body[data-tab="home"] .home-dw-icon{font-size:26px;}
+  body[data-tab="home"] .home-exam-card{flex-shrink:0;padding:12px 14px;}
+  body[data-tab="home"] .home-exam-icon{font-size:22px;}
+  body[data-tab="home"] .hlc-title{font-size:19px;}
+  body[data-tab="home"] .hlc-btn{padding:11px;}
+  body[data-tab="home"] #motBanner{display:none!important;}
+  body[data-tab="home"] #homeHowTitle,
+  body[data-tab="home"] #homeHowCard,
+  body[data-tab="home"] #homeWeekTitle,
+  body[data-tab="home"] #homeWeekCard,
+  body[data-tab="home"] .disclaimer-footer{display:none!important;}
+}
+
 /* ══ Home tab — Android parity redesign ══ */
 .home-greeting{padding:6px 0 18px;text-align:center;}
 .home-greeting-name{font-size:30px;font-weight:800;color:#0f172a;}
@@ -1209,8 +1239,8 @@ setTimeout(function(){
       </div>
 
       <!-- How you learn -->
-      <div class="home-section-title">How you learn</div>
-      <div class="home-how-card">
+      <div class="home-section-title" id="homeHowTitle">How you learn</div>
+      <div class="home-how-card" id="homeHowCard">
         <div class="home-how-grid">
           <div class="home-how-col">
             <div class="home-how-icon">🎧</div>
@@ -1232,8 +1262,8 @@ setTimeout(function(){
       </div>
 
       <!-- This week -->
-      <div class="home-section-title">This week</div>
-      <div class="home-week-card">
+      <div class="home-section-title" id="homeWeekTitle">This week</div>
+      <div class="home-week-card" id="homeWeekCard">
         <div class="home-week-row" id="homeWeekRow"></div>
         <div class="bar-track" style="height:4px;border-radius:99px;margin:4px 0 8px">
           <div class="bar-fill" id="weekProgressBar" style="width:0%"></div>
@@ -2867,6 +2897,7 @@ function switchTab(name,el){
   }
   if(el)el.classList.add('active');
   if(name==='speak')renderSpeakTab();
+  document.body.dataset.tab=name;
 }
 
 // ═══════════════════════════════════
