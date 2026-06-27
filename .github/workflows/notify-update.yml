@@ -32,8 +32,8 @@ jobs:
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
           to: sandeepsharma1984@gmail.com
           bcc: oranjeraksha@gmail.com
-          from: Speako Dutch <oranjeraksha@gmail.com>
-          subject: "Speako Dutch PWA — Update v${{ steps.info.outputs.version }} is live 🎉"
+          from: Oranjeraksha <oranjeraksha@gmail.com>
+          subject: "Speako Dutch — Update v${{ steps.info.outputs.version }} is live 🎉"
           body: |
             Dear Learner,
 
@@ -56,4 +56,5 @@ jobs:
             If you have any questions or face any issues, please reply to this email.
 
             Regards,
-            Speako Team
+            Oranjeraksha
+            oranjeraksha@gmail.com
