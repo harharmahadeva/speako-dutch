@@ -2,7 +2,14 @@
 
 ---
 
-## [2.7.5] — 2026-06-28
+## [2.7.6] — 2026-06-28
+
+### Release Notes
+- All multiple choice quiz and exam buttons now work correctly
+- Audio play buttons in listening and speaking sections are fixed
+- Added a Stop button to the speaking task screen
+- Login screen now says Password instead of PIN
+- Back buttons are larger and easier to tap on iPhone
 
 ### Fixed
 - **MCQ buttons broken in all exam sections** — JSON.stringify in onclick attributes was terminating HTML quotes, causing all multiple-choice answers to silently fail. Fixed by using global state variables (`window._mockKNMOpts`, `window._mockLezenOpts`, `window._mockLuisOpts`, etc.) with index-based onclick instead of serializing objects
@@ -10,8 +17,9 @@
 - **Luisteren play buttons broken** — `playLuisterenFragment` called with serialized script array in onclick; fixed with `window._luisScript` global
 - **Spreken example play broken** — `speakDutch` called with JSON.stringify in onclick; fixed with `window._sprekenEx` global
 - **Mock exam Luisteren fragment play broken** — same fix with `window._mockLuisFragText` global
-- **No back button in Spreken task** — user was trapped once inside a speaking task; added "← Stop" back button with `exam-section-hdr` layout
-- **Back button touch target too small** — `.exam-back-btn` min-height increased from 36px to 44px for iOS touch compliance
+- **No back button in Spreken task** — user was trapped once inside a speaking task; added Stop back button with exam-section-hdr layout
+- **Back button touch target too small** — min-height increased from 36px to 44px for iOS touch compliance
+- **Login label** — changed from "PIN - 4 digits" to "Password"
 
 ---
 
