@@ -2,6 +2,21 @@
 
 ---
 
+## [2.7.0] — 2026-06-28
+
+### Changed
+- **Home screen redesigned — Android app parity:**
+  - User greeting (name + time-based Dutch: Goedemorgen / Goedemiddag / Goedenavond)
+  - Stats row: Day / Streak 🔥 / Done % — 3 compact boxes matching Android layout
+  - Big blue lesson card (dark indigo → blue gradient) with today's topic title, vocabulary chips, and "Start Today 🚀" button
+  - "Dagelijkse Woorden" section — peach/cream card with speech bubble icon and orange stats
+  - "Inburgeringsexamen" section — dark navy card with compass icon
+  - "How you learn" section — 3-column grid (Hear it / Say it / Got it) on yellow card
+  - "This week" section — 7-day calendar circles with blue fill for completed days, progress bar
+  - Removed: session timer bar, 2×2 action card grid, XP/readiness row, journey dot progress
+
+---
+
 ## [2.6.1] — 2026-06-26
 
 ### Fixed

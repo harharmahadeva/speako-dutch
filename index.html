@@ -904,6 +904,63 @@ body::before{background:radial-gradient(ellipse 700px 400px at 80% 0%,rgba(37,99
 
 /* ── Scrollbar ── */
 ::-webkit-scrollbar-thumb{background:rgba(0,0,0,0.14)!important;border-radius:99px!important;}
+
+/* ══ Home tab — Android parity redesign ══ */
+.home-greeting{padding:6px 0 18px;text-align:center;}
+.home-greeting-name{font-size:30px;font-weight:800;color:#0f172a;}
+.home-greeting-sub{font-size:15px;color:#64748b;margin-top:2px;}
+
+.home-stats-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
+.home-stat3{background:#ffffff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;padding:14px 10px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.home-stat3-val{font-size:22px;font-weight:800;color:#0f172a;line-height:1;}
+.home-stat3-green{color:#059669!important;}
+.home-stat3-orange{color:#f59e0b!important;}
+.home-stat3-lbl{font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:0.8px;margin-top:5px;}
+
+.home-lesson-card{background:linear-gradient(160deg,#1e1b4b 0%,#2563eb 100%);border-radius:20px;padding:22px 20px 18px;margin-bottom:6px;cursor:pointer;position:relative;overflow:hidden;transition:transform 0.18s ease;}
+.home-lesson-card:active{transform:scale(0.98);}
+.home-lesson-card::before{content:'';position:absolute;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,0.06);top:-60px;right:-40px;pointer-events:none;}
+.hlc-badge{font-size:10px;font-weight:700;letter-spacing:1.2px;color:rgba(255,255,255,0.65);text-transform:uppercase;margin-bottom:10px;}
+.hlc-title{font-size:22px;font-weight:800;color:#ffffff;margin-bottom:4px;line-height:1.2;}
+.hlc-meta{font-size:12px;color:rgba(255,255,255,0.65);margin-bottom:10px;}
+.hlc-module{display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.15);border-radius:99px;padding:4px 12px;font-size:11px;font-weight:600;color:rgba(255,255,255,0.9);margin-bottom:12px;}
+.hlc-module:empty{display:none;margin:0;}
+.hlc-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px;}
+.hlc-chip{background:rgba(255,255,255,0.15);border-radius:99px;padding:5px 13px;font-size:12px;font-weight:600;color:#ffffff;}
+.hlc-btn{width:100%;background:#ffffff;color:#1e1b4b;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:800;cursor:pointer;font-family:"Space Grotesk",sans-serif;letter-spacing:0.2px;transition:opacity 0.15s;}
+.hlc-btn:active{opacity:0.85;}
+
+.home-section-title{font-size:16px;font-weight:800;color:#0f172a;margin:20px 0 10px;}
+
+.home-dw-card{background:#fff7ed;border:1px solid rgba(245,158,11,0.2);border-radius:16px;padding:16px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform 0.15s ease;}
+.home-dw-card:active{transform:scale(0.98);}
+.home-dw-icon{font-size:32px;flex-shrink:0;}
+.home-dw-body{flex:1;min-width:0;}
+.home-dw-title{font-size:15px;font-weight:700;color:#0f172a;margin-bottom:2px;}
+.home-dw-sub{font-size:12px;color:#64748b;margin-bottom:4px;}
+.home-dw-stat{font-size:12px;font-weight:700;color:#f59e0b;}
+
+.home-exam-card{background:linear-gradient(135deg,#1e1b4b 0%,#312e81 100%);border-radius:16px;padding:16px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:transform 0.15s ease;}
+.home-exam-card:active{transform:scale(0.98);}
+.home-exam-icon{font-size:26px;flex-shrink:0;}
+.home-exam-body{flex:1;}
+.home-exam-title{font-size:15px;font-weight:700;color:#ffffff;margin-bottom:3px;}
+.home-exam-sub{font-size:12px;color:rgba(255,255,255,0.6);}
+
+.home-how-card{background:#fefce8;border:1px solid rgba(234,179,8,0.2);border-radius:16px;padding:18px;}
+.home-how-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:14px;}
+.home-how-col{text-align:center;}
+.home-how-icon{font-size:28px;margin-bottom:5px;}
+.home-how-name{font-size:13px;font-weight:700;}
+.home-how-sub{font-size:11px;color:#64748b;margin-top:3px;}
+.home-tip{background:rgba(245,158,11,0.12);border-radius:10px;padding:10px 12px;font-size:13px;color:#92400e;}
+
+.home-week-card{background:#ffffff;border:1px solid rgba(0,0,0,0.07);border-radius:16px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.05);}
+.home-week-row{display:flex;justify-content:space-between;margin-bottom:8px;}
+.home-week-day{display:flex;flex-direction:column;align-items:center;gap:5px;flex:1;}
+.home-week-dot{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;}
+.home-week-lbl{font-size:10px;font-weight:600;color:#94a3b8;text-transform:uppercase;}
+.home-week-label{font-size:12px;color:#64748b;text-align:center;margin-top:4px;}
 </style>
 </head>
 <body>
@@ -1092,76 +1149,118 @@ setTimeout(function(){
 
     <!-- HOME DASHBOARD TAB -->
     <div id="tab-home">
-      <!-- Session bar -->
-      <div class="session-bar">
-        <div class="session-top">
-          <span class="session-label">Today's session</span>
-          <span class="session-time" id="sessionTime">0 / 60 min</span>
-        </div>
-        <div class="bar-track"><div class="bar-fill" id="sessionBar" style="width:0%"></div></div>
+      <!-- User greeting -->
+      <div class="home-greeting">
+        <div class="home-greeting-name" id="homeGreetingName">Welkom</div>
+        <div class="home-greeting-sub" id="homeGreetingSub">Goedemorgen</div>
       </div>
-      <div class="extend-bar" id="extendBar">
-        <div style="font-size:14px;color:var(--text)">✅ <strong>60 min done!</strong> Test unlocked! Keep going? 🎯</div>
-        <button class="btn btn-green" onclick="extendSession()">+ 30 min</button>
+
+      <!-- Stats: Day / Streak / Done -->
+      <div class="home-stats-3">
+        <div class="home-stat3">
+          <div class="home-stat3-val" id="statDay">1</div>
+          <div class="home-stat3-lbl">Day</div>
+        </div>
+        <div class="home-stat3">
+          <div class="home-stat3-val home-stat3-orange"><span id="statStreak">0</span> 🔥</div>
+          <div class="home-stat3-lbl">Streak</div>
+        </div>
+        <div class="home-stat3">
+          <div class="home-stat3-val home-stat3-green" id="statDone">0%</div>
+          <div class="home-stat3-lbl">Done</div>
+        </div>
+      </div>
+
+      <!-- Big lesson card -->
+      <div class="home-lesson-card" id="homeLessonCard" onclick="switchTab('lesson',document.getElementById('tabBtnLesson'))">
+        <div class="hlc-badge">TODAY · DAY <span id="homeDayNum">1</span> OF 45</div>
+        <div class="hlc-title" id="hlcTopic">Eerste Woorden</div>
+        <div class="hlc-meta">8 woorden · hoor, spreek &amp; schrijf</div>
+        <div class="hlc-module" id="homeModuleTag"></div>
+        <div class="hlc-chips" id="hlcChips"></div>
+        <button class="hlc-btn" onclick="event.stopPropagation();switchTab('lesson',document.getElementById('tabBtnLesson'))">Start Today 🚀</button>
       </div>
 
       <!-- Motivation banner -->
-      <div class="mot-banner" id="motBanner"></div>
+      <div class="mot-banner" id="motBanner" style="margin-bottom:16px"></div>
 
-      <!-- Action cards grid -->
-      <div class="home-cards-grid">
-        <div class="home-action-card" id="homeLessonCard" onclick="switchTab('lesson',document.getElementById('tabBtnLesson'))">
-          <div class="hac-icon">📚</div>
-          <div class="hac-title">Today's Lesson</div>
-          <div class="hac-sub" id="homeLessonSub">Dag <span id="homeDayNum">1</span></div>
-          <div id="homeModuleTag" style="font-size:10px;color:rgba(255,255,255,0.7);margin-top:3px"></div>
-          <div class="hac-status hac-status-active" id="homeLessonStatus">Start</div>
+      <!-- Dagelijkse Woorden -->
+      <div class="home-section-title">Dagelijkse Woorden</div>
+      <div class="home-dw-card" onclick="openDailyWords()">
+        <div class="home-dw-icon">💬</div>
+        <div class="home-dw-body">
+          <div class="home-dw-title">Dagelijkse Woorden</div>
+          <div class="home-dw-sub">Werk · Ziekenhuis · Station · Winkel · meer</div>
+          <div class="home-dw-stat">10 onderwerpen · 120 woorden</div>
         </div>
-        <div class="home-action-card" onclick="switchTab('speak',document.getElementById('tabBtnSpeak'))">
-          <div class="hac-icon">🎤</div>
-          <div class="hac-title">Speaking</div>
-          <div class="hac-sub">Pronunciation practice</div>
-          <div class="hac-status hac-status-active">Practice</div>
-        </div>
-        <div class="home-action-card" id="homeTestCard" onclick="openTest()">
-          <div class="hac-icon">🎯</div>
-          <div class="hac-title">Daily Test</div>
-          <div class="hac-sub" id="homeTestSub">60 min to unlock</div>
-          <div class="hac-status hac-status-locked" id="homeTestStatus">Locked</div>
-        </div>
-        <div class="home-action-card" onclick="switchTab('exam',document.getElementById('tabBtnExam'));renderExamHome()">
-          <div class="hac-icon">🎓</div>
-          <div class="hac-title">Exam Prep</div>
-          <div class="hac-sub">KNM · Lezen · OGO</div>
-          <div class="hac-status hac-status-exam">Open</div>
-        </div>
+        <div style="font-size:22px;color:#94a3b8;flex-shrink:0">›</div>
       </div>
 
-      <!-- Daily Words card -->
-      <div class="home-action-card" style="grid-column:1/-1;flex-direction:row;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px" onclick="openDailyWords()">
-        <div style="display:flex;align-items:center;gap:14px">
-          <div style="font-size:30px">🗣️</div>
-          <div>
-            <div class="hac-title" style="margin-bottom:2px">Dagelijkse Woorden</div>
-            <div class="hac-sub">Werk · Ziekenhuis · Station · Winkel · meer</div>
+      <!-- Inburgeringsexamen -->
+      <div class="home-section-title">Inburgeringsexamen</div>
+      <div class="home-exam-card" onclick="switchTab('exam',document.getElementById('tabBtnExam'));renderExamHome()">
+        <div class="home-exam-icon">🧭</div>
+        <div class="home-exam-body">
+          <div class="home-exam-title">Examen Prep</div>
+          <div class="home-exam-sub">KNM · Lezen · OGO · Flashcards</div>
+        </div>
+        <div style="font-size:22px;color:rgba(255,255,255,0.45);flex-shrink:0">›</div>
+      </div>
+
+      <!-- How you learn -->
+      <div class="home-section-title">How you learn</div>
+      <div class="home-how-card">
+        <div class="home-how-grid">
+          <div class="home-how-col">
+            <div class="home-how-icon">🎧</div>
+            <div class="home-how-name" style="color:#2563eb">Hear it</div>
+            <div class="home-how-sub">Native audio</div>
+          </div>
+          <div class="home-how-col">
+            <div class="home-how-icon">🎤</div>
+            <div class="home-how-name" style="color:#64748b">Say it</div>
+            <div class="home-how-sub">Repeat aloud</div>
+          </div>
+          <div class="home-how-col">
+            <div class="home-how-icon">✅</div>
+            <div class="home-how-name" style="color:#f59e0b">Got it</div>
+            <div class="home-how-sub">Next word</div>
           </div>
         </div>
-        <div class="hac-status hac-status-active" style="flex-shrink:0">Oefenen →</div>
+        <div class="home-tip">💡 No grammar rules. Ever. Just hear, say, absorb.</div>
       </div>
 
-      <!-- XP + Readiness row -->
-      <div class="home-stats-row" id="homeStatsRow"></div>
+      <!-- This week -->
+      <div class="home-section-title">This week</div>
+      <div class="home-week-card">
+        <div class="home-week-row" id="homeWeekRow"></div>
+        <div class="bar-track" style="height:4px;border-radius:99px;margin:4px 0 8px">
+          <div class="bar-fill" id="weekProgressBar" style="width:0%"></div>
+        </div>
+        <div class="home-week-label" id="weekLabel">0 of 7 days this week</div>
+      </div>
 
-      <!-- Journey progress bar (compact, replaces 45 dots) -->
-      <div class="day-progress">
-        <div class="dp-header">
-          <div class="dp-title" id="journeyTitle">🗺️ Dutch Journey</div>
-          <div class="dp-day" id="currentDayLabel">Day 1 of 45</div>
-        </div>
-        <div class="bar-track" style="height:8px;border-radius:99px;margin-bottom:8px">
-          <div class="bar-fill" id="journeyBar" style="width:2%;background:linear-gradient(90deg,var(--violet),var(--cyan))"></div>
-        </div>
-        <div id="recentDays" style="display:flex;gap:5px;flex-wrap:wrap"></div>
+      <!-- Hidden state elements referenced by JS timers -->
+      <div style="display:none" aria-hidden="true">
+        <div id="sessionBar" style="width:0%"></div>
+        <span id="sessionTime">0 / 60 min</span>
+        <div id="extendBar"></div>
+        <div id="currentDayLabel">Day 1 of 45</div>
+        <div id="journeyTitle">Dutch Journey</div>
+        <div id="journeyBar" style="width:0%"></div>
+        <div id="recentDays"></div>
+        <div id="dayDots"></div>
+        <div id="homeTestCard"></div>
+        <div id="homeTestStatus"></div>
+        <div id="homeTestSub"></div>
+        <div id="homeStatsRow"></div>
+      </div>
+
+      <!-- Footer -->
+      <div class="disclaimer-footer">
+        🗣️ <strong>Speako</strong> — Dutch Inburgering Prep &nbsp;·&nbsp; <span id="appVersionDisplay"></span><br>
+        AI-generated content may occasionally contain errors. Progress stored locally in your browser only.<br>
+        No user data is collected or shared.
       </div>
     </div>
 
@@ -1686,89 +1785,88 @@ const DAY_MODULE_MAP={
 function renderHomeTab(){
   if(!currentUser||!userProgress)return;
   const day=userProgress.day||1;
-  const done=(userProgress.completedDays||[]).length;
-  const scores=getExamScores();
-  const xp=userProgress.xp||0;
-  const readiness=userProgress.readiness||0;
-  const testUnlocked=sessionMinutes>=sessionTarget;
+  const completedDays=userProgress.completedDays||[];
+  const done=completedDays.length;
+  const total=45;
+  const streak=userProgress.streak||0;
+  const donePct=Math.round((done/total)*100);
 
-  // Update day number in lesson card
-  const dn=document.getElementById('homeDayNum');
-  if(dn)dn.textContent=day;
+  // Greeting
+  const hr=new Date().getHours();
+  const greet=hr<5?'Goedenacht':hr<12?'Goedemorgen':hr<17?'Goedemiddag':'Goedenavond';
+  safeText(document.getElementById('homeGreetingName'), currentUser.displayName||currentUser.name);
+  safeText(document.getElementById('homeGreetingSub'), greet);
 
-  // Exam module tag
+  // Stats
+  safeText(document.getElementById('statDay'), day);
+  safeText(document.getElementById('statStreak'), streak);
+  safeText(document.getElementById('statDone'), donePct+'%');
+
+  // Lesson card day number
+  safeText(document.getElementById('homeDayNum'), day);
+
+  // Topic title + vocabulary chips from DAY_TOPICS_NL
+  const rawTopic=DAY_TOPICS_NL[(day-1)%DAY_TOPICS_NL.length]||'';
+  const pipePart=rawTopic.split(' | ')[1]||rawTopic;
+  const dashIdx=pipePart.indexOf(' — ');
+  const topicTitle=dashIdx>-1?pipePart.slice(0,dashIdx):pipePart.split(',')[0];
+  const topicWords=dashIdx>-1?pipePart.slice(dashIdx+3).split(', ').slice(0,3):[];
+  safeText(document.getElementById('hlcTopic'), topicTitle||'Vandaag');
+
+  // Module tag
+  const mod=DAY_MODULE_MAP[day];
   const tagEl=document.getElementById('homeModuleTag');
-  if(tagEl){
-    const mod=DAY_MODULE_MAP[day];
-    tagEl.textContent=mod?'🎯 Oefent: '+mod:'';
+  if(tagEl)tagEl.textContent=mod?'🎯 Oefent: '+mod:'';
+
+  // Chips — use loaded lesson words if available, else topic description words
+  const chipsEl=document.getElementById('hlcChips');
+  if(chipsEl){
+    const words=(currentLesson&&currentLesson.day===day)
+      ?currentLesson.words.slice(0,3).map(w=>w.de.replace(/^(de|het)\s+/i,''))
+      :topicWords;
+    chipsEl.innerHTML=words.map(w=>`<div class="hlc-chip">${esc(w.trim())}</div>`).join('');
   }
 
-  // Day 45 completion banner — replace lesson card with CTA
-  const lessonCard=document.getElementById('homeLessonCard');
-  if(lessonCard&&done>=45){
-    lessonCard.onclick=null;
-    lessonCard.style.background='linear-gradient(135deg,#34c97a,#22a85d)';
-    lessonCard.style.cursor='default';
-    lessonCard.innerHTML=`
-      <div style="font-size:28px;margin-bottom:6px">🎓</div>
-      <div style="font-size:14px;font-weight:800;color:#fff;margin-bottom:4px">45-daagse cursus voltooid!</div>
-      <div style="font-size:11px;color:rgba(255,255,255,0.85);margin-bottom:10px">Je hebt alle woorden geleerd. Nu ben je klaar!</div>
-      <button class="btn" style="background:#fff;color:#22a85d;font-weight:800;font-size:12px;padding:7px 14px;border-radius:99px" onclick="event.stopPropagation();switchTab('exam',document.getElementById('tabBtnExam'));startMockExam()">Start Proefexamen →</button>`;
-  }
-
-  // Update test card status
-  const testCard=document.getElementById('homeTestCard');
-  const testSub=document.getElementById('homeTestSub');
-  const testStatus=document.getElementById('homeTestStatus');
-  if(testCard&&testSub&&testStatus){
-    if(testUnlocked){
-      testSub.textContent='Ready to attempt';
-      testStatus.textContent='Unlocked';
-      testStatus.className='hac-status hac-status-done';
-    } else {
-      const minsLeft=sessionTarget-sessionMinutes;
-      testSub.textContent=minsLeft+' min to unlock';
-      testStatus.textContent='Locked';
-      testStatus.className='hac-status hac-status-locked';
+  // Day 45 completion — replace lesson card
+  if(done>=45){
+    const lessonCard=document.getElementById('homeLessonCard');
+    if(lessonCard){
+      lessonCard.onclick=null;
+      lessonCard.style.background='linear-gradient(135deg,#059669,#10b981)';
+      lessonCard.innerHTML=`
+        <div style="font-size:32px;margin-bottom:8px">🎓</div>
+        <div style="font-size:18px;font-weight:800;color:#fff;margin-bottom:6px">45-daagse cursus voltooid!</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.85);margin-bottom:14px">Je hebt alle woorden geleerd. Nu ben je klaar!</div>
+        <button class="hlc-btn" onclick="event.stopPropagation();switchTab('exam',document.getElementById('tabBtnExam'));startMockExam()">Start Proefexamen →</button>`;
     }
   }
 
-  // Stats row — streak card + week strip
-  const statsRow=document.getElementById('homeStatsRow');
-  if(statsRow){
-    const streak=userProgress.streak||1;
+  // This week calendar
+  const weekRow=document.getElementById('homeWeekRow');
+  if(weekRow){
     const lessonDates=userProgress.lessonDates||[];
-    const todayIdx=(new Date().getDay()+6)%7; // 0=Mon…6=Sun
-    const weekLabels=['M','T','W','T','F','S','S'];
-    // get ISO date for each day of current week (Mon=0)
     const now=new Date();
+    const todayIdx=(now.getDay()+6)%7;
     const mondayOffset=(now.getDay()+6)%7;
-    const weekDayCircles=weekLabels.map((lbl,i)=>{
+    const weekLabels=['M','T','W','T','F','S','S'];
+    let doneThisWeek=0;
+    weekRow.innerHTML=weekLabels.map((lbl,i)=>{
       const d=new Date(now);
       d.setDate(now.getDate()-mondayOffset+i);
       const iso=d.toISOString().slice(0,10);
-      const done=lessonDates.includes(iso);
+      const isDone=lessonDates.includes(iso);
       const isToday=i===todayIdx;
-      const bg=done?'#2563EB':isToday?'#EFF6FF':'rgba(255,255,255,0.06)';
-      const col=done?'#fff':isToday?'#2563EB':'rgba(255,255,255,0.3)';
-      const border=isToday&&!done?'2px solid #2563EB':'2px solid transparent';
-      const fw=done||isToday?'700':'400';
-      return `<div style="width:30px;height:30px;border-radius:50%;background:${bg};border:${border};display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:${fw};color:${col};flex-shrink:0">${lbl}</div>`;
+      if(isDone)doneThisWeek++;
+      let dotStyle,dotContent;
+      if(isDone){dotStyle='background:#2563eb;color:#fff;border:2px solid transparent;';dotContent='✓';}
+      else if(isToday){dotStyle='background:transparent;border:2px solid #2563eb;color:#2563eb;';dotContent=lbl;}
+      else{dotStyle='background:#f1f5f9;color:#94a3b8;border:2px solid transparent;';dotContent=lbl;}
+      return `<div class="home-week-day"><div class="home-week-dot" style="${dotStyle}">${dotContent}</div><div class="home-week-lbl">${lbl}</div></div>`;
     }).join('');
-    statsRow.innerHTML=`
-      <div class="streak-card">
-        <div class="streak-card-flame">🔥</div>
-        <div class="streak-card-info">
-          <div class="streak-card-num">${streak} ${streak===1?'day':'days'}</div>
-          <div class="streak-card-lbl">Current streak</div>
-        </div>
-        <div class="streak-card-right">
-          <div class="xp-pill-new">⚡ ${xp} XP</div>
-          <div class="readiness-pill-new">${readiness}% ready</div>
-        </div>
-      </div>
-      <div style="display:flex;gap:6px;align-items:center;padding:2px 0">${weekDayCircles}</div>
-    `;
+    const weekBar=document.getElementById('weekProgressBar');
+    if(weekBar)weekBar.style.width=(doneThisWeek/7*100)+'%';
+    const weekLbl=document.getElementById('weekLabel');
+    if(weekLbl)weekLbl.textContent=doneThisWeek+' of 7 days'+(doneThisWeek>0?', keep it up!':'');
   }
 
   updateMotBanner();
@@ -1832,15 +1930,15 @@ function startTimer(){
   sessionTimer=setInterval(()=>{
     sessionMinutes++;
     const pct=Math.min((sessionMinutes/sessionTarget)*100,100);
-    document.getElementById('sessionBar').style.width=pct+'%';
-    document.getElementById('sessionTime').textContent=sessionMinutes+' / '+sessionTarget+' min';
+    const sb=document.getElementById('sessionBar');if(sb)sb.style.width=pct+'%';
+    const st=document.getElementById('sessionTime');if(st)st.textContent=sessionMinutes+' / '+sessionTarget+' min';
     if(sessionMinutes>=sessionTarget)unlockTest();
   },60000);
 }
-function extendSession(){sessionTarget+=30;document.getElementById('extendBar').style.display='none';}
+function extendSession(){sessionTarget+=30;const eb=document.getElementById('extendBar');if(eb)eb.style.display='none';}
 
 function unlockTest(){
-  document.getElementById('extendBar').style.display='flex';
+  const eb=document.getElementById('extendBar');if(eb)eb.style.display='flex';
   // Update home test card status
   const testStatus=document.getElementById('homeTestStatus');
   const testSub=document.getElementById('homeTestSub');
