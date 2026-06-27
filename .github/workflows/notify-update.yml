@@ -28,11 +28,11 @@ jobs:
           server_address: smtp.gmail.com
           server_port: 465
           secure: true
-          username: sandeepsharma1984@gmail.com
+          username: oranjeraksha@gmail.com
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
           to: sandeepsharma1984@gmail.com
           bcc: oranjeraksha@gmail.com
-          from: Speako Dutch <sandeepsharma1984@gmail.com>
+          from: Speako Dutch <oranjeraksha@gmail.com>
           subject: "Speako Dutch PWA — Update v${{ steps.info.outputs.version }} is live 🎉"
           body: |
             Dear Learner,
