@@ -2,6 +2,19 @@
 
 ---
 
+## [2.7.5] — 2026-06-28
+
+### Fixed
+- **MCQ buttons broken in all exam sections** — JSON.stringify in onclick attributes was terminating HTML quotes, causing all multiple-choice answers to silently fail. Fixed by using global state variables (`window._mockKNMOpts`, `window._mockLezenOpts`, `window._mockLuisOpts`, etc.) with index-based onclick instead of serializing objects
+- **Mini-quiz buttons broken** — same JSON.stringify issue in lesson mini-quiz; fixed with `window._miniQuiz` global and index params
+- **Luisteren play buttons broken** — `playLuisterenFragment` called with serialized script array in onclick; fixed with `window._luisScript` global
+- **Spreken example play broken** — `speakDutch` called with JSON.stringify in onclick; fixed with `window._sprekenEx` global
+- **Mock exam Luisteren fragment play broken** — same fix with `window._mockLuisFragText` global
+- **No back button in Spreken task** — user was trapped once inside a speaking task; added "← Stop" back button with `exam-section-hdr` layout
+- **Back button touch target too small** — `.exam-back-btn` min-height increased from 36px to 44px for iOS touch compliance
+
+---
+
 ## [2.7.1] — 2026-06-28
 
 ### Fixed
