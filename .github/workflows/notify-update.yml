@@ -1,0 +1,59 @@
+name: Notify users on update
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  send-email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get version and changelog
+        id: info
+        run: |
+          VERSION=$(grep -o "APP_VERSION='[^']*'" index.html | head -1 | grep -o "'[^']*'" | tr -d "'")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          # Extract latest changelog block (between first and second ---)
+          CHANGELOG=$(awk '/^## \[/{found++} found==1{print} found==2{exit}' CHANGELOG.md | tail -n +2)
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Send update email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: sandeepsharma1984@gmail.com
+          password: ${{ secrets.GMAIL_APP_PASSWORD }}
+          to: sandeepsharma1984@gmail.com
+          bcc: oranjeraksha@gmail.com
+          from: Speako Dutch <sandeepsharma1984@gmail.com>
+          subject: "Speako Dutch PWA — Update v${{ steps.info.outputs.version }} is live 🎉"
+          body: |
+            Dear Learner,
+
+            We are pleased to inform you that Speako Dutch has been updated to version ${{ steps.info.outputs.version }}. The latest version is now live and available for you to use.
+
+            WHAT'S NEW
+            ${{ steps.info.outputs.changelog }}
+
+            HOW TO GET THE UPDATE
+
+            iPhone (Safari):
+            1. Open the app in Safari and pull down to refresh.
+            2. If the old version still appears, close Safari completely and reopen.
+            3. If the app is installed on your home screen, please delete the icon, reopen the app in Safari, and re-add it to your home screen.
+
+            Android (Chrome):
+            1. Open the app in Chrome and pull down to refresh.
+            2. If the old version still appears, tap the three-dot menu and select Refresh.
+
+            If you have any questions or face any issues, please reply to this email.
+
+            Regards,
+            Speako Team
