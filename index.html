@@ -131,7 +131,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .login-error{background:rgba(239,68,68,0.15);color:#fca5a5;border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:10px 14px;font-size:13px;margin-bottom:14px;display:none;}
 
 #appScreen{display:none;position:relative;z-index:1;}
-.header{background:rgba(15,12,41,0.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(99,102,241,0.2);padding:12px 20px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header{background:rgba(15,12,41,0.94);backdrop-filter:blur(20px);border-bottom:1px solid rgba(99,102,241,0.2);padding:12px 20px;padding-top:calc(env(safe-area-inset-top,0px) + 10px);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
 .logo{font-family:"Outfit",sans-serif;font-size:19px;font-weight:900;color:#fff;}
 
 .home-hero{background:linear-gradient(160deg,#131a30 0%,#1a2540 50%,#1e3464 100%);border-radius:20px;padding:28px 24px 24px;margin-bottom:16px;position:relative;overflow:hidden;text-align:center;}
@@ -381,7 +381,7 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
 .loading-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;position:relative;z-index:1;}
 .hidden{display:none!important;}
 
-@media(max-width:480px){.test-options{grid-template-columns:1fr;}.word-de{font-size:42px;}.word-en{font-size:18px;}.word-pron{font-size:15px;}.phrase-de{font-size:21px;}.header{padding:10px 14px;}.main{padding:14px 12px 80px;}.tabs{gap:3px;}.tab{font-size:12px;padding:10px 6px;}.logout-btn .lbl{display:none;}.exercise-input,.drill-input{font-size:16px;}.wc-nl{font-size:30px;}.wc-head{padding:20px 16px 16px;}.wc-en{font-size:14px;}.lc{border-radius:16px;}}
+@media(max-width:480px){.test-options{grid-template-columns:1fr;}.word-de{font-size:42px;}.word-en{font-size:18px;}.word-pron{font-size:15px;}.phrase-de{font-size:21px;}.header{padding-left:14px;padding-right:14px;padding-bottom:10px;}.main{padding:14px 12px 80px;}.tabs{gap:3px;}.tab{font-size:12px;padding:10px 6px;}.logout-btn .lbl{display:none;}.exercise-input,.drill-input{font-size:16px;}.wc-nl{font-size:30px;}.wc-head{padding:20px 16px 16px;}.wc-en{font-size:14px;}.lc{border-radius:16px;}#muteBtn{display:none;}}
 @media(min-width:1024px){.main{padding:24px 20px 90px;}.card{padding:22px;}.lesson-wrap{max-width:640px;margin:0 auto;}}
 ::-webkit-scrollbar{width:4px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -441,7 +441,7 @@ body{background:var(--bg);color:var(--text);}
   display:flex;
   justify-content:space-around;
   align-items:flex-start;
-  padding:10px 4px calc(env(safe-area-inset-bottom,0px) + 10px);
+  padding:6px 4px calc(env(safe-area-inset-bottom,0px) + 6px);
   z-index:200;
 }
 .nav-item{
@@ -451,7 +451,7 @@ body{background:var(--bg);color:var(--text);}
 }
 .nav-item.active{opacity:1;}
 .nav-item:active{transform:scale(0.88)!important;}
-.nav-item-icon{font-size:21px;transition:transform 0.2s var(--ease);}
+.nav-item-icon{font-size:18px;transition:transform 0.2s var(--ease);}
 .nav-item.active .nav-item-icon{transform:translateY(-1px) scale(1.08);}
 .nav-item-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:.2px;}
 .nav-item.active .nav-item-label{color:var(--accent);}
@@ -910,7 +910,7 @@ body::before{background:radial-gradient(ellipse 700px 400px at 80% 0%,rgba(37,99
 @media (max-width:767px){
   body[data-tab="home"] .main{overflow:hidden!important;padding-bottom:0!important;}
   body[data-tab="home"] #tab-home{
-    height:calc(100dvh - 60px - env(safe-area-inset-bottom,0px) - 70px);
+    height:calc(100dvh - env(safe-area-inset-top,0px) - 60px - env(safe-area-inset-bottom,0px) - 56px);
     display:flex;flex-direction:column;overflow:hidden;
     gap:8px;padding-bottom:0;
   }
@@ -1671,7 +1671,7 @@ window.onload=async()=>{
 
 // ═══════════════════════════════════
 // HARDCODED ACCOUNTS — closed system, no signup
-const APP_VERSION='2.7.1';
+const APP_VERSION='2.7.2';
 
 // Credentials shared privately by admin
 // ═══════════════════════════════════
