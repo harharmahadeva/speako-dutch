@@ -2,6 +2,13 @@
 
 ---
 
+## [2.7.1] — 2026-06-28
+
+### Fixed
+- Version number updated to 2.7.1
+
+---
+
 ## [2.7.0] — 2026-06-28
 
 ### Changed
