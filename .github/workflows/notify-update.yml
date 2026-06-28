@@ -92,19 +92,36 @@ jobs:
                         <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom:24px;">
                           <tr valign="top">
                             <td width="48%" style="background:#f8fafc;border-radius:8px;padding:14px 16px;">
-                              <p style="font-size:12px;font-weight:700;color:#0f172a;margin:0 0 8px 0;">iPhone (Safari)</p>
-                              <p style="font-size:12px;color:#374151;line-height:1.8;margin:0;">
-                                1. Open the app and pull down to refresh.<br>
-                                2. If unchanged, close Safari and reopen.<br>
-                                3. If on home screen, delete and re-add from Safari.
+                              <p style="font-size:12px;font-weight:700;color:#0f172a;margin:0 0 10px 0;">iPhone (Safari)</p>
+                              <p style="font-size:12px;color:#374151;line-height:1.9;margin:0 0 10px 0;">
+                                <strong>If using via Safari:</strong><br>
+                                1. Open Safari and go to the app.<br>
+                                2. Pull the page down and release to refresh.<br>
+                                3. If still on old version, close Safari fully by swiping it away from the app switcher, then reopen.
+                              </p>
+                              <p style="font-size:12px;color:#374151;line-height:1.9;margin:0;">
+                                <strong>If installed on Home Screen:</strong><br>
+                                1. Press and hold the app icon on your home screen.<br>
+                                2. Tap "Remove App" and confirm delete.<br>
+                                3. Open Safari and visit the app link.<br>
+                                4. Tap the Share button (box with arrow) at the bottom of Safari.<br>
+                                5. Scroll down and tap "Add to Home Screen", then tap "Add".
                               </p>
                             </td>
                             <td width="4%">&nbsp;</td>
                             <td width="48%" style="background:#f8fafc;border-radius:8px;padding:14px 16px;">
-                              <p style="font-size:12px;font-weight:700;color:#0f172a;margin:0 0 8px 0;">Android (Chrome)</p>
-                              <p style="font-size:12px;color:#374151;line-height:1.8;margin:0;">
-                                1. Open the app and pull down to refresh.<br>
-                                2. If unchanged, tap the menu and select Refresh.
+                              <p style="font-size:12px;font-weight:700;color:#0f172a;margin:0 0 10px 0;">Android (Chrome)</p>
+                              <p style="font-size:12px;color:#374151;line-height:1.9;margin:0 0 10px 0;">
+                                <strong>If using via Chrome:</strong><br>
+                                1. Open Chrome and go to the app.<br>
+                                2. Pull the page down and release to refresh.<br>
+                                3. If still on old version, tap the three-dot menu (top right) and tap "Refresh".
+                              </p>
+                              <p style="font-size:12px;color:#374151;line-height:1.9;margin:0;">
+                                <strong>If installed on Home Screen:</strong><br>
+                                1. Press and hold the app icon and tap "Uninstall".<br>
+                                2. Open Chrome and visit the app link.<br>
+                                3. Tap the three-dot menu and tap "Add to Home Screen", then tap "Add".
                               </p>
                             </td>
                           </tr>
