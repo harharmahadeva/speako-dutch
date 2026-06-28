@@ -102,7 +102,7 @@
 ## [2.5.6] — 2026-06-26
 
 ### Added
-- **New user: Vaidehi** — account `vaid` / PIN `6846` added to Dutch PWA
+- User roster updated
 
 ---
 
@@ -669,10 +669,10 @@ All notable changes are documented here. Version follows [Semantic Versioning](h
 - Claude AI via `/api/claude` for lesson generation (Days 8-45)
 - Web Speech API (nl-NL) for pronunciation and TTS
 - SVG animated progress rings
-- User: sharmsa / 1990 / Sakshi
+- User roster updated
 
 ### Changed
-- Removed German users (Manisha, Nikhil) from accounts
+- User roster updated
 - All AI prompts updated to Dutch/Amsterdam/NL context
 - Speech recognition set to nl-NL throughout
 - All language conditionals removed (always Dutch)
