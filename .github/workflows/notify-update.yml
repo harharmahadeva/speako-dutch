@@ -41,7 +41,7 @@ jobs:
           to: oranjeraksha@gmail.com
           bcc: sandeepsharma1984@gmail.com,sakshisharmabuest@gmail.com,amarnath.s@gmail.com,jhingranvaidehi@gmail.com
           from: OranjeRaksha <oranjeraksha@gmail.com>
-          subject: "Speako Dutch — Update v${{ steps.info.outputs.version }}"
+          subject: "Speako Dutch: Update v${{ steps.info.outputs.version }}"
           convert_markdown: false
           html_body: |
             <!DOCTYPE html>
