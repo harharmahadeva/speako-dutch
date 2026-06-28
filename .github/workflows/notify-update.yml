@@ -37,7 +37,7 @@ jobs:
           secure: true
           username: oranjeraksha@gmail.com
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
-          to: sandeepsharma1984@gmail.com
+          to: sandeepsharma1984@gmail.com,sakshisharmabuest@gmail.com,amarnath.s@gmail.com
           bcc: oranjeraksha@gmail.com
           from: OranjeRaksha <oranjeraksha@gmail.com>
           subject: "Speako Dutch — Update v${{ steps.info.outputs.version }}"
