@@ -2,6 +2,15 @@
 
 ---
 
+## [2.7.8] — 2026-06-28
+
+### Changed
+- Security hardening: brute-force protection on login with exponential backoff
+- XSS fix: all lesson content passed to onclick handlers now safely encoded via jsq() helper
+- users.json response validated before use (type-checks all entries)
+- Email BCC list moved from workflow file to GitHub Secret
+- Email CHANGELOG content HTML-escaped before injection into email body
+
 ## [2.7.7] — 2026-06-28
 
 ### Changed

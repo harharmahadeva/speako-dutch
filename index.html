@@ -1361,6 +1361,7 @@ setTimeout(function(){
 </div>
 
 <script>
+function jsq(s){return JSON.stringify(String(s==null?'':s)).replace(/"/g,'&quot;');}
 let currentUser=null, userProgress=null;
 let sessionMinutes=0, sessionTarget=60, sessionTimer=null;
 let chatHistory=[], currentLesson=null;
@@ -1673,12 +1674,16 @@ window.onload=async()=>{
 };
 
 // ═══════════════════════════════════
-const APP_VERSION='2.7.6';
+const APP_VERSION='2.7.8';
 let ACCOUNTS=[];
 async function loadAccounts(){
   try{
     const r=await fetch('/users.json?v='+APP_VERSION);
-    if(r.ok)ACCOUNTS=await r.json();
+    if(r.ok){
+      const data=await r.json();
+      if(Array.isArray(data)&&data.every(a=>typeof a.name==='string'&&typeof a.pinHash==='string'))
+        ACCOUNTS=data;
+    }
   }catch(e){}
 }
 
@@ -1689,10 +1694,12 @@ async function isValidAccount(name, pin){
   );
 }
 
-// OWASP A07 – Input validation (kept from before)
+// OWASP A07 – Input validation + brute-force protection
 async function handleLogin(){
-  if(handleLogin._locked){
-    showLoginError('Please wait a moment before trying again! ⏱️');return;
+  const now=Date.now();
+  if(handleLogin._until&&now<handleLogin._until){
+    const secs=Math.ceil((handleLogin._until-now)/1000);
+    showLoginError(`Too many attempts. Please wait ${secs}s before trying again. ⏱️`);return;
   }
   const nameRaw=document.getElementById('loginName').value.trim();
   const pinRaw=document.getElementById('loginPin').value.trim();
@@ -1705,9 +1712,10 @@ async function handleLogin(){
   // Check against hardcoded accounts only
   const valid=await isValidAccount(nameRaw, pinRaw);
   if(!valid){
+    handleLogin._fails=(handleLogin._fails||0)+1;
+    const delay=Math.min(30000,1000*Math.pow(2,handleLogin._fails-1));
+    handleLogin._until=Date.now()+delay;
     showLoginError('Incorrect name or PIN. Please check and try again.');
-    handleLogin._locked=true;
-    setTimeout(()=>handleLogin._locked=false,3000);
     return;
   }
 
@@ -1728,10 +1736,11 @@ async function handleLogin(){
   currentUser={name, pinHash:ph, displayName: acct?.displayName || name, lang: acct?.lang || 'nl'};
   // A02: store only pinHash in sessionStorage, never raw PIN
   sessionStorage.setItem('dj2_sess',JSON.stringify({name,pinHash:ph}));
+  handleLogin._fails=0;handleLogin._until=0;
   await saveProgress();
   showApp();
 }
-handleLogin._locked=false;
+handleLogin._fails=0;handleLogin._until=0;
 
 function showLoginError(msg){
   const el=document.getElementById('loginError');
@@ -2092,9 +2101,9 @@ function renderLesson(lesson){
   // Vocab pages — one word per page
   lesson.words.forEach((w,i)=>{
     const sid=`w${i}`;
-    const safeDE=w.de.replace(/'/g,"\\'");
-    const safeEN=w.en.replace(/'/g,"\\'");
-    const safeEx=w.example_de.replace(/'/g,"\\'");
+    const safeDE=jsq(w.de);
+    const safeEN=jsq(w.en);
+    const safeEx=jsq(w.example_de);
     lessonPages.push({type:'word', html:`
       <div class="lc">
         <div class="wc-head">
@@ -2111,21 +2120,21 @@ function renderLesson(lesson){
                 <div class="wc-ex-nl">${w.example_de}</div>
                 <div class="wc-ex-en">${w.example_en}</div>
               </div>
-              <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:5px 10px" onclick="speakDutch('${safeEx}')">🔊</button>
+              <button class="btn btn-outline btn-sm" style="flex-shrink:0;padding:5px 10px" onclick="speakDutch(${safeEx})">🔊</button>
             </div>
           </div>
           ${w.sentence?`<div style="background:rgba(91,141,238,0.08);border:1px solid rgba(91,141,238,0.2);border-radius:10px;padding:9px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:8px"><span style="font-size:14px;flex-shrink:0">💬</span><div><span style="font-size:12px;color:var(--text2);line-height:1.6;font-style:italic">${w.sentence}</span>${(userProgress?.day||1)<=10&&w.sentenceEn?`<div style="font-size:11px;color:var(--text3);margin-top:3px;line-height:1.5">🇬🇧 ${w.sentenceEn}</div>`:''}</div></div>`:''}
           <div class="wc-tip">💡 ${w.funny}</div>
           ${w.exam?`<div style="display:inline-block;margin-top:4px;font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 8px;border-radius:99px;background:rgba(240,112,10,0.12);color:var(--accent);border:1px solid rgba(240,112,10,0.25)">🎯 ${w.exam}</div>`:''}
           <div class="wc-actions">
-            <button class="wc-action" onclick="speakWord('${safeDE}');sfxTap()" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:var(--primary)"><span style="font-size:20px">🔊</span>Listen</button>
-            <button class="wc-action" id="micWord_${sid}" onclick="startVoiceValidation('${sid}','${safeDE}','word')" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)"><span style="font-size:20px">🎤</span>Say it</button>
-            <button class="wc-action" id="exToggle_${sid}" onclick="toggleExercise('${sid}','${safeDE}')" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--gold)"><span style="font-size:20px">✍️</span>Try it</button>
+            <button class="wc-action" onclick="speakWord(${safeDE});sfxTap()" style="background:rgba(99,102,241,.1);border-color:rgba(99,102,241,.3);color:var(--primary)"><span style="font-size:20px">🔊</span>Listen</button>
+            <button class="wc-action" id="micWord_${sid}" onclick="startVoiceValidation('${sid}',${safeDE},'word')" style="background:rgba(16,185,129,.1);border-color:rgba(16,185,129,.3);color:var(--green)"><span style="font-size:20px">🎤</span>Say it</button>
+            <button class="wc-action" id="exToggle_${sid}" onclick="toggleExercise('${sid}',${safeDE})" style="background:rgba(245,158,11,.1);border-color:rgba(245,158,11,.3);color:var(--gold)"><span style="font-size:20px">✍️</span>Try it</button>
           </div>
           <div id="voiceResult_${sid}"></div>
           <div class="exercise-box hidden" id="exBox_${sid}" style="margin-top:10px">
-            <input class="exercise-input" id="exInput_${sid}" placeholder="Write a sentence with: ${w.de}" onkeydown="if(event.key==='Enter')checkExercise('${sid}','${safeDE}','${safeEN}')"/>
-            <button class="btn btn-outline btn-sm" onclick="checkExercise('${sid}','${safeDE}','${safeEN}')">Check ✓</button>
+            <input class="exercise-input" id="exInput_${sid}" placeholder="Write a sentence with: ${w.de}" onkeydown="if(event.key==='Enter')checkExercise('${sid}',${safeDE},${safeEN})"/>
+            <button class="btn btn-outline btn-sm" onclick="checkExercise('${sid}',${safeDE},${safeEN})">Check ✓</button>
             <div class="exercise-feedback" id="exFeedback_${sid}"></div>
           </div>
         </div>
@@ -2135,8 +2144,8 @@ function renderLesson(lesson){
   // One phrase per page
   lesson.phrases.forEach((p,i)=>{
     const sid=`p${i}`;
-    const safeDE=p.de.replace(/'/g,"\\'");
-    const safeEN=p.en.replace(/'/g,"\\'");
+    const safeDE=jsq(p.de);
+    const safeEN=jsq(p.en);
     lessonPages.push({type:'phrase', html:`
       <div class="lc">
         <div class="pc-head">
@@ -2145,18 +2154,18 @@ function renderLesson(lesson){
           <div class="pc-en">${p.en}</div>
           ${p.use?`<div style="margin-top:6px;font-size:12px;color:var(--text2);background:rgba(91,141,238,0.07);border-left:3px solid var(--blue);border-radius:0 8px 8px 0;padding:7px 10px;line-height:1.5">📍 ${p.use}</div>`:`<div class="pc-tip">😄 ${p.funny}</div>`}
           <div style="display:flex;gap:8px;justify-content:center;margin-top:12px">
-            <button class="btn btn-outline btn-sm" onclick="speakDutch('${safeDE}')">🔊 Listen</button>
-            <button class="btn btn-outline btn-sm" id="micPhrase_${sid}" onclick="startVoiceValidation('${sid}','${safeDE}','phrase')">🎤 Say it</button>
+            <button class="btn btn-outline btn-sm" onclick="speakDutch(${safeDE})">🔊 Listen</button>
+            <button class="btn btn-outline btn-sm" id="micPhrase_${sid}" onclick="startVoiceValidation('${sid}',${safeDE},'phrase')">🎤 Say it</button>
           </div>
           <div id="voiceResult_${sid}" style="margin-top:8px"></div>
         </div>
         <div class="pc-body">
           <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;color:var(--text3);margin-bottom:8px">🎭 Practice Scenario</div>
           <div id="scenarioPrompt_${sid}" style="margin-bottom:8px">
-            <button class="btn btn-outline btn-sm" onclick="loadScenario('${sid}','${safeDE}','${safeEN}')">Get a scenario →</button>
+            <button class="btn btn-outline btn-sm" onclick="loadScenario('${sid}',${safeDE},${safeEN})">Get a scenario →</button>
           </div>
-          <input class="exercise-input hidden" id="exInput_${sid}" placeholder="Respond in Dutch..." onkeydown="if(event.key==='Enter')checkScenario('${sid}','${safeDE}')"/>
-          <button class="btn btn-outline btn-sm hidden" id="exBtn_${sid}" onclick="checkScenario('${sid}','${safeDE}')">Check ✓</button>
+          <input class="exercise-input hidden" id="exInput_${sid}" placeholder="Respond in Dutch..." onkeydown="if(event.key==='Enter')checkScenario('${sid}',${safeDE})"/>
+          <button class="btn btn-outline btn-sm hidden" id="exBtn_${sid}" onclick="checkScenario('${sid}',${safeDE})">Check ✓</button>
           <div class="exercise-feedback" id="exFeedback_${sid}"></div>
         </div>
       </div>`});
@@ -2625,8 +2634,8 @@ function renderDrill(){
         ${esc(d.situation)}<br>
         <span style="color:var(--muted);font-size:12px;margin-top:4px;display:block">💡 Hint: ${esc(d.hint)}</span>
       </div>
-      <input class="drill-input" id="drillInput" placeholder="Type your answer in Dutch..." onkeydown="if(event.key==='Enter')checkDrill('${d.targetWord.replace(/'/g,"\\'")}')"/>
-      <button class="btn btn-gold btn-sm" onclick="checkDrill('${d.targetWord.replace(/'/g,"\\'")}')">Submit</button>
+      <input class="drill-input" id="drillInput" placeholder="Type your answer in Dutch..." onkeydown="if(event.key==='Enter')checkDrill(${jsq(d.targetWord)})"/>
+      <button class="btn btn-gold btn-sm" onclick="checkDrill(${jsq(d.targetWord)})">Submit</button>
       <div class="drill-result" id="drillResult"></div>
     </div>`;
   document.getElementById('drillInput').focus();
@@ -3061,8 +3070,8 @@ function renderSpeakTab(){
               <div style="font-size:12px;color:var(--muted);margin-top:2px">${w.pron} &nbsp;·&nbsp; ${w.en}</div>
             </div>
             <div style="display:flex;gap:8px;align-items:center">
-              <button class="btn btn-outline btn-sm" onclick="speakDutch('${w.de.replace(/'/g,"\\'")}')">🔊 Listen</button>
-              <button class="mic-btn" id="micBtn_w${i}" onclick="startListening(this,'${w.de.replace(/'/g,"\\'")}','micRes_w${i}')">🎤 Say it</button>
+              <button class="btn btn-outline btn-sm" onclick="speakDutch(${jsq(w.de)})">🔊 Listen</button>
+              <button class="mic-btn" id="micBtn_w${i}" onclick="startListening(this,${jsq(w.de)},'micRes_w${i}')">🎤 Say it</button>
             </div>
           </div>
           <div id="micRes_w${i}"></div>
@@ -3076,8 +3085,8 @@ function renderSpeakTab(){
           <div style="font-size:15px;font-weight:600;margin-bottom:4px">${p.de}</div>
           <div style="font-size:12px;color:var(--muted);margin-bottom:10px">${p.en}</div>
           <div style="display:flex;gap:8px;flex-wrap:wrap">
-            <button class="btn btn-outline btn-sm" onclick="speakDutch('${p.de.replace(/'/g,"\\'")}')">🔊 Listen</button>
-            <button class="mic-btn" id="micBtn_p${i}" onclick="startListening(this,'${p.de.replace(/'/g,"\\'")}','micRes_p${i}')">🎤 Say it</button>
+            <button class="btn btn-outline btn-sm" onclick="speakDutch(${jsq(p.de)})">🔊 Listen</button>
+            <button class="mic-btn" id="micBtn_p${i}" onclick="startListening(this,${jsq(p.de)},'micRes_p${i}')">🎤 Say it</button>
           </div>
           <div id="micRes_p${i}"></div>
         </div>`).join('')}
@@ -3178,7 +3187,7 @@ function showDailyWordCard(){
   const chunkEnd=Math.min(chunkStart+10,words.length);
   const idx=dwState.idx;
   const w=words[idx];
-  const safNL=w.nl.replace(/'/g,"\\'");
+  const safNL=jsq(w.nl);
   const localPos=idx-chunkStart+1;
   const pct=Math.round(localPos/10*100);
   const isFirst=idx<=chunkStart;
@@ -3208,13 +3217,13 @@ function showDailyWordCard(){
 
       <!-- Audio + mic buttons -->
       <div class="dw-actions">
-        <div class="dw-action" onclick="speakDutch('${safNL}')" style="color:var(--blue)">
+        <div class="dw-action" onclick="speakDutch(${safNL})" style="color:var(--blue)">
           <span style="font-size:22px">🔊</span>Luister
         </div>
-        <div class="dw-action" onclick="speakDutchSlow('${safNL}')" style="color:var(--violet)">
+        <div class="dw-action" onclick="speakDutchSlow(${safNL})" style="color:var(--violet)">
           <span style="font-size:22px">🐢</span>Langzaam
         </div>
-        <div class="dw-action" id="dwMicBtn" onclick="startDWRecognition('${safNL}')" style="color:var(--green)">
+        <div class="dw-action" id="dwMicBtn" onclick="startDWRecognition(${safNL})" style="color:var(--green)">
           <span style="font-size:22px">🎤</span>Spreek na
         </div>
       </div>

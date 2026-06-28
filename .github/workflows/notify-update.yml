@@ -20,11 +20,12 @@ jobs:
 
           # Extract only the ### Release Notes block from the latest changelog entry
           NOTES=$(awk '/^### Release Notes/{found=1;next} found && /^###/{exit} found{print}' CHANGELOG.md | sed 's/^- //')
-          # Build HTML list items
+          # Build HTML list items — HTML-encode to prevent injection from changelog content
           HTML_ITEMS=""
           while IFS= read -r line; do
             [ -z "$line" ] && continue
-            HTML_ITEMS="${HTML_ITEMS}<li style=\"margin-bottom:8px;\">${line}</li>"
+            safe=$(printf '%s' "$line" | sed 's/&/\&amp;/g;s/</\&lt;/g;s/>/\&gt;/g;s/"/\&quot;/g')
+            HTML_ITEMS="${HTML_ITEMS}<li style=\"margin-bottom:8px;\">${safe}</li>"
           done <<< "$NOTES"
           echo "html_items<<EOF" >> $GITHUB_OUTPUT
           echo "$HTML_ITEMS" >> $GITHUB_OUTPUT
@@ -39,7 +40,7 @@ jobs:
           username: oranjeraksha@gmail.com
           password: ${{ secrets.GMAIL_APP_PASSWORD }}
           to: oranjeraksha@gmail.com
-          bcc: sandeepsharma1984@gmail.com,sakshisharmabuest@gmail.com,amarnath.s@gmail.com,jhingranvaidehi@gmail.com
+          bcc: ${{ secrets.EMAIL_BCC_LIST }}
           from: OranjeRaksha <oranjeraksha@gmail.com>
           subject: "Speako Dutch: Update v${{ steps.info.outputs.version }}"
           convert_markdown: false
