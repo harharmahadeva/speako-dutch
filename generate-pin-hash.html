@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Speako — Generate PIN Hash</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:Arial,sans-serif;background:#f1f5f9;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:24px;}
+  .card{background:#fff;border-radius:12px;padding:36px 32px;max-width:420px;width:100%;box-shadow:0 2px 12px rgba(0,0,0,0.08);}
+  .logo{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:4px;}
+  .logo span{color:#e87722;}
+  .sub{font-size:12px;color:#94a3b8;margin-bottom:28px;}
+  label{font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:1px;display:block;margin-bottom:6px;}
+  input,select{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-size:14px;color:#0f172a;margin-bottom:16px;outline:none;}
+  input:focus,select:focus{border-color:#e87722;}
+  button{width:100%;padding:12px;background:#e87722;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;}
+  button:hover{background:#d06a1a;}
+  .result{margin-top:20px;background:#f8fafc;border-radius:8px;border-left:3px solid #e87722;padding:16px 18px;display:none;}
+  .result-label{font-size:10px;font-weight:700;color:#e87722;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;}
+  .result-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+  .result-key{font-size:12px;color:#64748b;}
+  .result-val{font-size:13px;font-weight:700;color:#0f172a;font-family:monospace;}
+  .copy-btn{font-size:11px;padding:4px 10px;background:#0f172a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-weight:600;}
+  .json-block{margin-top:12px;background:#0f172a;border-radius:8px;padding:14px 16px;font-size:12px;color:#e2e8f0;font-family:monospace;line-height:1.7;word-break:break-all;}
+  .copy-json{margin-top:10px;width:100%;padding:8px;background:#1e3a8a;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:12px;font-weight:700;}
+  .note{font-size:11px;color:#94a3b8;margin-top:16px;line-height:1.7;}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><span>Oranje</span>Raksha</div>
+  <div class="sub">Speako — PIN Hash Generator</div>
+
+  <label>Display Name</label>
+  <input type="text" id="displayName" placeholder="e.g. Priya" />
+
+  <label>Username (login name)</label>
+  <input type="text" id="username" placeholder="e.g. priya1" autocomplete="off" />
+
+  <label>4-Digit PIN</label>
+  <input type="password" id="pin" placeholder="e.g. 1234" maxlength="4" inputmode="numeric" />
+
+  <label>Language</label>
+  <select id="lang">
+    <option value="nl">Dutch (nl)</option>
+    <option value="de">German (de)</option>
+  </select>
+
+  <button onclick="generate()">Generate</button>
+
+  <div class="result" id="result">
+    <div class="result-label">Generated Entry</div>
+    <div class="result-row">
+      <span class="result-key">PIN Hash</span>
+      <span class="result-val" id="outHash"></span>
+      <button class="copy-btn" onclick="copy('outHash')">Copy</button>
+    </div>
+    <div class="json-block" id="outJson"></div>
+    <button class="copy-json" onclick="copyJson()">Copy JSON line</button>
+    <p class="note">Paste this line into <strong>users.json</strong> in the repo and push. No changes needed to index.html.</p>
+  </div>
+</div>
+
+<script>
+async function generate(){
+  const displayName = document.getElementById('displayName').value.trim();
+  const username    = document.getElementById('username').value.trim().toLowerCase();
+  const pin         = document.getElementById('pin').value.trim();
+  const lang        = document.getElementById('lang').value;
+
+  if(!displayName){alert('Please enter a display name.');return;}
+  if(!username){alert('Please enter a username.');return;}
+  if(!/^\d{4}$/.test(pin)){alert('PIN must be exactly 4 digits.');return;}
+
+  const raw = 'dj2_salt_' + pin;
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+  const hex = Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+  const pinHash = hex.slice(0,16);
+
+  document.getElementById('outHash').textContent = pinHash;
+  document.getElementById('outJson').textContent =
+    `{"name":"${username}","pinHash":"${pinHash}","displayName":"${displayName}","lang":"${lang}"}`;
+  document.getElementById('result').style.display = 'block';
+}
+
+function copy(id){
+  navigator.clipboard.writeText(document.getElementById(id).textContent);
+}
+function copyJson(){
+  navigator.clipboard.writeText(document.getElementById('outJson').textContent);
+}
+</script>
+</body>
+</html>
