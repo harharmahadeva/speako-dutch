@@ -1632,6 +1632,7 @@ function _showLoginFallback(){
   }
 }
 window.onload=async()=>{
+  await loadAccounts();
   try{
     const vEl=document.getElementById('appVersionDisplay');
     if(vEl)vEl.textContent='v'+APP_VERSION;
@@ -1672,17 +1673,14 @@ window.onload=async()=>{
 };
 
 // ═══════════════════════════════════
-// HARDCODED ACCOUNTS — closed system, no signup
 const APP_VERSION='2.7.6';
-
-// Credentials shared privately by admin
-// ═══════════════════════════════════
-const ACCOUNTS=[
-  {name:'sharmsa',  pinHash:'0872c74d34e315d4', displayName:'Sakshi',   lang:'nl'},
-  {name:'sandy',    pinHash:'06028dd723f25e76', displayName:'Sandeep',  lang:'nl'},
-  {name:'amar',     pinHash:'490e08ad526692f1', displayName:'Amarnath', lang:'nl'},
-  {name:'vaid',     pinHash:'2521a2a721bbf575', displayName:'Vaidehi',  lang:'nl'}
-];
+let ACCOUNTS=[];
+async function loadAccounts(){
+  try{
+    const r=await fetch('/users.json?v='+APP_VERSION);
+    if(r.ok)ACCOUNTS=await r.json();
+  }catch(e){}
+}
 
 async function isValidAccount(name, pin){
   const h=await hashPin(pin.trim());
